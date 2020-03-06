@@ -1,7 +1,6 @@
 package hu.onlinepizzeria.server.pizzaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,7 @@ public class pizzaService {
 
     @GetMapping(path="/pizza")
     public @ResponseBody Iterable<Pizza> getAllPizzas() {
-        return pizzaRepo.findAll();
+        return pizzaRepo.getVisiblePizza();
     }
 
     //get discounted pizzas
