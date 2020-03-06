@@ -31,6 +31,6 @@ public class Ingredient implements Serializable {
     }
 
 
-    @OneToMany(mappedBy = "ingredients")
-    private Set<Pizza> pizzas;
+    //@OneToMany(mappedBy = "ingredients")
+    //private Set<Pizza> pizzas;
 }
