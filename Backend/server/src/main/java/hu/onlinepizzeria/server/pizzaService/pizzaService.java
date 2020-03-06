@@ -1,12 +1,9 @@
 package hu.onlinepizzeria.server.pizzaService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping(path="/api")
@@ -33,12 +30,21 @@ public class pizzaService {
 
     @GetMapping(path="/pizza")
     public @ResponseBody Iterable<Pizza> getAllPizzas() {
-        // This returns a JSON or XML with the users
         return pizzaRepo.findAll();
     }
 
+    //get discounted pizzas
+    @GetMapping(path="/pizza/discount")
+    public @ResponseBody Iterable<Pizza> getDiscountedPizzas() {
+        return pizzaRepo.getDiscountedPizza();
+    }
 
+    //update pizza
+    //@PutMapping
+    //public @ResponseBody Iterable<Pizza> updatePizza(@RequestParam Integer id){
 
+    //}
 
+    //delete pizza (basically another update, change unavailability to 1)
 
 }
