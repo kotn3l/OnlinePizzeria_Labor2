@@ -39,11 +39,33 @@ public class pizzaService {
     }
 
     //update pizza
-    //@PutMapping
-    //public @ResponseBody Iterable<Pizza> updatePizza(@RequestParam Integer id){
+    @PutMapping(path = "pizza/{id}")
+    public @ResponseBody Pizza updatePizza(@PathVariable(value = "id") Integer id, @RequestParam String name,
+                                                     @RequestParam String picture_path, @RequestParam Integer price,
+                                                     @RequestParam Integer discount_percent, @RequestParam boolean unavailable){
 
-    //}
+        Pizza p = new Pizza();
+        p.setId(id);
+        p.setName(name);
+        p.setPicture_path(picture_path);
+        p.setPrice(price);
+        p.setDiscount_percent(discount_percent);
+        p.setUnavailable(unavailable);
+
+        pizzaRepo.updatePizza(id,name,price,picture_path,discount_percent,unavailable);
+        return p;
+    }
 
     //delete pizza (basically another update, change unavailability to 1)
+    @DeleteMapping(path = "pizza/{id}")
+    public @ResponseBody Pizza deletePizza(@PathVariable(value = "id") Integer id){
 
+        Pizza p = pizzaRepo.findById(id).orElse(null);
+
+        if (p != null) {
+            pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getPicture_path(), p.getDiscount_percent(), true);
+        }
+
+        return p;
+    }
 }
