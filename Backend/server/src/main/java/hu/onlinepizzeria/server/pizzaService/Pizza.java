@@ -1,8 +1,5 @@
 package hu.onlinepizzeria.server.pizzaService;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
