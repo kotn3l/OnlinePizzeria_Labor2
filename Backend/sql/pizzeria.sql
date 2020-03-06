@@ -246,7 +246,7 @@ ALTER TABLE `order`
 
 ALTER TABLE `order_pizza`
   ADD CONSTRAINT `fk_order_pizza_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  ADD CONSTRAINT `fk_order_pizza_pizza_id FOREIGN KEY (`pizza_id`) REFERENCES `pizza` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+  ADD CONSTRAINT `fk_order_pizza_pizza_id` FOREIGN KEY (`pizza_id`) REFERENCES `pizza` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
 
 ALTER TABLE `pizza_ingredients`
   ADD CONSTRAINT `fk_pizza_ingredients_ingredient_id` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredient` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
