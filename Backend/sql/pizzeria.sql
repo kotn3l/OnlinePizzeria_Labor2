@@ -55,24 +55,6 @@ CREATE TABLE IF NOT EXISTS `delivery_man_order` (
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `hibernate_sequence`
---
-
-DROP TABLE IF EXISTS `hibernate_sequence`;
-CREATE TABLE IF NOT EXISTS `hibernate_sequence` (
-  `next_val` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- A tábla adatainak kiíratása `hibernate_sequence`
---
-
-INSERT INTO `hibernate_sequence` (`next_val`) VALUES
-(1);
-
--- --------------------------------------------------------
-
---
 -- Tábla szerkezet ehhez a táblához `ingredient`
 --
 
