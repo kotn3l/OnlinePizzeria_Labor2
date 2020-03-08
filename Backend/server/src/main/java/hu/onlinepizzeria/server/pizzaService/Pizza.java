@@ -70,19 +70,19 @@ public class Pizza implements Serializable {
         this.id = id;
     }
 
-    /*public Set<Ingredient> getIngredients() {
+    public Set<Ingredient> getIngredients() {
         return ingredients;
     }
 
     public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
-    }*/
+    }
 
-    /*@OneToMany
+    @ManyToMany
     @JoinTable(
             name = "pizza_ingredients",
-            joinColumns = @JoinColumn(name = "pizza_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))*/
-    //private Set<Ingredient> ingredients;
+            joinColumns = @JoinColumn(name = "pizza_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName = "id"))
+    private Set<Ingredient> ingredients;
 
 }

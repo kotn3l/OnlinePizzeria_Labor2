@@ -30,7 +30,4 @@ public class Ingredient implements Serializable {
         this.name = name;
     }
 
-
-    //@OneToMany(mappedBy = "ingredients")
-    //private Set<Pizza> pizzas;
 }
