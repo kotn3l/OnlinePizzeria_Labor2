@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface pizzaRepo extends CrudRepository<Pizza, Integer> {
+public interface PizzaRepo extends CrudRepository<Pizza, Integer> {
     @Query(value="SELECT * FROM pizza WHERE discount_percent > 0 and unavailable = false", nativeQuery = true)
     List<Pizza> getDiscountedPizza();
 
