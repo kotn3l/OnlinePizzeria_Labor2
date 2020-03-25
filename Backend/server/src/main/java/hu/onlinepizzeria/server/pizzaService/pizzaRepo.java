@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.pizzaService;
 
+import hu.onlinepizzeria.server.core.model.Pizza;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

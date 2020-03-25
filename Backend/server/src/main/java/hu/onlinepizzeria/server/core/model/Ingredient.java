@@ -1,4 +1,4 @@
-package hu.onlinepizzeria.server.pizzaService;
+package hu.onlinepizzeria.server.core.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
