@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/api")
 public class pizzaService {
     @Autowired
-    private hu.onlinepizzeria.server.pizzaService.pizzaRepo pizzaRepo;
+    private hu.onlinepizzeria.server.dao.pizzaRepo pizzaRepo;
 
     @PostMapping(path="/add") // Map ONLY POST Requests
     public @ResponseBody String addNewPizza (@RequestParam String name

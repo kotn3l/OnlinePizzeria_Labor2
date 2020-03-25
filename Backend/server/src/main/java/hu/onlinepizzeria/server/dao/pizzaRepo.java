@@ -1,4 +1,4 @@
-package hu.onlinepizzeria.server.pizzaService;
+package hu.onlinepizzeria.server.dao;
 
 import hu.onlinepizzeria.server.core.model.Pizza;
 import org.springframework.data.jpa.repository.Modifying;
