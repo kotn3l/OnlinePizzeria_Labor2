@@ -15,8 +15,8 @@ public class PizzaController {
         this.pizzaManager = pizzaManager;
     }
 
-    @PostMapping(path="/add")
-    public @ResponseBody String addNewPizza (@RequestParam String name, @RequestParam String path, @RequestParam Integer price, @RequestParam Integer discount, @RequestParam boolean unavailable){
+    @PostMapping(path="/pizza/{session_string}")
+    public @ResponseBody String addNewPizza (@PathVariable String session_string, @RequestParam String name, @RequestParam String path, @RequestParam Integer price, @RequestParam Integer discount, @RequestParam boolean unavailable){
         return pizzaManager.addNewPizza(name, path, price, discount, unavailable);
     }
 
