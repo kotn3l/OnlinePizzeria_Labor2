@@ -1,0 +1,21 @@
+#section-main {
+  /* background: #f8f0e9; */
+}
+
+#section-main::before {
+  content: '';
+  background: url("../../../../assets/img/Pizza-background.jpg") no-repeat
+    center center/cover;
+  position: fixed;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 15vh;
+}
+
+.container {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: white;
+  padding-bottom: 1rem;
+}
