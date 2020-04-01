@@ -1,6 +1,5 @@
 package hu.onlinepizzeria.server.web;
 
-import hu.onlinepizzeria.server.core.service.PizzaManagerInterface;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import hu.onlinepizzeria.server.service.PizzaManager;
 import org.springframework.boot.SpringBootConfiguration;
