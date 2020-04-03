@@ -12,6 +12,8 @@ import { UserCartComponent } from './components/user/user-cart/user-cart.compone
 import { AdminMainComponent } from './components/admin/admin-main/admin-main.component';
 import { PizzaItemComponent } from './components/user/pizza-item/pizza-item.component';
 import { UserFooterComponent } from './components/user/user-footer/user-footer.component';
+import { UserPizzaSearchComponent } from './components/user/user-pizza-search/user-pizza-search.component';
+import { UserPizzaListSearchComponent } from './components/user/user-pizza-list-search/user-pizza-list-search.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { UserFooterComponent } from './components/user/user-footer/user-footer.c
     UserCartComponent,
     AdminMainComponent,
     PizzaItemComponent,
-    UserFooterComponent
+    UserFooterComponent,
+    UserPizzaSearchComponent,
+    UserPizzaListSearchComponent
   ],
   imports: [
     BrowserModule,
