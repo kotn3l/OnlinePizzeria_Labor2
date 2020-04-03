@@ -1,0 +1,46 @@
+#user-footer {
+    background: #f0b486;
+    color: #fff;
+    padding: 1.5rem 0;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+}
+
+.open-schedule ul {
+    padding-top: 0.5rem;
+    line-height: 0.8rem;
+    font-size: 1.2rem;
+}
+
+.contact p {
+    border-bottom: dotted #fff 2px;
+    padding-bottom: 0.8rem;
+}
+
+#main-footer {
+    background: #ff9a00;
+    color: #fff;
+    padding: 1.5rem 1rem 0.5rem 1rem;
+    text-align: center;
+    line-height: 0;
+    font-size: 1.2rem;
+}
+
+@media(max-width: 800px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+
+    .open-schedule {
+        border-bottom: dashed 3px #fff;
+        margin-bottom: 1rem;
+    }
+
+    .open-schedule ul {
+        font-size: 1rem;
+    }
+}
