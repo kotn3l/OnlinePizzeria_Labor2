@@ -11,7 +11,12 @@ import { Pizza } from '../models/Pizza';
 export class PizzaService {
 
   constructor(private http: HttpClient) { }
+
   getDiscountedPizzas(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizzas/discount`);
+  }
+
+  getAllPizzas() {
+    return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizzas`);
   }
 }
