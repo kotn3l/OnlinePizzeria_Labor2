@@ -67,6 +67,11 @@
 }
 
 @media (max-width: 800px) {
+  .section {
+    padding-top: 3rem;
+    padding-bottom: 1.5rem;
+  }
+  
   .line {
     display: none;
   }
@@ -76,18 +81,23 @@
   }
 
   .header h1 {
-      font-size: 3rem;
-  
-    }
+    font-size: 2.5rem;
+    padding-bottom: 1rem;
+  }
+
   #introduction p {
-      font-size: 1.25rem;
+    font-size: 1.25rem;
   }
 
   .section {
     border-bottom: dotted 4px #fff;
   }
 
+  .section:last-child {
+    border-bottom: none;
+  }
+
   .box {
-      margin-bottom: 1rem;
+    margin-bottom: 1rem;
   }
 }
