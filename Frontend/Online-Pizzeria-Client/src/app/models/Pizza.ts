@@ -3,6 +3,6 @@ export interface Pizza {
     name: string;
     price: number;
     ingredients: string[];
-    image?: string;
+    picture?: string;
     discount_price?: number;
 }

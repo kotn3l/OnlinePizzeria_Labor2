@@ -2,7 +2,7 @@
   <p *ngIf="pizza.discount_price" class="discount">
     - {{ pizza.discount_price }}%
   </p>
-  <img [src]="'data:image/jpg;base64,' + pizza.image" alt="" />
+  <img [src]="'data:image/jpg;base64,' + pizza.picture" alt="" />
   <h4>{{ pizza.name }}</h4>
   <p class="ingredients">{{ formatedIngredients }}</p>
   <p class="price">
