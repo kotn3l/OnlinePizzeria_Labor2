@@ -1,3 +1,5 @@
 <div class="pizza-list grid">
-    <app-pizza-item *ngFor="let pizza of pizzas" [pizza]="pizza"></app-pizza-item>
+    <div *ngFor="let pizza of pizzas">
+        <app-pizza-item  [pizza]="pizza" *ngIf="showDescounted(pizza)"></app-pizza-item>
+    </div>
 </div>

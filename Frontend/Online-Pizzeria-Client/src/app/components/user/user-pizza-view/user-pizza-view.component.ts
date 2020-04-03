@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { PizzaService } from '../../../services/pizza.service';
 import { Pizza } from '../../../models/Pizza';
@@ -10,15 +10,33 @@ import { Pizza } from '../../../models/Pizza';
 })
 export class UserPizzaViewComponent implements OnInit {
   pizzas: Pizza[] = [];
+  @Input() discountedOnly: boolean = false;
   constructor(private pizzaService: PizzaService) { }
 
   ngOnInit() {
-    this.pizzaService.getDiscountedPizzas().subscribe(pizzas => {
-      this.pizzas = pizzas;
-      for (let index = 0; index < 100; index++) {
-        pizzas.unshift(pizzas[0]); 
-      }
-    });
+    if(this.discountedOnly) {
+      this.pizzaService.getDiscountedPizzas().subscribe(pizzas => {
+        this.pizzas = pizzas;
+        for (let index = 0; index < 2; index++) {
+          pizzas.unshift(pizzas[0]); 
+        }
+      });
+    }
+    else {
+      this.pizzaService.getAllPizzas().subscribe(pizzas => {
+        this.pizzas = pizzas;
+        for (let index = 0; index < 50; index++) {
+          pizzas.unshift(pizzas[0]); 
+        }
+      });
+    }
+  }
+
+  showDescounted(pizza: Pizza) {
+    if(this.discountedOnly) {
+      return pizza.discount_price > 0;
+    }
+    return true;
   }
 
 }
