@@ -11,6 +11,7 @@ import { Pizza } from '../../../models/Pizza';
 export class UserPizzaViewComponent implements OnInit {
   pizzas: Pizza[] = [];
   @Input() discountedOnly: boolean = false;
+  loaded: boolean = false;
   constructor(private pizzaService: PizzaService) { }
 
   ngOnInit() {
@@ -20,6 +21,7 @@ export class UserPizzaViewComponent implements OnInit {
         for (let index = 0; index < 2; index++) {
           pizzas.unshift(pizzas[0]); 
         }
+        this.loaded = true;
       });
     }
     else {
@@ -28,6 +30,7 @@ export class UserPizzaViewComponent implements OnInit {
         for (let index = 0; index < 50; index++) {
           pizzas.unshift(pizzas[0]); 
         }
+        this.loaded = true;
       });
     }
   }
