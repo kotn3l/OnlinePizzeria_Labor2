@@ -15,8 +15,8 @@ public class PizzaController {
         this.pizzaManager = pizzaManager;
     }
 
-    @PostMapping(path="/pizza/{session_string}")
-    public @ResponseBody String addNewPizza (@PathVariable String session_string, @RequestParam String name, @RequestParam String path, @RequestParam Integer price, @RequestParam Integer discount, @RequestParam boolean unavailable){
+    @PostMapping(path="/pizza/")
+    public @ResponseBody String addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestParam String name, @RequestParam String path, @RequestParam Integer price, @RequestParam Integer discount, @RequestParam boolean unavailable){
         return pizzaManager.addNewPizza(name, path, price, discount, unavailable);
     }
 
@@ -30,15 +30,15 @@ public class PizzaController {
         return pizzaManager.getDiscountedPizzas();
     }
 
-    @PutMapping(path = "pizza/{id}")
-    public @ResponseBody Pizza updatePizza(@PathVariable(value = "id") Integer id, @RequestParam String name,
+    @PutMapping(path = "pizza/")
+    public @ResponseBody Pizza updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestParam String name,
                                            @RequestParam String picture_path, @RequestParam Integer price,
                                            @RequestParam Integer discount_percent, @RequestParam boolean unavailable){
         return pizzaManager.updatePizza(id,name,picture_path,price,discount_percent,unavailable);
     }
 
-    @DeleteMapping(path = "pizza/{id}")
-    public @ResponseBody Pizza deletePizza(@PathVariable(value = "id") Integer id){
+    @DeleteMapping(path = "pizza/")
+    public @ResponseBody Pizza deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
         return pizzaManager.deletePizza(id);
     }
 
