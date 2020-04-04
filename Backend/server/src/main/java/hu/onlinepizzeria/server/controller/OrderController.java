@@ -20,18 +20,18 @@ public class OrderController {
         return "getPayMethod not yet implemented";
     }
 
-    @GetMapping(path="/order-prep/{session_string}")
-    public @ResponseBody String getPrepOrder(@PathVariable String session_string){
+    @GetMapping(path="/order-prep/")
+    public @ResponseBody String getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
         return "getPrepOrder not yet implemented";
     }
 
-    @PostMapping(path="/order-prep/{session_string}")
-    public @ResponseBody String setPizzaPrepared(@PathVariable String session_string){
+    @PostMapping(path="/order-prep/")
+    public @ResponseBody String setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
         return "setPizzaPrepared not yet implemented";
     }
 
-    @GetMapping(path="/order-delivery/{session_string}")
-    public @ResponseBody String getReadyOrders(@PathVariable String session_string){
+    @GetMapping(path="/order-delivery/")
+    public @ResponseBody String getReadyOrders(@RequestParam(name="session_string", required = true) String session_string){
         return "getReadyOrders not yet implemented";
     }
 
