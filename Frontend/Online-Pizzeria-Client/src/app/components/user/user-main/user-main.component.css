@@ -7,14 +7,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  top: 15vh;
+  top: 16vh;
 }
 
 .container {
   background-color: rgba(0, 0, 0, 0.5) !important;
   color: white;
   padding-bottom: 1rem;
-  min-height: calc(85vh - 307px);;
+  min-height: calc(84vh - 306px);
 }
 
 .content {
