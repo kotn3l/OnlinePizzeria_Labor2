@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Pizza } from 'src/app/models/Pizza';
-import { timer } from 'rxjs';
-import { StringDecoder } from 'string_decoder';
+import { CartItem } from '../../../models/CartItem';
+import { CartService } from '../../../services/cart.service';
 
 @Component({
   selector: 'app-pizza-item',
@@ -10,9 +10,10 @@ import { StringDecoder } from 'string_decoder';
 })
 export class PizzaItemComponent implements OnInit {
   @Input() pizza: Pizza;
+  cartItem: CartItem;
   formatedIngredients: String = '';
 
-  constructor() { }
+  constructor(private cartService: CartService) { }
 
   ngOnInit() {
     if (this.pizza.ingredients.length > 0) {
@@ -21,5 +22,16 @@ export class PizzaItemComponent implements OnInit {
         this.formatedIngredients = this.formatedIngredients.concat(', ' + this.pizza.ingredients[index]);
       }
     }
+  }
+
+  addToCart(pizza: Pizza) {
+    this.cartItem = {
+      pizzaId: pizza.id,
+      name: pizza.name,
+      price: pizza.price,
+      count: 1
+    }
+
+    this.cartService.addCartItem(this.cartItem);
   }
 }
