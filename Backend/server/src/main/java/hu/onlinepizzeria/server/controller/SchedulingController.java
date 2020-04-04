@@ -1,22 +1,27 @@
 package hu.onlinepizzeria.server.controller;
 
+import hu.onlinepizzeria.server.core.model.SchedulingAlgorithms;
+import hu.onlinepizzeria.server.service.SchedulingManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/api")
 public class SchedulingController {
 
-    //private SchedulingManager schedulingManager;
-    //constructor that sets the schedulingManager prop
+    private SchedulingManager schedulingManager;
 
-    @GetMapping(path="/scheduling/{session_string}")
-    public @ResponseBody
-    String getSchedulingAlgorithms(@PathVariable String session_string){
-        return "getSchedulingAlgorithms not yet implemented";
+    public SchedulingController(SchedulingManager schedulingManager) {
+        this.schedulingManager = schedulingManager;
     }
 
-    @PostMapping(path="/scheduling/{session_string}/{scheduling_id}")
-    public @ResponseBody String setActiveSchedulingAlgorithm(@PathVariable String session_string, @PathVariable Integer scheduling_id){
-        return "setActiveSchedulingAlgorithm not yet implemented";
+    @GetMapping(path="/scheduling/")
+    public @ResponseBody
+    Iterable<SchedulingAlgorithms> getSchedulingAlgorithms(@RequestParam(name="session_string", required = true) String session_string){
+        return schedulingManager.getAlgorithms();
+    }
+
+    @PostMapping(path="/scheduling/")
+    public @ResponseBody String setActiveSchedulingAlgorithm(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="scheduling_id", required = true) Integer scheduling_id){
+        return schedulingManager.setActiveAlgorithm(scheduling_id);
     }
 }
