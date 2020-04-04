@@ -25,4 +25,11 @@ export class UserCartComponent implements OnInit {
     return sum;
   }
 
+  changeItemCount(pizzaId: number, number: number) {
+    this.cartService.changeCartItemCount(pizzaId, number);
+  }
+
+  deleteItem(pizzaId: number) {
+    this.cartService.deleteCartItem(pizzaId);
+  }
 }
