@@ -14,6 +14,8 @@ import { PizzaItemComponent } from './components/user/pizza-item/pizza-item.comp
 import { UserFooterComponent } from './components/user/user-footer/user-footer.component';
 import { UserPizzaSearchComponent } from './components/user/user-pizza-search/user-pizza-search.component';
 import { UserPizzaListSearchComponent } from './components/user/user-pizza-list-search/user-pizza-list-search.component';
+import { UserCartTableComponent } from './components/user/user-cart-table/user-cart-table.component';
+import { UserCartFormComponent } from './components/user/user-cart-form/user-cart-form.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { UserPizzaListSearchComponent } from './components/user/user-pizza-list-
     PizzaItemComponent,
     UserFooterComponent,
     UserPizzaSearchComponent,
-    UserPizzaListSearchComponent
+    UserPizzaListSearchComponent,
+    UserCartTableComponent,
+    UserCartFormComponent
   ],
   imports: [
     BrowserModule,
