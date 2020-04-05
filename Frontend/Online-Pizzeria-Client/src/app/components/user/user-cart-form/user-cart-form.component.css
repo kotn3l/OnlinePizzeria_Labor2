@@ -1,0 +1,9 @@
+.form-row .form-check-inline {
+    padding-left: 3rem;
+}
+
+@media(max-width: 767px) {
+    .form-row {
+        flex-direction: column;
+    }
+}
