@@ -5,6 +5,8 @@ import hu.onlinepizzeria.server.service.PizzaManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(path="/api")
 public class PizzaController {
@@ -16,8 +18,8 @@ public class PizzaController {
     }
 
     @PostMapping(path="/pizza/")
-    public @ResponseBody String addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestParam String name, @RequestParam String path, @RequestParam Integer price, @RequestParam Integer discount, @RequestParam boolean unavailable){
-        return pizzaManager.addNewPizza(name, path, price, discount, unavailable);
+    public @ResponseBody String addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestBody Map<String, Object> pizza){
+        return pizzaManager.addNewPizza(pizza);
     }
 
     @GetMapping(path="/pizza")
