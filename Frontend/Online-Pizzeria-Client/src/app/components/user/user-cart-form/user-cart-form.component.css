@@ -2,6 +2,21 @@
     padding-left: 3rem;
 }
 
+.invalid-feedback {
+    color: #ff9a00;
+}
+
+.btn-new {
+    background: #ff9a00;
+    color: #fff;
+    display: inline-block;
+}
+
+.flex {
+    display: flex;
+    justify-content: flex-end;
+}
+
 @media(max-width: 767px) {
     .form-row {
         flex-direction: column;
