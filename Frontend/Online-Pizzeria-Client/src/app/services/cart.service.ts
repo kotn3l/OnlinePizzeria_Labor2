@@ -7,7 +7,9 @@ import { CartItem } from '../models/CartItem';
 })
 
 export class CartService {
-  cart: CartItem[] = this.loadCartItems();
+  
+  private cartSource = new BehaviorSubject<CartItem[]>(this.loadCartItems());
+  cart = this.cartSource.asObservable();
 
   private cartCountSource = new BehaviorSubject<number>(this.getCartCount());
   cartCount = this.cartCountSource.asObservable();
@@ -27,14 +29,25 @@ export class CartService {
 
   private getCartCount(): number {
     var sum = 0;
-    this.cart.forEach(item => {
+    this.cartSource.value.forEach(item => {
       sum += item.count;
     });
     return sum;
   }
 
   getCartItems(): Observable<CartItem[]> {
-    return of(this.cart);
+    return this.cart;
+  }
+
+  getItemIdsForOrder(): number[] {
+    var itemList = [];
+    this.cartSource.value.forEach(item => {
+      for (let index = 0; index < item.count; index++) {
+        itemList.push(item.pizzaId);
+      }
+    });
+
+    return itemList;
   }
 
   addCartItem(cartItem: CartItem) {
@@ -43,7 +56,7 @@ export class CartService {
     }
 
     var added = false;
-    this.cart.forEach((item, index, cart) => {
+    this.cartSource.value.forEach((item, index, cart) => {
       if (item.pizzaId == cartItem.pizzaId) {
         cart[index].count += cartItem.count;
         added = true;
@@ -51,11 +64,11 @@ export class CartService {
     });
 
     if (!added) {
-      this.cart.push(cartItem);
+      this.cartSource.value.push(cartItem);
     }
 
     this.cartCountSource.next(this.getCartCount());
-    sessionStorage.setItem('cart', JSON.stringify(this.cart));
+    sessionStorage.setItem('cart', JSON.stringify(this.cartSource.value));
   }
 
   changeCartItemCount(pizzaId: number, count: number) {
@@ -63,7 +76,7 @@ export class CartService {
       return;
     }
 
-    this.cart.forEach((item, index, cart) => {
+    this.cartSource.value.forEach((item, index, cart) => {
       if (item.pizzaId == pizzaId) {
         cart[index].count += count;
 
@@ -74,22 +87,22 @@ export class CartService {
     });
 
     this.cartCountSource.next(this.getCartCount());
-    sessionStorage.setItem('cart', JSON.stringify(this.cart));
+    sessionStorage.setItem('cart', JSON.stringify(this.cartSource.value));
   }
 
   deleteCartItem(pizzaId: number) {
-    this.cart.forEach((item, index, cart) => {
+    this.cartSource.value.forEach((item, index, cart) => {
       if (item.pizzaId == pizzaId) {
         cart.splice(index, 1);
       }
     });
 
     this.cartCountSource.next(this.getCartCount());
-    sessionStorage.setItem('cart', JSON.stringify(this.cart));
+    sessionStorage.setItem('cart', JSON.stringify(this.cartSource.value));
   }
 
   clearCart() {
-    this.cart = [];
+    this.cartSource.next([]);
     this.cartCountSource.next(this.getCartCount());
 
     sessionStorage.removeItem('cart');
