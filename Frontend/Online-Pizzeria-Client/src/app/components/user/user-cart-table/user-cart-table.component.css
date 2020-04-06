@@ -1,0 +1,91 @@
+.table {
+    margin: auto;
+    border-radius: 8px;
+}
+
+.btn-light {
+    background-color: #eee;
+}
+
+.table > tbody > tr > th {
+    vertical-align: middle;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.summary {
+    background-color: #ff9a00;
+    padding: 0.4rem;
+    border-radius: 5px;
+}
+
+.separator {
+    border-bottom: 2px dashed #fff;
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media(max-width: 767px) {
+	table, thead, tbody, th, td, tr { 
+		display: block; 
+    }
+    
+    table tbody {
+        border: none;
+    }
+
+    tfoot th, tfoot td {
+        display: inline;
+        border: none;
+    }
+
+    tfoot tr {
+        padding: 1rem;
+    }
+
+    .table {
+        border-radius: unset;
+    }
+	
+	thead tr { 
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+	
+	tbody tr { 
+        border: 1px solid #ccc;
+    }
+
+    .mobile-invisible {
+        display: none;
+    }
+
+	tbody td { 
+		border: none;
+		border-bottom: 0.5px dotted #777; 
+		position: relative;
+        padding-left: 50%;
+    }
+    
+    tbody td:last-child {
+        padding-left: 45%;
+        border-bottom: none;
+    }
+	
+	tbody td:before { 
+        position: absolute;
+        top: 10px;
+		left: 15px;
+		width: 45%; 
+		padding-right: 10px; 
+        white-space: nowrap;
+        margin: auto;
+	}
+	
+	tbody td:nth-of-type(1):before { content: "Unit price"; }
+	tbody td:nth-of-type(2):before { content: "Count"; top: 20px;}
+    tbody td:nth-of-type(3):before { content: "Sum"; }
+}

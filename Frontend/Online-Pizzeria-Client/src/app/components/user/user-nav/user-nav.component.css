@@ -1,0 +1,99 @@
+.main-nav {
+  background: var(--red);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 16vh;
+}
+
+.container {
+  text-align: center;
+}
+
+.main-nav ul {
+  flex-direction: row;
+  justify-content: space-evenly;
+  max-width: 400px;
+  margin: auto;
+  padding-bottom: 1rem;
+}
+
+.logo img {
+  max-width: 400px;
+  width: 100%;
+}
+
+.nav-item {
+  align-self: center;
+}
+
+.nav-link {
+  color: #fff;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  height: 44px;
+  font-size: 1.25rem;
+}
+
+.nav-link:hover {
+  background-color: #ff9a00;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.nav-link:hover span {
+    background: var(--red);
+  }
+
+.numberCircle {
+  display: inline-block;
+  background-color: #ff9a00;
+  border-radius: 50%;
+  font-size: 1rem;
+}
+
+.numberCircle:before,
+.numberCircle:after {
+  content: "\200B";
+  display: inline-block;
+  line-height: 0px;
+
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.numberCircle:before {
+  padding-left: 10px;
+}
+.numberCircle:after {
+  padding-right: 10px;
+}
+
+i {
+  color: #fff;
+  margin-right: 0.25rem;
+}
+
+@media(max-width: 600px) {
+  .nav-link {
+    font-size: 1rem;
+    height: 33px;
+  }
+
+  .numberCircle {
+    font-size: 0.8rem;
+  }
+
+  .numberCircle:before,
+  .numberCircle:after {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .numberCircle:before {
+    padding-left: 6px;
+  }
+  .numberCircle:after {
+    padding-right: 6px;
+  }
+}

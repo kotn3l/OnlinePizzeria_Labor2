@@ -1,0 +1,14 @@
+<div class="toggle">
+<p>Search:</p>
+<button (click)="toggleSearch()" class="btn-dark">
+    <i [ngClass]="openSearch ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"></i>
+</button>
+</div>
+<form class="grid" *ngIf="openSearch">
+    <div class="form-group">
+        <input type="text" class="form-control" name="name" (input)="onNameSearchChange($event.target.value)" placeholder="Search for Pizza Name">
+    </div>
+    <div class="form-group">
+        <input type="text" class="form-control" name="ingredient" (input)="onIngredientSearchChange($event.target.value)" placeholder="Search for Pizza Ingredient">
+    </div>
+</form>

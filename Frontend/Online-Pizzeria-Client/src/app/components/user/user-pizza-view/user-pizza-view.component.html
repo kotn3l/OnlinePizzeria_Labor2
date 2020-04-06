@@ -1,0 +1,9 @@
+<div class="pizza-list grid">
+    <div *ngFor="let pizza of displayedPizzas">
+        <app-pizza-item  [pizza]="pizza"></app-pizza-item>
+    </div>
+    <h3 *ngIf="pizzas.length == 0 && !loaded">Loading...</h3>
+    <h3 *ngIf="displayedPizzas.length == 0 && loaded">No match for search!</h3>
+    <h3 *ngIf="pizzas.length == 0 && discountedOnly && loaded">We have no discounts!</h3>
+    <h3 *ngIf="pizzas.length == 0 && !discountedOnly && loaded">No pizza is avaible!</h3>
+</div>

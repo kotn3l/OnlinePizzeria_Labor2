@@ -1,0 +1,96 @@
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    background-color: #333;
+    max-width: 270px;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    position: relative;
+}
+
+.box img {
+    max-width: 300px;
+    border-radius: 4px;
+    transition: ease-in opacity 0.5s;
+}
+
+.box img:hover {
+    opacity: 0.5;
+}
+
+.box h4 {
+    margin: 1rem;
+    padding-left: 0.5rem;
+    position: relative;
+}
+
+.box h4:before {
+    content: '';
+    position: absolute;
+    bottom: 7px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    right: 240px;
+    border-width: 8px 0px 8px 16px;
+    border-color: transparent transparent transparent #ff9a00;
+}
+
+.box h4::before {
+    left: -15px;
+    border-width: 8px 0px 8px 16px;
+    border-color: transparent transparent transparent #ff9a00;
+}
+
+.box .ingredients {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: dashed #fff 2px;
+    margin: 0 1rem;
+}
+
+.box .discount {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #e22626;
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+.box .price {
+    padding-top: 0.5rem;
+    margin-left: 1rem;
+    font-size: 1.5rem;
+}
+
+.box .newPrice {
+    text-decoration: line-through;
+}
+
+.box .discountPrice {
+    font-size: 1.75rem;
+    color: #e22626;
+    text-decoration: underline;
+    margin-left: 1rem;
+}
+
+.box .btn-new {
+    background: #ff9a00;
+    color: #fff;
+    display: block;
+    margin: auto;
+    font-size: 1.2rem;
+}
+
+.box .btn-new:hover {
+    opacity: 0.8;
+}
+
+@media(max-width: 600px) {
+    .box {
+        max-width: 270px;
+    }
+}

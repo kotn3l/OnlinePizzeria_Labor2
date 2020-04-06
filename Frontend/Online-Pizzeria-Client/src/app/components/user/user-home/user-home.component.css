@@ -1,0 +1,103 @@
+.section {
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  padding-bottom: 2rem;
+}
+
+#introduction p {
+  font-size: 2rem;
+}
+
+.btn-new {
+    background: #ff9a00;
+    color: #fff;
+    display: block;
+    margin: auto;
+    margin-top: 2rem;
+    font-size: 1.5rem;
+}
+
+.btn-new:hover {
+    opacity: 0.8;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1.5fr;
+}
+
+.line {
+  border-top: solid 4px #fff;
+  margin-top: 2.5rem;
+}
+
+.col-sm {
+    position: initial;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #333;
+    border-radius: 20px;
+    padding: 0.5rem 0;
+}
+
+.box i {
+    margin-bottom: 0.25rem;
+    padding: 1rem;
+    background: #ff9a00;
+    border-radius: 50%;
+}
+
+.box p {
+    border-top: dotted 2px #fff;
+    padding-top: 0.5rem;
+    margin: 1rem;
+}
+
+.box h4 {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 800px) {
+  .section {
+    padding-top: 3rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .line {
+    display: none;
+  }
+
+  .header {
+    display: block;
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+    padding-bottom: 1rem;
+  }
+
+  #introduction p {
+    font-size: 1.25rem;
+  }
+
+  .section {
+    border-bottom: dotted 4px #fff;
+  }
+
+  .section:last-child {
+    border-bottom: none;
+  }
+
+  .box {
+    margin-bottom: 1rem;
+  }
+}

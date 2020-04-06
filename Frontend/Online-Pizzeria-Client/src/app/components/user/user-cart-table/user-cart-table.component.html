@@ -1,0 +1,60 @@
+<div class="separator">
+  <div *ngIf="cartItems.length > 0">
+    <h1>Items in Cart:</h1>
+    <table
+      class="table table-responsive w-100 d-block d-md-table table-dark table-striped"
+    >
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Unit price</th>
+          <th scope="col">Count</th>
+          <th scope="col">Sum</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cartItem of cartItems">
+          <th scope="row">{{ cartItem.name }}</th>
+          <td class="text-nowrap">{{ cartItem.price }} Ft / db</td>
+          <td class="text-nowrap">
+            <button
+              (click)="changeItemCount(cartItem.pizzaId, -1)"
+              class="btn btn-light mr-1"
+            >
+              <i class="fa fa-angle-left"></i>
+            </button>
+            {{ cartItem.count }}
+            <button
+              (click)="changeItemCount(cartItem.pizzaId, 1)"
+              class="btn btn-light ml-1"
+              [disabled]="cartCount == 15"
+            >
+              <i class="fa fa-angle-right"></i>
+            </button>
+          </td>
+          <td class="text-nowrap">{{ cartItem.price * cartItem.count }} Ft</td>
+          <td>
+            <button
+              (click)="deleteItem(cartItem.pizzaId)"
+              class="btn btn-danger"
+            >
+              <i class="fa fa-times"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <td class="mobile-invisible"></td>
+          <td class="mobile-invisible"></td>
+          <td>
+            <span class="summary">{{ getTotalCost() }} Ft</span>
+          </td>
+          <td class="mobile-invisible"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <h3 *ngIf="cartItems.length == 0" class="empty-alert">No Items in Cart!</h3>
+</div>

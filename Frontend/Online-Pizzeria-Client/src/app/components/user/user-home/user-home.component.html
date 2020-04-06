@@ -1,0 +1,58 @@
+<div id="introduction" class="section">
+  <div class="header">
+    <div class="line"></div>
+    <h1 class="text-center">Welcome</h1>
+    <div class="line"></div>
+  </div>
+  <p class="text-center">
+    If you want delicious pizza fast you have come to the right place.
+  </p>
+  <button class="btn btn-new" [routerLink]="['/pizzas']" >Order pizza</button>
+</div>
+<div id="offers" class="section">
+  <div class="header">
+    <div class="line"></div>
+    <h1 class="text-center">What we offer</h1>
+    <div class="line"></div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <div class="box">
+        <h4>Wide selection</h4>
+        <i class="fa fa-pizza-slice fa-4x"></i>
+        <p class="text-center">
+          We have a large selection of different pizzas and a quick search tool
+          to help you find what you are looking for.
+        </p>
+      </div>
+    </div>
+    <div class="col-sm">
+      <div class="box">
+        <h4>Fast delivery</h4>
+        <i class="fa fa-shipping-fast fa-4x"></i>
+        <p class="text-center">
+          Our staff works around the clock so you can recieve your order as fast
+          as possible.
+        </p>
+      </div>
+    </div>
+    <div class="col-sm">
+      <div class="box">
+        <h4>Daily offers</h4>
+        <i class="fa fa-calendar-alt fa-4x"></i>
+        <p class="text-center">
+          We offer daily discounts on different pizzas. <br />
+          Be sure to check out if your favourite is on the line today!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="special-offers" class="section">
+  <div class="header">
+    <div class="line"></div>
+    <h1 class="text-center">Special offers</h1>
+    <div class="line"></div>
+  </div>
+  <app-user-pizza-view [discountedOnly]="true"></app-user-pizza-view>
+</div>
