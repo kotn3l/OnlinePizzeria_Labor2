@@ -29,9 +29,6 @@ export class UserPizzaViewComponent implements OnInit {
     if (this.discountedOnly) {
       this.pizzaService.getDiscountedPizzas().subscribe(pizzas => {
         this.pizzas = pizzas;
-        for (let index = 0; index < 2; index++) {
-          pizzas.unshift(pizzas[0]);
-        }
         this.loaded = true;
         this.updateDisplayed();
       });
@@ -39,9 +36,6 @@ export class UserPizzaViewComponent implements OnInit {
     else {
       this.pizzaService.getAllPizzas().subscribe(pizzas => {
         this.pizzas = pizzas;
-        for (let index = 0; index < 10; index++) {
-          pizzas.push(pizzas[0]);
-        }
         this.loaded = true;
         this.updateDisplayed();
       });

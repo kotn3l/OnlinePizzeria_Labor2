@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     justify-items: center;
-    padding: 4rem;
+    padding: 2rem 4rem;
 }
 
 @media(max-width: 1200px) {
