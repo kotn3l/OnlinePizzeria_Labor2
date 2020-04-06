@@ -1,31 +1,41 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.core.model.Ingredient;
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.core.service.PizzaManagerInterface;
+import hu.onlinepizzeria.server.dao.IngredientRepo;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class PizzaManager implements PizzaManagerInterface {
 
     @Autowired
     private PizzaRepo pizzaRepo;
 
+    @Autowired
+    private IngredientRepo ingredientRepo;
+
     public PizzaManager(PizzaRepo repository) {
         this.pizzaRepo = repository;
     }
 
     @Override
-    public String addNewPizza (String name, String path, Integer price, Integer discount, boolean unavailable){
+    public String addNewPizza (Map<String, Object> pizza){
+        ArrayList<String> piIngredients = (ArrayList<String>)pizza.get("ingredients");
         Pizza p = new Pizza();
-        p.setName(name);
-        p.setPicture_path(path);
-        p.setPrice(price);
-        p.setDiscount_percent(discount);
-        p.setUnavailable(unavailable);
+        p.setName(pizza.get("name").toString());
+        p.setPicture_path(pizza.get("picture").toString());
+        p.setPrice(Integer.parseInt(pizza.get("price").toString()));
+        p.setDiscount_percent(0);
+        p.setUnavailable(false);
         pizzaRepo.save(p);
+        ingredientCheck(piIngredients);
+        saveIngredients(piIngredients);
         return "Saved";
     }
 
@@ -59,5 +69,25 @@ public class PizzaManager implements PizzaManagerInterface {
             pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getPicture_path(), p.getDiscount_percent(), true);
         }
         return p;
+    }
+
+    public ArrayList<String> ingredientCheck(ArrayList<String> pizzaIngredients){
+        ArrayList<Ingredient> currentIngredients = ingredientRepo.getIngredients();
+        ArrayList<String> temp = pizzaIngredients;
+        for (Ingredient ci : currentIngredients
+             ) {
+            if (temp.contains(ci.getName())){
+                temp.remove(ci.getName());
+            }
+
+        }
+        return temp;
+    }
+
+    public void saveIngredients(ArrayList<String> pizzaIngredients){
+        for (String s: pizzaIngredients
+             ) {
+            ingredientRepo.addIngredient(s);
+        }
     }
 }
