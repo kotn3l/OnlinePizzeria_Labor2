@@ -16,4 +16,9 @@ public interface IngredientRepo extends CrudRepository<Ingredient, Integer> {
     @Transactional
     @Query(value="INSERT INTO ingredient (name) VALUES (:name)", nativeQuery = true)
     void addIngredient(String name);
+
+    @Modifying
+    @Transactional
+    @Query(value="INSERT INTO pizza_ingredients (pizza_id, ingredient_id) VALUES (:pizzaId, :ingredientId)", nativeQuery = true)
+    void addIngredientAndPizza(Integer pizzaId, Integer ingredientId);
 }
