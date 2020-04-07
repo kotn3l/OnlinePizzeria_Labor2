@@ -8,9 +8,7 @@ import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class PizzaManager implements PizzaManagerInterface {
 
@@ -20,13 +18,17 @@ public class PizzaManager implements PizzaManagerInterface {
     @Autowired
     private IngredientRepo ingredientRepo;
 
-    public PizzaManager(PizzaRepo repository) {
+    public PizzaManager(PizzaRepo repository, IngredientRepo ingredientRepo) {
+
         this.pizzaRepo = repository;
+        this.ingredientRepo = ingredientRepo;
     }
 
     @Override
     public String addNewPizza (Map<String, Object> pizza){
-        ArrayList<String> piIngredients = (ArrayList<String>)pizza.get("ingredients");
+        ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
+        ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
+
         Pizza p = new Pizza();
         p.setName(pizza.get("name").toString());
         p.setPicture_path(pizza.get("picture").toString());
@@ -34,8 +36,11 @@ public class PizzaManager implements PizzaManagerInterface {
         p.setDiscount_percent(0);
         p.setUnavailable(false);
         pizzaRepo.save(p);
-        ingredientCheck(piIngredients);
-        saveIngredients(piIngredients);
+
+        ingredientCheck(pIngredients);
+        saveIngredients(pIngredients);
+        savePizzaIngredients(p.getId(), pizzaIngredients);
+
         return "Saved";
     }
 
@@ -88,6 +93,16 @@ public class PizzaManager implements PizzaManagerInterface {
         for (String s: pizzaIngredients
              ) {
             ingredientRepo.addIngredient(s);
+        }
+    }
+
+    public void savePizzaIngredients(Integer pizzaId, ArrayList<String> pizzaIngredients){
+        ArrayList<Ingredient> currentIngredients = ingredientRepo.getIngredients();
+        for (Ingredient ci : currentIngredients
+        ) {
+            if (pizzaIngredients.contains(ci.getName())) {
+                ingredientRepo.addIngredientAndPizza(pizzaId, ci.getId());
+            }
         }
     }
 }
