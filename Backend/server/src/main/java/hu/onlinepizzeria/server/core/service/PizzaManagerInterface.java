@@ -8,6 +8,6 @@ public interface PizzaManagerInterface {
     public String addNewPizza(Map<String, Object> pizza);
     public Iterable<Pizza> getAllPizzas();
     public Iterable<Pizza> getDiscountedPizzas();
-    public Pizza updatePizza(Integer id, String name, String picture_path, Integer price, Integer discount_percent, boolean unavailable);
+    public Pizza updatePizza(Integer id, Map<String, Object> pizza);
     public Pizza deletePizza(Integer id);
 }
