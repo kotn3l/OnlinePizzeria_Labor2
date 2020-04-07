@@ -2,7 +2,6 @@ package hu.onlinepizzeria.server.controller;
 
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.service.PizzaManager;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -33,10 +32,8 @@ public class PizzaController {
     }
 
     @PutMapping(path = "pizza/")
-    public @ResponseBody Pizza updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestParam String name,
-                                           @RequestParam String picture_path, @RequestParam Integer price,
-                                           @RequestParam Integer discount_percent, @RequestParam boolean unavailable){
-        return pizzaManager.updatePizza(id,name,picture_path,price,discount_percent,unavailable);
+    public @ResponseBody Pizza updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestBody Map<String, Object> pizza){
+        return pizzaManager.updatePizza(id, pizza);
     }
 
     @DeleteMapping(path = "pizza/")

@@ -39,7 +39,7 @@ public class PizzaManager implements PizzaManagerInterface {
 
         ingredientCheck(pIngredients);
         saveIngredients(pIngredients);
-        savePizzaIngredients(p.getId(), pizzaIngredients);
+        savePizzaIngredients(p.getId(), pizzaIngredients, false);
 
         return "Saved";
     }
@@ -55,15 +55,22 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public Pizza updatePizza(Integer id, String name, String picture_path, Integer price, Integer discount_percent, boolean unavailable){
+    public Pizza updatePizza(Integer id, Map<String, Object> pizza){
+        ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
+        ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
+
         Pizza p = new Pizza();
         p.setId(id);
-        p.setName(name);
-        p.setPicture_path(picture_path);
-        p.setPrice(price);
-        p.setDiscount_percent(discount_percent);
-        p.setUnavailable(unavailable);
-        pizzaRepo.updatePizza(id,name,price,picture_path,discount_percent,unavailable);
+        p.setName(pizza.get("name").toString());
+        p.setPicture_path(pizza.get("picture").toString());
+        p.setPrice(Integer.parseInt(pizza.get("price").toString()));
+        p.setDiscount_percent(Integer.parseInt(pizza.get("discount_price").toString()));
+        p.setUnavailable(false);
+        pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getPicture_path(), p.getDiscount_percent(), p.isUnavailable());
+
+        ingredientCheck(pIngredients);
+        saveIngredients(pIngredients);
+        savePizzaIngredients(p.getId(), pizzaIngredients, true);
         return p;
     }
 
@@ -96,7 +103,10 @@ public class PizzaManager implements PizzaManagerInterface {
         }
     }
 
-    public void savePizzaIngredients(Integer pizzaId, ArrayList<String> pizzaIngredients){
+    public void savePizzaIngredients(Integer pizzaId, ArrayList<String> pizzaIngredients, boolean update){
+        if (update){
+            ingredientRepo.deletePizzaIngredients(pizzaId);
+        }
         ArrayList<Ingredient> currentIngredients = ingredientRepo.getIngredients();
         for (Ingredient ci : currentIngredients
         ) {
