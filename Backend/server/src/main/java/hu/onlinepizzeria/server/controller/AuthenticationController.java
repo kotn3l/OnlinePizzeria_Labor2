@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
@@ -36,17 +38,19 @@ public class AuthenticationController {
     JwtTokenProvider jwtTokenProvider;
     @Autowired
     UserRepo users;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @PostMapping("/login")
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
 
         try {
             System.out.println(user.getEmail() + user.getPassword());
+            //System.out.println(bCryptPasswordEncoder.encode(user.getPassword()));
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
-
+            Optional<User> user2 = users.findUserByEmail(user.getEmail());
+            System.out.println("roles" + user2.get().getRoles());
             Map<Object, Object> model = new HashMap<>();
             //model.put("email", email);
             model.put("session_string", token);
@@ -61,13 +65,26 @@ public class AuthenticationController {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
-                                       @RequestBody String request) {
-        User user = new User();
-        //user.setEmail();
-        return new ResponseEntity(HttpStatus.CREATED);
+                                       @RequestBody User user) {
+        System.out.println(jwtTokenProvider.getAuthentication(session_string).getAuthorities());
+
+        if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            User newUser = new User();
+            newUser.setEmail(user.getEmail());
+            newUser.setName("Jacob Gypsum");
+            newUser.setRoles(user.getRoles());
+            newUser.setPassword(bCryptPasswordEncoder.encode("default"));
+            users.save(newUser);
+            System.out.println("hi");
+            return new ResponseEntity(newUser, HttpStatus.CREATED);
+        }
+        else {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
     }
     @GetMapping("/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
