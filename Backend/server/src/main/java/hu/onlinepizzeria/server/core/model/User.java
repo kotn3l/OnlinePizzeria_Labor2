@@ -17,7 +17,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Entity
-@Table(name="user_role")
+@Table(name="user")
 @Data
 @Builder
 @NoArgsConstructor
@@ -43,6 +43,7 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
+    @JoinColumn(name = "role", nullable = false)
     private List<String> roles = new ArrayList<>();
 
     @Override
