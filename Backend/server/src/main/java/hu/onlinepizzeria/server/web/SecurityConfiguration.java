@@ -1,4 +1,4 @@
-package hu.onlinepizzeria.server.config;
+package hu.onlinepizzeria.server.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
