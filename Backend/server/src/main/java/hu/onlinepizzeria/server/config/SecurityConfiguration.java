@@ -34,12 +34,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 /* .antMatchers("/admin").hasRole("ADMIN")
                  .antMatchers("/user").hasAnyRole("ADMIN", "USER")*/
-                .antMatchers("/api/login").permitAll();
+                .antMatchers("/api/login").permitAll()
+                //.antMatchers("/api/register").hasRole("ADMIN")
+                ;
+
     }
 
     @Bean

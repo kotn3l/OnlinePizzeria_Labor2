@@ -43,7 +43,7 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
-    @JoinColumn(name = "role", nullable = false)
+    //@JoinColumn(name = "role", nullable = false)
     private List<String> roles = new ArrayList<>();
 
     @Override

@@ -1,11 +1,11 @@
 package hu.onlinepizzeria.server.service.jwt;
 
+import hu.onlinepizzeria.server.service.AuthenticationService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,7 +21,7 @@ public class JwtTokenProvider {
     JwtProperties jwtProperties;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private AuthenticationService userDetailsService;
     
     private String secretKey;
 
