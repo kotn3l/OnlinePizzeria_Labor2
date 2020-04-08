@@ -1,7 +1,6 @@
 package hu.onlinepizzeria.server.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.AuthenticationService;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -16,10 +15,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,18 +36,15 @@ public class AuthenticationController {
     JwtTokenProvider jwtTokenProvider;
     @Autowired
     UserRepo users;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @PostMapping("/login")
-    public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody String request) throws IOException {
-        JsonNode rootNode = new ObjectMapper().readTree(new StringReader(request));
-        JsonNode eField = rootNode.get("email");
-        JsonNode pField = rootNode.get("password");
-        String email = eField.asText();
-        String password = pField.asText();
+    public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
+
         try {
-            System.out.println(email + password);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = jwtTokenProvider.createToken(email, this.users.findUserByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Username " + email + "not found"))
+            System.out.println(user.getEmail() + user.getPassword());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+            String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
 
             Map<Object, Object> model = new HashMap<>();
@@ -62,17 +58,15 @@ public class AuthenticationController {
             //UserDetails user = authenticationService.loadUserByLogin(email, password);
             //return user.getPassword() + user.getAuthorities();
         } catch (AuthenticationException e) {
-            //throw new BadCredentialsException("Invalid username/password");
             throw new BadCredentialsException("Invalid username/password supplied");
         }
-
-        //User user = authenticationService.loadUserByLogin(email, password);
-
-
     }
+    
     @PostMapping("/register")
-    public ResponseEntity registerUser(@RequestParam String session_string, @RequestBody String request) {
-
+    public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
+                                       @RequestBody String request) {
+        User user = new User();
+        //user.setEmail();
         return new ResponseEntity(HttpStatus.CREATED);
     }
     @GetMapping("/me")
