@@ -30,6 +30,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping(path="/api")
 public class AuthenticationController {
+    // TODO Use this
     @Autowired
     AuthenticationService authenticationService;
     @Autowired
@@ -41,6 +42,8 @@ public class AuthenticationController {
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @PostMapping("/login")
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
+        //UserRole role = new UserRole(3L, "ROLE_USER");
+        //role.setRoles("ROLE_" + Role.values()[4]);
 
         try {
             System.out.println(user.getEmail() + user.getPassword());
@@ -101,6 +104,14 @@ public class AuthenticationController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return ok(model);
+    }
+    @GetMapping("/user")
+    public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) {
+        if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return new ResponseEntity(authenticationService.getAllUsers(), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
 }

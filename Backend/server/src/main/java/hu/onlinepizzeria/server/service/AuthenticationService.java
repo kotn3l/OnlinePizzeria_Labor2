@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AuthenticationService implements UserDetailsManager, UserDetailsService {
@@ -59,5 +62,9 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
             throw new UsernameNotFoundException("Not found: " + email);
         }
 
+    }
+
+    public List<User> getAllUsers() {
+        return users.findAll();
     }
 }
