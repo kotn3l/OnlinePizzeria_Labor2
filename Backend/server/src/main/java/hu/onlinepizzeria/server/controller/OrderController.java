@@ -20,6 +20,11 @@ public class OrderController {
         return "getPayMethod not yet implemented";
     }
 
+    @GetMapping(path="/delivery-city")
+    public @ResponseBody String getDeliveryCities(){
+        return "getDeliveryCities not yet implemented";
+    }
+
     @GetMapping(path="/order-prep/")
     public @ResponseBody String getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
         return "getPrepOrder not yet implemented";
