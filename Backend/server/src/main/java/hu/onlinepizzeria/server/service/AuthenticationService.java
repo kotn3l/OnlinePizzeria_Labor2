@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.RoleRepo;
 import hu.onlinepizzeria.server.dao.UserRepo;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -75,7 +77,19 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
         return users.findAll();
     }
 
-    public List<String> getAllRoles() { return roles.getAllRoles(); }
+    public List<Role> getAllRoles() {
+        List<String> roleList =  roles.getAllRoles();
+        System.out.println(roleList);
+        List<Role> allRoles = new ArrayList<>();
+        int i = 1;
+        for (String role1 : roleList) {
+            Role r = Role.builder().id(i).name(role1).build();
+            allRoles.add(r);
+            System.out.println(allRoles);
+            i++;
+        };
+        return allRoles;
+    }
 
     public String getRoleById(int role_id) { return roles.getRoleById(role_id); }
 

@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.controller;
 
+import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.AuthenticationService;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -57,7 +59,7 @@ public class AuthenticationController {
             //model.put("email", email);
             model.put("session_string", token);
             return ok(model);
-            
+
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
@@ -68,15 +70,13 @@ public class AuthenticationController {
     }
 
     @GetMapping("/roles")
-    public ResponseEntity getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
+    public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
         if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return new ResponseEntity(authenticationService.getAllRoles(), HttpStatus.OK);
+            return ok(authenticationService.getAllRoles());
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
-
-
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
@@ -107,7 +107,6 @@ public class AuthenticationController {
                                          @RequestParam(name = "password_new", required = true) String password_new){
 
         String name = jwtTokenProvider.getUsername(session_string);
-        String oldPass = bCryptPasswordEncoder.encode(password_old);
         String newPass = bCryptPasswordEncoder.encode(password_new);
         User u;
         if (users.findUserByEmail(name).isPresent()) {
