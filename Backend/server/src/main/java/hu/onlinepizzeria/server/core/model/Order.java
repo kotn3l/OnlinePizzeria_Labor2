@@ -11,9 +11,13 @@ public class Order {
     @Column(name = "id")
     private Integer id;
 
+    @OneToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Integer customer_id;
 
-    private String city;
+    @OneToOne
+    @JoinColumn(name = "city", referencedColumnName = "id")
+    private Integer city;
 
     private String street;
 
@@ -23,6 +27,8 @@ public class Order {
 
     private String comment;
 
+    @OneToOne
+    @JoinColumn(name = "pay_method", referencedColumnName = "id")
     private Integer pay_method;
 
     private Timestamp deadline;
