@@ -1,6 +1,7 @@
 package hu.onlinepizzeria.server.service;
 
 import hu.onlinepizzeria.server.core.model.User;
+import hu.onlinepizzeria.server.dao.RoleRepo;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,9 @@ import java.util.List;
 public class AuthenticationService implements UserDetailsManager, UserDetailsService {
     @Autowired
     UserRepo users;
+
+    @Autowired
+    RoleRepo roles;
 
     public AuthenticationService(UserRepo users) {
         this.users = users;
@@ -67,4 +71,8 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
     public List<User> getAllUsers() {
         return users.findAll();
     }
+
+    public List<String> getAllRoles() { return roles.getAllRoles(); }
+
+    public String getRoleById(int role_id) { return roles.getRoleById(role_id); }
 }
