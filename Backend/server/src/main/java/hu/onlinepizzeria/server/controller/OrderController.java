@@ -1,13 +1,16 @@
 package hu.onlinepizzeria.server.controller;
 
+import hu.onlinepizzeria.server.service.OrderManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path="/api")
 public class OrderController {
 
-    //private OrderManager orderManager;
-    //constructor that sets the orderManager prop
+    private OrderManager orderManager;
+    public OrderController(OrderManager orderManager) {
+        this.orderManager = orderManager;
+    }
 
     @PostMapping(path="/order")
     public @ResponseBody
