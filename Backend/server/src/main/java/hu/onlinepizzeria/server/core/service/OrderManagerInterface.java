@@ -9,8 +9,8 @@ import java.util.Map;
 
 public interface OrderManagerInterface {
     public String addNewOrder(Map<String, Object> order);
-    public Iterable<PayMethod> getAllPayMethods();
-    public Iterable<DeliveryCities> getAllDeliveryCities();
+    public Iterable<PayMethod> getPayMethods();
+    public Iterable<DeliveryCities> getDeliveryCities();
     public Iterable<Pizza> getPreparedPizzas();
     public String pizzaPrepared(Integer ordered_pizza_id);
     public Iterable<Order> getReadyOrders();
