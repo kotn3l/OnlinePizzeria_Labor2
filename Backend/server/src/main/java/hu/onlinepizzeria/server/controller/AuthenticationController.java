@@ -4,6 +4,7 @@ import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.AuthenticationService;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,12 +78,14 @@ public class AuthenticationController {
         if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             User newUser = new User();
+            if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
+                return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
+            }
             newUser.setEmail(user.getEmail());
             newUser.setName("Jacob Gypsum");
             newUser.setRoles(user.getRoles());
             newUser.setPassword(bCryptPasswordEncoder.encode("default"));
             users.save(newUser);
-            System.out.println("hi");
             return new ResponseEntity(newUser, HttpStatus.CREATED);
         }
         else {
