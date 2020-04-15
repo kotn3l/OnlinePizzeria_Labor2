@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    int id;
 
     @Column(name = "email")
     @NotEmpty

@@ -48,7 +48,6 @@ public class AuthenticationController {
 
         try {
             System.out.println(user.getEmail() + user.getPassword());
-            //System.out.println(bCryptPasswordEncoder.encode(user.getPassword()));
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
@@ -69,6 +68,21 @@ public class AuthenticationController {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
     }
+    @GetMapping("/logout")
+    public ResponseEntity logout(@RequestParam(name="session_string", required = true) String session_string){
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
+        if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            return new ResponseEntity(authenticationService.getAllRoles(), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+
+
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
@@ -113,6 +127,22 @@ public class AuthenticationController {
         if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             return new ResponseEntity(authenticationService.getAllUsers(), HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
+    @DeleteMapping("/user")
+    public ResponseEntity removeUser(@RequestParam(name = "session_string", required = true) String session_string,
+                                     @RequestParam(name = "user_id", required = true) int user_id) {
+        if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            try {
+                authenticationService.deleteUserById(user_id);
+                return new ResponseEntity(HttpStatus.CREATED);
+            }
+            catch (Exception e) {
+                return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
+            }
+
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }

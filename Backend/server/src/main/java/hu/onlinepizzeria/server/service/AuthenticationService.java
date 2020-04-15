@@ -39,6 +39,9 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
     public void deleteUser(String s) {
 
     }
+    public void deleteUserById(int id) {
+        users.deleteById(id);
+    }
 
     @Override
     public void changePassword(String s, String s1) {
