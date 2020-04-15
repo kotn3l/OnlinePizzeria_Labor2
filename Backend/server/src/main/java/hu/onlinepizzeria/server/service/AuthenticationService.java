@@ -78,4 +78,7 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
     public List<String> getAllRoles() { return roles.getAllRoles(); }
 
     public String getRoleById(int role_id) { return roles.getRoleById(role_id); }
+
+    public void updatePassword(int id, String password) { users.updatePassword(id, password);
+        System.out.println(id+ " "+ password);}
 }

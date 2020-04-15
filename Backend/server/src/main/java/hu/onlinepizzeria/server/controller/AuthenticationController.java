@@ -43,11 +43,10 @@ public class AuthenticationController {
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
     @PostMapping("/login")
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
-        //UserRole role = new UserRole(3L, "ROLE_USER");
-        //role.setRoles("ROLE_" + Role.values()[4]);
 
         try {
             System.out.println(user.getEmail() + user.getPassword());
+            System.out.println(bCryptPasswordEncoder.encode(user.getPassword()));
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
@@ -58,12 +57,7 @@ public class AuthenticationController {
             //model.put("email", email);
             model.put("session_string", token);
             return ok(model);
-            //UserDetails user = authenticationService.loadUserByLogin(email, password);
-            //System.out.println(user.getUsername()+ user.getPassword() + user.getAuthorities());
-            //return String.valueOf(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password)));
-            //return "user.getPassword() + user.getAuthorities();"+ u.toString();
-            //UserDetails user = authenticationService.loadUserByLogin(email, password);
-            //return user.getPassword() + user.getAuthorities();
+            
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
@@ -87,11 +81,12 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
                                        @RequestBody User user) {
-        System.out.println(jwtTokenProvider.getAuthentication(session_string).getAuthorities());
+        //System.out.println(jwtTokenProvider.getAuthentication(session_string).getAuthorities());
 
         if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             User newUser = new User();
+
             if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
                 return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
             }
@@ -105,6 +100,26 @@ public class AuthenticationController {
         else {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
+    }
+    @PostMapping("/user")
+    public ResponseEntity changePassword(@RequestParam(name="session_string", required = true) String session_string,
+                                         @RequestParam(name = "password_old", required = true) String password_old,
+                                         @RequestParam(name = "password_new", required = true) String password_new){
+
+        String name = jwtTokenProvider.getUsername(session_string);
+        String oldPass = bCryptPasswordEncoder.encode(password_old);
+        String newPass = bCryptPasswordEncoder.encode(password_new);
+        User u;
+        if (users.findUserByEmail(name).isPresent()) {
+            u = users.findUserByEmail(name).get();
+            if (bCryptPasswordEncoder.matches(password_old, u.getPassword())){
+                u.setPassword(newPass);
+                authenticationService.updatePassword(u.getId(), u.getPassword());
+                return new ResponseEntity(HttpStatus.OK);
+            }
+            else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
+        }
+        else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
     }
     @GetMapping("/me")
     public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
