@@ -9,7 +9,7 @@ import java.util.Set;
 public class Pizza implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "id")
+    @JoinColumn(name = "id")
     private Integer id;
 
     private String name;
