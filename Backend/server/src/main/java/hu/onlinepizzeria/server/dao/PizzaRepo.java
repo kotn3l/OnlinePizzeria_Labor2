@@ -19,4 +19,7 @@ public interface PizzaRepo extends CrudRepository<Pizza, Integer> {
     @Transactional
     @Query(value = "UPDATE pizza SET name=:name,price=:price,picture_path=:path,discount_percent=:percent,unavailable=:unavailable WHERE id=:id", nativeQuery = true)
     void updatePizza(Integer id, String name, Integer price, String path, Integer percent, boolean unavailable);
+
+    @Query(value = "SELECT * FROM pizza where id=:id", nativeQuery = true)
+    Pizza getPizzaById(Integer id);
 }
