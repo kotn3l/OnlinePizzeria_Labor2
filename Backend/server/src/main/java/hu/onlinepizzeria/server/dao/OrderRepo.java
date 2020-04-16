@@ -13,20 +13,20 @@ import java.util.ArrayList;
 public interface OrderRepo extends CrudRepository<Order, Integer> {
     @Modifying
     @Transactional
-    @Query(value="INSERT INTO order (customer_id, city, street, house_number, other, comment, pay_method, deadline, state, delivered) " +
+    @Query(value="INSERT INTO `order` (customer_id, city, street, house_number, other, comment, pay_method, deadline, state, delivered) " +
             "VALUES (:customer_id, :city, :street, :house_number, :other, :comment, :pay_method, :deadline, :state, :delivered)", nativeQuery = true)
     void addNewOrder(Integer customer_id, Integer city, String street, Integer house_number, String other, String comment, Integer pay_method, Timestamp deadline, Integer state, Timestamp delivered);
 
-    @Query(value="SELECT * FROM order WHERE id IN (SELECT order_id FROM order_pizza where done = 1)", nativeQuery = true) //is this right?
-    ArrayList<Order> getReadyOrders();
+    @Query(value="SELECT * FROM `order` WHERE id IN (SELECT order_id FROM order_pizza WHERE done = 1)", nativeQuery = true) //is this right?
+    ArrayList<Order> getReadyPizzasPerOrder();
 
     @Modifying
     @Transactional
     @Query(value="UPDATE order_pizza SET done=1 WHERE pizza_id=:ordered_pizza_id", nativeQuery = true)
     void pizzaPrepared(Integer ordered_pizza_id);
 
-    @Query(value="SELECT * FROM order_pizza WHERE", nativeQuery = true) //TODO
-    ArrayList<OrderedPizza> preparedPizzas();
+    @Query(value="SELECT pizza_id FROM order_pizza WHERE done = 1", nativeQuery = true)
+    ArrayList<Integer> preparedPizzas();
 
     @Modifying
     @Transactional
