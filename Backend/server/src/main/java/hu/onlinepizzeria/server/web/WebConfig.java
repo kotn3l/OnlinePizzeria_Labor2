@@ -1,9 +1,7 @@
 package hu.onlinepizzeria.server.web;
 
-import hu.onlinepizzeria.server.core.service.PizzaManagerInterface;
-import hu.onlinepizzeria.server.dao.IngredientRepo;
-import hu.onlinepizzeria.server.dao.PizzaRepo;
-import hu.onlinepizzeria.server.dao.SchedulingRepo;
+import hu.onlinepizzeria.server.dao.*;
+import hu.onlinepizzeria.server.service.OrderManager;
 import hu.onlinepizzeria.server.service.PizzaManager;
 import hu.onlinepizzeria.server.service.SchedulingManager;
 import org.springframework.boot.SpringBootConfiguration;
@@ -20,5 +18,10 @@ public class WebConfig {
     @Bean
     public SchedulingManager schedulingManager(SchedulingRepo repository){
         return new SchedulingManager(repository);
+    }
+
+    @Bean
+    public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo){
+        return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo);
     }
 }
