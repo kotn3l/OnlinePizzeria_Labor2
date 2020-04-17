@@ -1,10 +1,11 @@
 package hu.onlinepizzeria.server.core.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "pay_method")
-public class PayMethod {
+public class PayMethod implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JoinColumn(name = "id")

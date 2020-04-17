@@ -1,11 +1,12 @@
 package hu.onlinepizzeria.server.core.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "order")
-public class Order {
+public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JoinColumn(name = "id")
