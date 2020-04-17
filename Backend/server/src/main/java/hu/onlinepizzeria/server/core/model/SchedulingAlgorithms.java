@@ -1,10 +1,11 @@
 package hu.onlinepizzeria.server.core.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "scheduling")
-public class SchedulingAlgorithms {
+public class SchedulingAlgorithms implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id")
