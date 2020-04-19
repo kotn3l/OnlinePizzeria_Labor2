@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -11,13 +13,15 @@ public class OrderedPizza implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    @OneToOne(targetEntity = Order.class)
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    private Integer order_id;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "pizza_id")
+    private Pizza pizza;
 
-    @OneToOne(targetEntity = Pizza.class)
-    @JoinColumn(name = "pizza_id", referencedColumnName = "id")
-    private Integer pizza_id;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private boolean done;
 
@@ -30,20 +34,30 @@ public class OrderedPizza implements Serializable {
     }
 
     public Integer getOrder_id() {
-        return order_id;
+        return this.order.getId();
     }
 
-    public void setOrder_id(Integer order_id) {
-        this.order_id = order_id;
-    }
 
     public Integer getPizza_id() {
-        return pizza_id;
+        return this.pizza.getId();
     }
 
-    public void setPizza_id(Integer pizza_id) {
-        this.pizza_id = pizza_id;
+    public void setPizza(Pizza pizza) {
+        this.pizza = pizza;
     }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Pizza getPizza() {
+        return pizza;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
 
     public boolean isDone() {
         return done;

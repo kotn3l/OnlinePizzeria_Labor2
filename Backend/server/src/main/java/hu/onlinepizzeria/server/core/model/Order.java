@@ -1,24 +1,32 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @JoinColumn(name = "id")
+    @Column(name = "id")
     private Integer id;
 
-    //@OneToOne
-    //@JoinColumn(name = "customer_id", referencedColumnName = "id")
+    //TODO join with user stuff
     private Integer customer_id;
 
-    @OneToOne(targetEntity = DeliveryCities.class)
-    @JoinColumn(name = "city", referencedColumnName = "id")
-    private Integer city;
+    @JsonIgnore
+    @OneToMany(mappedBy = "order")
+    private Set<OrderedPizza> oPizza;
+
+    //@JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="city", nullable=false)
+    private DeliveryCities city;
 
     private String street;
 
@@ -28,9 +36,10 @@ public class Order implements Serializable {
 
     private String comment;
 
-    @OneToOne(targetEntity = PayMethod.class)
-    @JoinColumn(name = "pay_method", referencedColumnName = "id")
-    private Integer pay_method;
+    //@JsonBackReference
+    @ManyToOne
+    @JoinColumn(name="pay_method", nullable=false)
+    private PayMethod pay_method;
 
     private Timestamp deadline;
 
@@ -54,11 +63,11 @@ public class Order implements Serializable {
         this.customer_id = customer_id;
     }
 
-    public Integer getCity() {
+    public DeliveryCities getCity() {
         return city;
     }
 
-    public void setCity(Integer city) {
+    public void setCity(DeliveryCities city) {
         this.city = city;
     }
 
@@ -94,11 +103,11 @@ public class Order implements Serializable {
         this.comment = comment;
     }
 
-    public Integer getPay_method() {
+    public PayMethod getPay_method() {
         return pay_method;
     }
 
-    public void setPay_method(Integer pay_method) {
+    public void setPay_method(PayMethod pay_method) {
         this.pay_method = pay_method;
     }
 
@@ -126,7 +135,16 @@ public class Order implements Serializable {
         this.delivered = delivered;
     }
 
-    public Order(Integer customer_id, Integer city, String street, Integer house_number, String other, String comment, Integer pay_method, Timestamp deadline, Integer state, Timestamp delivered) {
+    public Set<OrderedPizza> getoPizza() {
+        return oPizza;
+    }
+
+    public void setoPizza(Set<OrderedPizza> oPizza) {
+        this.oPizza = oPizza;
+    }
+
+    public Order(Integer customer_id, DeliveryCities city, String street, Integer house_number, String other, String comment, PayMethod pay_method, Timestamp deadline, Integer state, Timestamp delivered) {
+        this();
         this.customer_id = customer_id;
         this.city = city;
         this.street = street;
@@ -137,5 +155,8 @@ public class Order implements Serializable {
         this.deadline = deadline;
         this.state = state;
         this.delivered = delivered;
+    }
+
+    public Order() {
     }
 }

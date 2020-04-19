@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
@@ -9,7 +11,7 @@ import java.util.Set;
 public class Pizza implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @JoinColumn(name = "id")
+    @Column(name = "id")
     private Integer id;
 
     private String name;
@@ -84,5 +86,9 @@ public class Pizza implements Serializable {
             joinColumns = @JoinColumn(name = "pizza_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "ingredient_id", referencedColumnName = "id"))
     private Set<Ingredient> ingredients;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "pizza")
+    private Set<OrderedPizza> oPizza;
 
 }
