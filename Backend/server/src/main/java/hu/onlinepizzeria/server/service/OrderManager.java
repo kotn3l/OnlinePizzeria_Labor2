@@ -11,6 +11,7 @@ import hu.onlinepizzeria.server.dao.PayMethodRepo;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,14 +44,12 @@ public class OrderManager implements OrderManagerInterface {
     public String addNewOrder(Map<String, Object> order) {
         ArrayList<Integer> orderedPizzas = (ArrayList<Integer>)order.get("order");
         //customer_id comes from session that placed the order? from that we can get the name, telephone number, email, but why is it in the Map then TODO replace customer_id, TODO so something with delivered timestamp
-        Order currentOrder = new Order(2, Integer.parseInt(order.get("city").toString()), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
-                order.get("other").toString(), order.get("comment").toString(), Integer.parseInt(order.get("pay_method").toString()), new Timestamp(time), 0, null);
-        orderRepo.addNewOrder(currentOrder.getCustomer_id(), currentOrder.getCity(), currentOrder.getStreet(), currentOrder.getHouse_number(), currentOrder.getOther(), currentOrder.getComment(),
-                currentOrder.getPay_method(), currentOrder.getDeadline(), currentOrder.getState(), currentOrder.getDelivered());
+        Order currentOrder = new Order(2, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
+                order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
+        orderRepo.save(currentOrder);
         //order list contains pizza ids? need to put those in orderedpizza with the same order ID, right?
-        for (Integer i: orderedPizzas
-             ) {
-            orderRepo.addOrderedPizza(i, currentOrder.getId()); //TODO for some reason the ID is null, throws exception cause id cannot be null
+        for (int i = 0; i < orderedPizzas.size(); i++) {
+            orderRepo.addOrderedPizza(orderedPizzas.get(i), currentOrder.getId());
         }
 
         return "Saved";
@@ -68,12 +67,12 @@ public class OrderManager implements OrderManagerInterface {
 
     @Override
     public Iterable<Pizza> getPreparedPizzas() {
-        ArrayList<Integer> pizzaIds = orderRepo.preparedPizzas();
+        ArrayList<Integer> pizzaIds = orderRepo.prepOrderPizzas();
         ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (int i = 0; i <= pizzaIds.size(); i++){
+        for (int i = 0; i < pizzaIds.size(); i++){
             pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(i)));
         }
-        return pizzas;
+        return pizzas; //TODO return them in prep order
     }
 
     @Override
@@ -84,7 +83,19 @@ public class OrderManager implements OrderManagerInterface {
 
     @Override
     public Iterable<Order> getReadyOrders() {
-        //TODO get orders where all pizzas are done
-        return null;
+        ArrayList<Integer> orderIdsThatHasDonePizzas = orderRepo.donePizzas();
+        ArrayList<Integer> orderIdsThatHasUndonePizzas = new ArrayList<>();
+        ArrayList<Order> doneOrders = new ArrayList<>();
+        for (int i = 0; i < orderIdsThatHasDonePizzas.size(); i++){
+            orderIdsThatHasUndonePizzas.addAll(orderRepo.checkOrder(orderIdsThatHasDonePizzas.get(i)));
+        }
+
+        orderIdsThatHasDonePizzas.removeAll(orderIdsThatHasUndonePizzas);
+
+        for (int i = 0; i < orderIdsThatHasDonePizzas.size(); i++){
+            doneOrders.addAll(orderRepo.getOrderById(orderIdsThatHasDonePizzas.get(i)));
+        }
+
+        return doneOrders;
     }
 }
