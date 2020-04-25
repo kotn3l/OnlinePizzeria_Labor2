@@ -43,7 +43,7 @@ public class OrderManager implements OrderManagerInterface {
     @Override
     public String addNewOrder(Map<String, Object> order) {
         ArrayList<Integer> orderedPizzas = (ArrayList<Integer>)order.get("order");
-        //customer_id comes from session that placed the order? from that we can get the name, telephone number, email, but why is it in the Map then TODO replace customer_id, TODO so something with delivered timestamp
+        //customer_id comes from session that placed the order? from that we can get the name, telephone number, email, but why is it in the Map then TODO replace customer_id, TODO do something with delivered timestamp
         Order currentOrder = new Order(2, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
                 order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
         orderRepo.save(currentOrder);
@@ -67,12 +67,17 @@ public class OrderManager implements OrderManagerInterface {
 
     @Override
     public Iterable<Pizza> getPreparedPizzas() {
-        ArrayList<Integer> pizzaIds = orderRepo.prepOrderPizzas();
+        ArrayList<Integer> pizzaIds = new ArrayList<>();
+        ArrayList<Integer> orderIds = orderRepo.getOrderInOrder(); //in order
         ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (int i = 0; i < pizzaIds.size(); i++){
-            pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(i)));
+        for (int i = 0; i < orderIds.size(); i++){
+            pizzaIds.addAll(orderRepo.prepOrderPizzaById(orderIds.get(i)));
+            for (int j = 0; j < pizzaIds.size(); j++){
+                pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
+            }
+            pizzaIds.clear();
         }
-        return pizzas; //TODO return them in prep order
+        return pizzas;
     }
 
     @Override
