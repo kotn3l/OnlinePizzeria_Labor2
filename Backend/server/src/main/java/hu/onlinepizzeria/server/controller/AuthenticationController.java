@@ -71,7 +71,7 @@ public class AuthenticationController {
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
-        if (jwtTokenProvider.getAuthentication(session_string).getAuthorities()
+        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.getAuthentication(session_string).getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             return ok(authenticationService.getAllRoles());
         }
