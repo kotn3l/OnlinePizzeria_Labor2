@@ -47,9 +47,37 @@ export class AuthService {
     //   return of(false);
     // }
   }
-  }
+
+  login(email: string, password: string) {
+    this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).pipe(
+      map(res => {
+        this.userData = res.body as UserData;
+        sessionStorage.setItem('userData', JSON.stringify(this.userData));
+        return true;
+      }),
+      catchError(err => of(false))
+    );
+    // this.userData = {
+    //   session_string: 'abc123',
+    //   role: UserRole.administrator
+    // }
+    sessionStorage.setItem('userData', JSON.stringify(this.userData));
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate(['/admin/login']);
   }
 
+  logout() {
+    this.http.get(`${environment.apiBaseUrl}/api/logout?session_string=${this.userData.session_string}`);
+    this.clearSession();
+    this.router.navigate(['/admin/login']);
+  }
+
+  clearSession() {
+    sessionStorage.removeItem('userData');
+    this.userData = {
+      session_string: '',
+      role: null
   }
   }
   }
