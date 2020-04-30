@@ -31,4 +31,26 @@ export class AuthService {
     }
   }
 
+  verifyAuth(): Observable<boolean> {
+    return this.http.post(`${environment.apiBaseUrl}/api/auth`, this.userData, httpOptions).pipe(
+      map(res => {
+        return true;
+      }),
+      catchError(err => {
+        this.clearSession();
+        return of(false)
+      })
+    );
+    // if (this.userData.session_string != '') {
+    //   return of(true);
+    // } else {
+    //   return of(false);
+    // }
+  }
+  }
+  }
+
+  }
+  }
+  }
 }
