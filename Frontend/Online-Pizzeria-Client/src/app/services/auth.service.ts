@@ -78,7 +78,40 @@ export class AuthService {
     this.userData = {
       session_string: '',
       role: null
+    }
   }
+
+  navigateMain() {
+    switch (this.userData.role) {
+      case UserRole.administrator:
+        this.router.navigate(['/admin/make-delivery']);
+        break;
+      case UserRole.deliveryGuy:
+        this.router.navigate(['/admin/delivery-list']);
+        break;
+      case UserRole.kitchenStaff:
+        this.router.navigate(['/admin/prepare-order']);
+        break;
+      case UserRole.manager:
+        this.router.navigate(['/admin/scheduler']);
+        break;
+    }
   }
+
+  avaibleRoute(route: string): boolean {
+    switch (route) {
+      case "pizzas":
+        return this.userData.role == UserRole.administrator ? true : false;
+      case "users":
+        return this.userData.role == UserRole.administrator ? true : false;
+      case "make-delivery":
+        return this.userData.role == UserRole.administrator ? true : false;
+      case "scheduler":
+        return this.userData.role == UserRole.manager ? true : false;
+      case "prepare-order":
+        return this.userData.role == UserRole.kitchenStaff ? true : false;
+      case "delivery-list":
+        return this.userData.role == UserRole.deliveryGuy ? true : false;
+    }
   }
 }
