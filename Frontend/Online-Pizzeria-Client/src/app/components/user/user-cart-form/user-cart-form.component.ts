@@ -5,6 +5,7 @@ import { Order } from '../../../models/Order';
 import { UtilityService } from '../../../services/utility.service';
 import { CartService } from '../../../services/cart.service';
 import { OrderService } from '../../../services/order.service';
+import { FlashMessagesService } from 'angular2-flash-messages';
 
 @Component({
   selector: 'app-user-cart-form',
@@ -29,17 +30,13 @@ export class UserCartFormComponent implements OnInit {
     order: []
   }
 
-  orderPosted: boolean = false;
-  orderSucces: boolean = false;
-  orderFail: boolean = false;
-  responseMessage: string[] = [];
-
   @ViewChild('orderForm', { static: false }) form: any;
 
   constructor(
     private utilityService: UtilityService,
     private cartService: CartService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private flashMessage: FlashMessagesService
   ) { }
 
   ngOnInit() {
@@ -49,44 +46,39 @@ export class UserCartFormComponent implements OnInit {
 
   onSubmit({ value, valid }: { value: Order, valid: boolean }) {
     if (!valid) {
-      console.log('Form is not valid');
+      this.flashMessage.show('Form is not valid. Please check it again!', { cssClass: 'alert-warning', timeout: 8000 })
     } else {
       value.order = this.cartService.getItemIdsForOrder();
 
-      this.orderService.postOrder(value)
-        .subscribe(
-          next => {
-            this.orderSucces = true;
-            this.orderFail = false;
+      this.orderService.postOrder(value).subscribe(
+        next => {
+          this.cartService.clearCart();
+          this.form.reset();
 
-            this.cartService.clearCart();
-            this.form.reset();
-
-            this.currentOrder = {
-              name: '',
-              email: '',
-              telephone: '',
-              city: '1',
-              street: '',
-              house_number: '',
-              other: '',
-              comment: '',
-              pay_method: '',
-              order: []
-            }
-          },
-          error => {
-            this.orderFail = true;
-            this.orderSucces = false;
-
-            this.responseMessage = [];
-            for (var key in error.error) {
-              this.responseMessage.push(error.error[key]);
-            }
+          this.currentOrder = {
+            name: '',
+            email: '',
+            telephone: '',
+            city: '1',
+            street: '',
+            house_number: '',
+            other: '',
+            comment: '',
+            pay_method: '',
+            order: []
           }
-        );
-      this.orderPosted = true;
+
+          this.flashMessage.show('Order posted succesfully', { cssClass: 'alert-success', timeout: 8000 });
+        },
+        err => {
+          var responseMessage: string = '';
+          for (var key in err.error) {
+            responseMessage += err.error[key] + "<br />";
+          }
+
+          this.flashMessage.show(responseMessage, { cssClass: 'alert-warning', timeout: 8000 })
+        }
+      );
     }
   }
-
 }

@@ -169,13 +169,6 @@
     </button>
   </div>
 </form>
-
-<div *ngIf="orderPosted">
-    <h2 *ngIf="orderSucces" class="text-center text-success">Order posted succesfully</h2>
-    <div *ngIf="orderFail">
-        <h2>Post failed:</h2>
-        <ul>
-            <li *ngFor="let message of responseMessage">{{ message }}</li>
-        </ul>
-    </div>
+<div class="mt-4">
+  <flash-messages></flash-messages>
 </div>
