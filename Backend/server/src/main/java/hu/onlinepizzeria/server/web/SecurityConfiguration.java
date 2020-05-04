@@ -1,7 +1,11 @@
 package hu.onlinepizzeria.server.web;
 
+import hu.onlinepizzeria.server.service.jwt.JwtSecurityConfigurer;
+import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
-//    @Autowired
-//    JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @Bean
     @Override
@@ -31,16 +35,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                /* .antMatchers("/admin").hasRole("ADMIN")
-                 .antMatchers("/user").hasAnyRole("ADMIN", "USER")*/
                 .antMatchers("/api/login").permitAll()
-                //.antMatchers("/api/register").hasRole("ADMIN")
+                //.antMatchers(HttpMethod.POST, "/api/register").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/register").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .apply(new JwtSecurityConfigurer(jwtTokenProvider))
                 ;
 
     }
