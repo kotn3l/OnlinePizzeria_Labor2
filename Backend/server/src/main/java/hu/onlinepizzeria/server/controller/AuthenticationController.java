@@ -47,21 +47,18 @@ public class AuthenticationController {
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
 
         try {
-            System.out.println(user.getEmail() + user.getPassword());
-            System.out.println(bCryptPasswordEncoder.encode(user.getPassword()));
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
             Optional<User> user2 = users.findUserByEmail(user.getEmail());
-            System.out.println("roles" + user2.get().getRoles());
             Map<Object, Object> model = new HashMap<>();
-            //model.put("email", email);
             model.put("session_string", token);
+            model.put("role", user2.get().getRoles());
             return ok(model);
 
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username/password supplied");
+            throw new BadCredentialsException("Invalid username/password");
         }
     }
     @GetMapping("/logout")
