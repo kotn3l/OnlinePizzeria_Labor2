@@ -86,10 +86,10 @@ INSERT INTO `ingredient` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order`
+-- Table structure for table `orders`
 --
 
-CREATE TABLE `order` (
+CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `city` varchar(255) NOT NULL,
@@ -280,9 +280,9 @@ ALTER TABLE `ingredient`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `order`
+-- Indexes for table `orders`
 --
-ALTER TABLE `order`
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
   ADD KEY `customer_id` (`customer_id`),
   ADD KEY `pay_method` (`pay_method`);
@@ -361,9 +361,9 @@ ALTER TABLE `ingredient`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `order`
+-- AUTO_INCREMENT for table `orders`
 --
-ALTER TABLE `order`
+ALTER TABLE `orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -417,12 +417,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `delivery_man_order`
   ADD CONSTRAINT `fk_delivery_man_order_delivery_man` FOREIGN KEY (`delivery_man`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `fk_delivery_man_order_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`);
+  ADD CONSTRAINT `fk_delivery_man_order_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
 --
--- Constraints for table `order`
+-- Constraints for table `orders`
 --
-ALTER TABLE `order`
+ALTER TABLE `orders`
   ADD CONSTRAINT `fk_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`),
   ADD CONSTRAINT `fk_order_pay_method` FOREIGN KEY (`pay_method`) REFERENCES `pay_method` (`id`);
 
@@ -430,7 +430,7 @@ ALTER TABLE `order`
 -- Constraints for table `order_pizza`
 --
 ALTER TABLE `order_pizza`
-  ADD CONSTRAINT `fk_order_pizza_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`),
+  ADD CONSTRAINT `fk_order_pizza_order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   ADD CONSTRAINT `fk_order_pizza_pizza_id` FOREIGN KEY (`pizza_id`) REFERENCES `pizza` (`id`);
 
 --
