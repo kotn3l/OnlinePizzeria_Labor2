@@ -160,5 +160,16 @@ public class AuthenticationController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
+    @PostMapping("/auth")
+    public ResponseEntity authSessionString(@RequestParam(name = "session_string") String session_string) {
+        try {
+            if (jwtTokenProvider.validateToken(session_string)) {
+                return new ResponseEntity(HttpStatus.OK);
+            }
+            else return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        } catch (InvalidJwtAuthenticationException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }
