@@ -1,0 +1,76 @@
+<div class="card card-body mb-3">
+    <form #pizzaForm="ngForm">
+      <div class="form-group">
+        <label>Name</label>
+        <input
+          type="text"
+          [(ngModel)]="pizza.name"
+          [ngClass]="{'is-invalid':pizzaName.errors && pizzaName.touched}"
+          class="form-control"
+          name="Name"
+          #pizzaName="ngModel"
+          required
+          minlength="2"
+        >
+        <div [hidden]="!pizzaName.errors?.required" class="invalid-feedback">
+          Name is required
+        </div>
+        <div [hidden]="!pizzaName.errors?.minlength" class="invalid-feedback">
+          Must be at least 2 characters
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Price</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="pizza.price"
+          [ngClass]="{'is-invalid': pizzaPrice.errors && pizzaPrice.touched}"
+          name="price"
+          #pizzaPrice="ngModel"
+          required
+        >
+        <div [hidden]="!pizzaPrice.errors?.required" class="invalid-feedback">
+          Price required
+        </div>
+      </div>
+      <label>Ingredients</label>
+        <div>
+            <span
+                *ngFor="
+                let item of [].constructor(ingredientCount);
+                let i = index;
+                "
+                class="form-group-row"
+            >
+                <span *ngIf="i!=0">, </span>
+                <input
+                class="form-control form-control-w-7 m-1"
+                type="string"
+                name="{{ i }}"
+                [(ngModel)]="pizza.ingredients[i]"
+                (click)="nextIngredient(i+1)"
+                />
+            </span>
+        </div>
+        <label class="mt-1">Picture</label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroupFileAddon">Upload</span>
+            </div>
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="inputGroupFile" name="picture" [(ngModel)]="picture"
+                aria-describedby="inputGroupFileAddon">
+              <label class="custom-file-label" for="inputGroupFile">Choose file</label>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <button (click)="onSubmit(pizzaForm)" [disabled]="!pizzaForm.form.valid" class="btn btn-block btn-dark col-10">
+            <span *ngIf="isNew">Add New</span>
+            <span *ngIf="!isNew">Edit</span>
+            Pizza
+            </button>
+            <button (click)="clear()" class="btn btn-block btn-warning col-2">Clear</button>
+        </div>
+    </form>
+</div>

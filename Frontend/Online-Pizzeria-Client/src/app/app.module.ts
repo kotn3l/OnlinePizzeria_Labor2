@@ -27,6 +27,8 @@ import { AdminMakeDeliveryComponent } from './components/admin/admin-make-delive
 import { AdminSchedulerComponent } from './components/admin/admin-scheduler/admin-scheduler.component';
 import { AdminPrepareOrderComponent } from './components/admin/admin-prepare-order/admin-prepare-order.component';
 import { AdminDeliveryListComponent } from './components/admin/admin-delivery-list/admin-delivery-list.component';
+import { AdminPizzaFormComponent } from './components/admin/admin-pizza-form/admin-pizza-form.component';
+import { AdminPizzaItemComponent } from './components/admin/admin-pizza-item/admin-pizza-item.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { AdminDeliveryListComponent } from './components/admin/admin-delivery-li
     AdminMakeDeliveryComponent,
     AdminSchedulerComponent,
     AdminPrepareOrderComponent,
-    AdminDeliveryListComponent
+    AdminDeliveryListComponent,
+    AdminPizzaFormComponent,
+    AdminPizzaItemComponent
   ],
   imports: [
     BrowserModule,
