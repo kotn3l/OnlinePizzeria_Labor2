@@ -1,0 +1,27 @@
+<h1>Make delivery:</h1>
+<div class="card">
+    <div class="card-body">
+        <h2>Select delivery guy:</h2>
+        <div class="radio" *ngFor="let deliveryGuy of deliveryGuys">
+            <label><input type="radio" name="deliveryGuy" value="deliveryGuy.id" (change)="onSelect(deliveryGuy.id)"> {{ deliveryGuy.name }}</label>
+        </div>
+    </div>
+</div>
+<div class="card mt-4 mb-4" *ngIf="selectedGuy!=null">
+    <div class="card-body">
+        <h2>Assign orders:</h2>
+        <div class="checkbox" *ngFor="let order of orders">
+            <label class="row">
+                <span class="col-12 col-md-6">
+                    <input type="checkbox" name="order" value="order.order_id" (change)="onCheck(order.order_id, order.pizza_count)"> {{ order.city }}, {{ order.street }}  {{ order.house_number }} <span *ngIf="order.other">{{ order.other }}</span>
+                </span>
+                <span class="col-12 col-md-6">Pizzas to be delivered: {{ order.pizza_count }}</span>
+            </label>
+        </div>
+        <div [ngClass]="[sumColor()]">
+            Sum: {{ sum }}
+        </div>
+        <div *ngIf="sum > 15" class="text-danger">Can't assign more than 15 pizza for a delivery</div>
+    </div>
+    <button class="btn btn-primary btn-block mt-3" (click)="submitOrder()" [disabled]="sum > 15">Post delivery</button>
+</div>
