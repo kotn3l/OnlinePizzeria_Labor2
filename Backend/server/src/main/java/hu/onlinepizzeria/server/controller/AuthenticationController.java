@@ -4,11 +4,13 @@ import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.AuthenticationService;
+import hu.onlinepizzeria.server.service.jwt.InvalidJwtAuthenticationException;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,6 +78,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
                                        @RequestBody User user) {
         //System.out.println(jwtTokenProvider.getAuthentication(session_string).getAuthorities());
