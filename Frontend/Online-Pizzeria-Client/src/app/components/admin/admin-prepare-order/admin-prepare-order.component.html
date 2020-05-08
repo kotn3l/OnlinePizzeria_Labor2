@@ -1,1 +1,8 @@
-<p>admin-prepare-order works!</p>
+<h1>Preparation order</h1>
+<div *ngFor="let orderedPizza of orderedPizzas" class="card mb-1">
+    <div class="card-body row">
+        <p class="col-md-3">{{ orderedPizza.number }}. {{ orderedPizza.name }}</p>
+        <p class="col-md-8">{{ ingredients(orderedPizza.ingredients) }}</p>
+        <button (click)="onDone(orderedPizza.id)" class="col-md-1 btn btn-success"><i class="fa fa-check"></i></button>
+    </div>
+</div>
