@@ -4,5 +4,6 @@ export class OrderForDelivery {
     street: string
     house_number: string
     other: string
-    pizza_count: number
+    pizza_count?: number
+    pizzas?: string[]
 }
