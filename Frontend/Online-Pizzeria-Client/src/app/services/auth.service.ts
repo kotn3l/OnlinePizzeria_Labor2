@@ -27,7 +27,7 @@ export class AuthService {
     if (sessionStorage.getItem('userData') != null) {
       var data = JSON.parse(sessionStorage.getItem('userData'));
       this.userData.session_string = data.session_string;
-      this.userData.role = UserRole[data.role as string];
+      this.userData.role = data.role as UserRole;
     }
   }
 
