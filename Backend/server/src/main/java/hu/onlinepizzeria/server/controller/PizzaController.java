@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.InvalidParameterException;
 import java.util.Map;
 
 @RestController
@@ -21,19 +22,22 @@ public class PizzaController {
     public PizzaController(PizzaManager pizzaManager) {
         this.pizzaManager = pizzaManager;
     }
-    // TODO Invalid values (400):
-    //
-    //    Price: Price can't be negative and must be greater than 500.
-    //    Ingredients: A pizza must have more than one ingredient.
-    //    Picture: Invalid file
+
     @PostMapping(path="/pizza/")
     public @ResponseBody
     ResponseEntity addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestBody Map<String, Object> pizza){
-        if(jwtTokenProvider.isAdmin(session_string)) {
-            return new ResponseEntity(pizzaManager.addNewPizza(pizza), HttpStatus.CREATED);
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) {
+                return new ResponseEntity(pizzaManager.addNewPizza(pizza), HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
         }
-        else {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        catch (InvalidParameterException ipe){
+            return new ResponseEntity(ipe.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -47,14 +51,32 @@ public class PizzaController {
         return pizzaManager.getDiscountedPizzas();
     }
 
-    @PutMapping(path = "pizza/")
-    public @ResponseBody Pizza updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestBody Map<String, Object> pizza){
-        return pizzaManager.updatePizza(id, pizza);
+    @PutMapping(path = "/pizza/")
+    public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestBody Map<String, Object> pizza) {
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) {
+                return new ResponseEntity(pizzaManager.updatePizza(id, pizza), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @DeleteMapping(path = "pizza/")
-    public @ResponseBody Pizza deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
-        return pizzaManager.deletePizza(id);
+    @DeleteMapping(path = "/pizza/")
+    public @ResponseBody ResponseEntity deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) {
+                return new ResponseEntity(pizzaManager.deletePizza(id), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
