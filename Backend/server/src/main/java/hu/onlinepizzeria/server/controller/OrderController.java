@@ -1,12 +1,13 @@
 package hu.onlinepizzeria.server.controller;
 
-import hu.onlinepizzeria.server.core.model.DeliveryCities;
-import hu.onlinepizzeria.server.core.model.Order;
-import hu.onlinepizzeria.server.core.model.PayMethod;
-import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.service.OrderManager;
+import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.InvalidParameterException;
 import java.util.Map;
 
 @RestController
@@ -14,38 +15,87 @@ import java.util.Map;
 public class OrderController {
 
     private OrderManager orderManager;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
     public OrderController(OrderManager orderManager) {
         this.orderManager = orderManager;
     }
 
     @PostMapping(path="/order")
-    public @ResponseBody String newOrder (@RequestBody Map<String, Object> order){
-        return orderManager.addNewOrder(order);
+    public @ResponseBody ResponseEntity newOrder (@RequestBody Map<String, Object> order){
+        try {
+            return new ResponseEntity(orderManager.addNewOrder(order), HttpStatus.OK);
+        }
+        catch (InvalidParameterException ipe){
+            return new ResponseEntity(ipe.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){ //TODO check if email is ok in user
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path="/pay-method")
-    public @ResponseBody Iterable<PayMethod> getPayMethod(){
-        return orderManager.getPayMethods();
+    public @ResponseBody ResponseEntity getPayMethod(){
+        try {
+            return new ResponseEntity(orderManager.getPayMethods(), HttpStatus.OK);
+        }
+        catch (Exception e){ //TODO check if pay method is ok
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path="/delivery-city")
-    public @ResponseBody Iterable<DeliveryCities> getDeliveryCities(){
-        return orderManager.getDeliveryCities();
+    public @ResponseBody ResponseEntity getDeliveryCities(){
+        try {
+            return new ResponseEntity(orderManager.getDeliveryCities(), HttpStatus.OK);
+        }
+        catch (Exception e){ //TODO check if city is ok
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path="/order-prep/")
-    public @ResponseBody Iterable<Pizza> getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
-        return orderManager.getPreparedPizzas();
+    public @ResponseBody ResponseEntity getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: kitchen staff role
+                return new ResponseEntity(orderManager.getPreparedPizzas(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping(path="/order-prep/")
-    public @ResponseBody String setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
-        return orderManager.pizzaPrepared(ordered_pizza_id);
+    public @ResponseBody ResponseEntity setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: kitchen staff role
+                return new ResponseEntity(orderManager.pizzaPrepared(ordered_pizza_id), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path="/order-delivery/")
-    public @ResponseBody Iterable<Order> getReadyOrders(@RequestParam(name="session_string", required = true) String session_string){
-        return orderManager.getReadyOrders();
+    public @ResponseBody ResponseEntity getReadyOrders(@RequestParam(name="session_string", required = true) String session_string){
+        try {
+            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: moderator role
+                return new ResponseEntity(orderManager.getReadyOrders(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
