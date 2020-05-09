@@ -92,7 +92,7 @@ INSERT INTO `ingredient` (`id`, `name`) VALUES
 CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
-  `city` varchar(255) NOT NULL,
+  `city`  int(11) NOT NULL,
   `street` varchar(255) NOT NULL,
   `house_number` varchar(20) NOT NULL,
   `other` varchar(50) NOT NULL,
@@ -424,7 +424,8 @@ ALTER TABLE `delivery_man_order`
 --
 ALTER TABLE `orders`
   ADD CONSTRAINT `fk_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`),
-  ADD CONSTRAINT `fk_order_pay_method` FOREIGN KEY (`pay_method`) REFERENCES `pay_method` (`id`);
+  ADD CONSTRAINT `fk_order_pay_method` FOREIGN KEY (`pay_method`) REFERENCES `pay_method` (`id`),
+  ADD CONSTRAINT `fk_order_city` FOREIGN KEY (`city`) REFERENCES `delivery_cities` (`id`);
 
 --
 -- Constraints for table `order_pizza`
