@@ -52,6 +52,7 @@ public class AuthenticationController {
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
             Optional<User> user2 = users.findUserByEmail(user.getEmail());
+            System.out.println(user2);
             Map<Object, Object> model = new HashMap<>();
             model.put("session_string", token);
             model.put("role", user2.get().getRoles());
@@ -109,7 +110,7 @@ public class AuthenticationController {
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Invalid session string",HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping("/user")
