@@ -48,7 +48,7 @@ public class DeliveryController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
-    @PostMapping(path="/delivery/")
+    @PostMapping(path="/delivery/", consumes = "application/json")
     public ResponseEntity assignOrdersToDeliveryGuy(@RequestParam(name="session_string", required = true) String session_string,
                                                           @RequestParam(name="delivery_guy", required = true) Integer delivery_guy,
                                                           @RequestBody List<Integer> orders){
@@ -62,12 +62,12 @@ public class DeliveryController {
                 catch (ExceptionInInitializerError e) { // TODO placeholder exception
                     ObjectNode error = mapper.createObjectNode();
                     error.put("delivery_guy", "Invalid delivery guy id.");
-                    objectNode.put("error", error);
+                    objectNode.set("error", error);
                 }
                 catch (Exception e){ // TODO placeholder exception
                     ObjectNode error = mapper.createObjectNode();
                     error.put("order_list", "Count of all orders pizza cant't be more than 10."+ e.toString());
-                    objectNode.put("error", error);
+                    objectNode.set("error", error);
                 }
                 return new ResponseEntity(objectNode,HttpStatus.BAD_REQUEST);
             }
@@ -97,7 +97,7 @@ public class DeliveryController {
                     e.printStackTrace();
                     ObjectNode error = mapper.createObjectNode();
                     error.put("delivery_guy", "Invalid delivery guy id.");
-                    objectNode.put("error", error);
+                    objectNode.set("error", error);
                 }
                 return new ResponseEntity(objectNode,HttpStatus.BAD_REQUEST);
             }
