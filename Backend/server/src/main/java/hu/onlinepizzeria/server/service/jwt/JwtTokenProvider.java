@@ -78,7 +78,7 @@ public class JwtTokenProvider {
                 .contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
     }
 
-    public String getUsername(String token) {
+    public String getUsername(String token) throws SignatureException{
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 

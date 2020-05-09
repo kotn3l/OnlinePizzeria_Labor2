@@ -16,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -69,33 +68,48 @@ public class AuthenticationController {
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
-        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.getAuthentication(session_string).getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            return ok(authenticationService.getAllRoles());
-        }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            if (!jwtTokenProvider.validateToken(session_string)){
+                Map<Object, Object> model = new HashMap<>();
+                model.put("error","Invalid session string.");
+                return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
+            }
+            if (jwtTokenProvider.isAdmin(session_string)) {
+                return ok(authenticationService.getAllRoles());
+            }
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+
     }
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
                                        @RequestBody User user) {
 
-        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.getAuthentication(session_string).getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            User newUser = new User();
-
-            if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
-                return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
+        try {
+            if (!jwtTokenProvider.validateToken(session_string)){
+                Map<Object, Object> model = new HashMap<>();
+                model.put("error","Invalid session string.");
+                return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
-            newUser.setEmail(user.getEmail());
-            newUser.setName("Jacob Gypsum");
-            newUser.setRoles(user.getRoles());
-            newUser.setPassword(bCryptPasswordEncoder.encode("default"));
-            users.save(newUser);
-            return new ResponseEntity(newUser, HttpStatus.CREATED);
-        }
-        else {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            if (jwtTokenProvider.isAdmin(session_string)) {
+                User newUser = new User();
+
+                if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
+                    return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
+                }
+                newUser.setEmail(user.getEmail());
+                newUser.setName("Jacob Gypsum");
+                newUser.setRoles(user.getRoles());
+                newUser.setPassword(bCryptPasswordEncoder.encode("default"));
+                users.save(newUser);
+                return new ResponseEntity(newUser, HttpStatus.CREATED);
+            }
+            else {
+                Map<Object, Object> model = new HashMap<>();
+                model.put("error","Invalid session string.");
+                return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
     @PostMapping("/user")
@@ -135,8 +149,7 @@ public class AuthenticationController {
     }
     @GetMapping("/user")
     public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) {
-        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.getAuthentication(session_string).getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
             return new ResponseEntity(authenticationService.getAllUsers(), HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -144,8 +157,7 @@ public class AuthenticationController {
     @DeleteMapping("/user")
     public ResponseEntity removeUser(@RequestParam(name = "session_string", required = true) String session_string,
                                      @RequestParam(name = "user_id", required = true) int user_id) {
-        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.getAuthentication(session_string).getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
             try {
                 authenticationService.deleteUserById(user_id);
                 return new ResponseEntity(HttpStatus.CREATED);
