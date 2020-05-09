@@ -5,6 +5,9 @@ import hu.onlinepizzeria.server.core.service.SchedulingManagerInterface;
 import hu.onlinepizzeria.server.dao.SchedulingRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+
 public class SchedulingManager implements SchedulingManagerInterface {
 
     @Autowired
@@ -20,10 +23,21 @@ public class SchedulingManager implements SchedulingManagerInterface {
     }
 
     @Override
-    public String setActiveAlgorithm(Integer id) {
+    public String setActiveAlgorithm(Integer id) throws InvalidParameterException {
+        if (!checkScheduling(id)){
+            throw new InvalidParameterException("Invalid scheduling algorithm");
+        }
         schedulingRepo.setAllAlgorithmsNonActive();
         schedulingRepo.setActiveAlgorithm(id);
         //schedulingRepo.setOtherAlgorithmsNonActive(id);
         return "Set scheduling to active";
+    }
+
+    public boolean checkScheduling(Integer id){
+        ArrayList<Integer> algorithms = new ArrayList<Integer>(schedulingRepo.getAlgorithms());
+        if (algorithms.contains(id)){
+            return true;
+        }
+        return false;
     }
 }
