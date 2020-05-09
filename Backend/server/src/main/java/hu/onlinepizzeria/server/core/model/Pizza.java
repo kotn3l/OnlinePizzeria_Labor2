@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.Set;
@@ -89,7 +88,7 @@ public class Pizza implements Serializable {
         return ingredients;
     }
 
-    public void setIngredients(Set<Ingredient> ingredients) throws InvalidParameterException {
+    public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
