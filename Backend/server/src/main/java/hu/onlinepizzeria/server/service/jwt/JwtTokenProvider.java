@@ -56,8 +56,29 @@ public class JwtTokenProvider {
                 .getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
+    public boolean isDelivery(String token) {
+        return getAuthentication(token)
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_DELIVERY"));
+    }
+    public boolean isKitchen(String token) {
+        return getAuthentication(token)
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_KITCHEN"));
+    }
+    public boolean isUser(String token) {
+        return getAuthentication(token)
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_USER"));
+        
+    }
+    public boolean isManager(String token) {
+        return getAuthentication(token)
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_MANAGER"));
+    }
 
-    public String getUsername(String token) {
+    public String getUsername(String token) throws SignatureException{
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
