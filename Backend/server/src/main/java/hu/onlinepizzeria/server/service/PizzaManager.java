@@ -7,6 +7,7 @@ import hu.onlinepizzeria.server.dao.IngredientRepo;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,8 +26,11 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public String addNewPizza (Map<String, Object> pizza){
+    public String addNewPizza (Map<String, Object> pizza) throws InvalidParameterException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
+        if(pIngredients.size() <= 1) {
+            throw new InvalidParameterException("A pizza must have more than one ingredient");
+        }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
 
         Pizza p = new Pizza();
@@ -55,8 +59,11 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public Pizza updatePizza(Integer id, Map<String, Object> pizza){
+    public Pizza updatePizza(Integer id, Map<String, Object> pizza) throws InvalidParameterException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
+        if(pIngredients.size() <= 1) {
+            throw new InvalidParameterException("A pizza must have more than one ingredient");
+        }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
 
         Pizza p = new Pizza();
@@ -86,12 +93,14 @@ public class PizzaManager implements PizzaManagerInterface {
     public ArrayList<String> ingredientCheck(ArrayList<String> pizzaIngredients){
         ArrayList<Ingredient> currentIngredients = ingredientRepo.getIngredients();
         ArrayList<String> temp = pizzaIngredients;
-        for (Ingredient ci : currentIngredients
-             ) {
-            if (temp.contains(ci.getName())){
-                temp.remove(ci.getName());
-            }
+        if (currentIngredients.size() > 0) {
+            for (Ingredient ci : currentIngredients
+            ) {
+                if (temp.contains(ci.getName())) {
+                    temp.remove(ci.getName());
+                }
 
+            }
         }
         return temp;
     }
