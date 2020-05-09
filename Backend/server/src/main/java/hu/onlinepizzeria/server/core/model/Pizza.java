@@ -3,7 +3,10 @@ package hu.onlinepizzeria.server.core.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.Set;
 
 @Entity
@@ -36,24 +39,34 @@ public class Pizza implements Serializable {
         return price;
     }
 
-    public void setPrice(Integer price) {
-        this.price = price;
+    public void setPrice(Integer price) throws InvalidParameterException {
+        if(price > 0){
+            this.price = price;
+        }
+        else throw new InvalidParameterException("Price must be greater than 0");
     }
 
     public String getPicture_path() {
         return picture_path;
     }
 
-    public void setPicture_path(String picture_path) {
-        this.picture_path = picture_path;
+    public void setPicture_path(String picture_path) throws InvalidParameterException {
+        File pic = new File(picture_path);
+        if(pic.isFile()) {
+            this.picture_path = picture_path;
+        }
+        else throw new InvalidParameterException("Picture does not exist");
     }
 
     public Integer getDiscount_percent() {
         return discount_percent;
     }
 
-    public void setDiscount_percent(Integer discount_percent) {
-        this.discount_percent = discount_percent;
+    public void setDiscount_percent(Integer discount_percent) throws InvalidParameterException {
+        if(discount_percent >= 0) {
+            this.discount_percent = discount_percent;
+        }
+        else throw new InvalidParameterException("Discount percent can't be negative");
     }
 
     public boolean isUnavailable() {
@@ -76,7 +89,7 @@ public class Pizza implements Serializable {
         return ingredients;
     }
 
-    public void setIngredients(Set<Ingredient> ingredients) {
+    public void setIngredients(Set<Ingredient> ingredients) throws InvalidParameterException {
         this.ingredients = ingredients;
     }
 
