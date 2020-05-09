@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+
 public interface SchedulingRepo extends CrudRepository<SchedulingAlgorithms, Integer> {
     @Modifying
     @Transactional
@@ -16,6 +18,9 @@ public interface SchedulingRepo extends CrudRepository<SchedulingAlgorithms, Int
     @Transactional
     @Query(value = "UPDATE scheduling SET is_active=0 WHERE :id NOT IN (SELECT * FROM(SELECT id FROM scheduling as S) as S)", nativeQuery = true) //doesnt work? idk why
     void setOtherAlgorithmsNonActive(Integer id);
+
+    @Query(value="SELECT id FROM scheduling", nativeQuery = true)
+    ArrayList<Integer> getAlgorithms();
 
     @Modifying
     @Transactional
