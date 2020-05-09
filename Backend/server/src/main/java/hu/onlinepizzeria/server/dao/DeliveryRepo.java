@@ -24,6 +24,6 @@ public interface DeliveryRepo extends CrudRepository<Delivery, Integer> {
     @Query(value = "SELECT user_id from user_roles where roles='ROLE_DELIVERY'", nativeQuery = true)
     List<Integer> getAllDeliveryGuys();
 
-    @Query(value = "SELECT * FROM delivery_man_order ORDER BY id DESC LIMIT 0, 1", nativeQuery = true)
+    @Query(value = "SELECT turn FROM delivery_man_order ORDER BY id DESC LIMIT 0, 1", nativeQuery = true)
     Integer getMaxTurn();
 }
