@@ -1,10 +1,10 @@
 package hu.onlinepizzeria.server.core.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -99,8 +99,10 @@ public class Order implements Serializable {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setComment(String comment) throws InvalidParameterException {
+        if(comment.length() <= 100) {
+            this.comment = comment;
+        } else throw new InvalidParameterException("Comment is too long, 100 chars max");
     }
 
     public PayMethod getPay_method() {
@@ -150,7 +152,7 @@ public class Order implements Serializable {
         this.street = street;
         this.house_number = house_number;
         this.other = other;
-        this.comment = comment;
+        setComment(comment);
         this.pay_method = pay_method;
         this.deadline = deadline;
         this.state = state;
