@@ -11,7 +11,7 @@ import hu.onlinepizzeria.server.dao.PayMethodRepo;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Array;
+import java.security.InvalidParameterException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,8 +41,11 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     @Override
-    public String addNewOrder(Map<String, Object> order) {
+    public String addNewOrder(Map<String, Object> order) throws InvalidParameterException {
         ArrayList<Integer> orderedPizzas = (ArrayList<Integer>)order.get("order");
+        if(!checkPizza(orderedPizzas)){
+            throw new InvalidParameterException("A pizza does not exist");
+        }
         //customer_id comes from session that placed the order? from that we can get the name, telephone number, email, but why is it in the Map then TODO replace customer_id, TODO do something with delivered timestamp
         Order currentOrder = new Order(2, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
                 order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
@@ -102,5 +105,20 @@ public class OrderManager implements OrderManagerInterface {
         }
 
         return doneOrders;
+    }
+
+    public boolean checkPizza(ArrayList<Integer> orderedPizzas){
+        ArrayList<Integer> temp = new ArrayList<Integer>(orderedPizzas);
+        ArrayList<Pizza> pizzas = new ArrayList<Pizza>(pizzaRepo.getVisiblePizza());
+        for (Pizza p: pizzas
+             ) {
+            if (temp.contains(p.getId())) {
+                temp.remove(p.getId());
+            }
+        }
+        if (temp.size() > 0){
+            return false;
+        }
+        return true;
     }
 }
