@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.InvalidParameterException;
 import java.util.Map;
@@ -26,10 +27,11 @@ public class PizzaController {
 
     @PostMapping(path="/pizza/")
     public @ResponseBody
-    ResponseEntity addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestBody Map<String, Object> pizza){
+    ResponseEntity addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestPart("pizza") Map<String, Object> pizza, @RequestPart("file")
+            MultipartFile multipart){
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return new ResponseEntity(pizzaManager.addNewPizza(pizza), HttpStatus.CREATED);
+                return new ResponseEntity(pizzaManager.addNewPizza(pizza, multipart), HttpStatus.CREATED);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
@@ -52,11 +54,12 @@ public class PizzaController {
         return pizzaManager.getDiscountedPizzas();
     }
 
-    @PutMapping(path = "/pizza/")
-    public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestBody Map<String, Object> pizza) {
+    @PutMapping(path = "/pizza/", consumes = {"multipart/form-data"})
+    public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestPart("pizza") Map<String, Object> pizza,
+                                                    @RequestPart("uploadedFileName") MultipartFile multipart) {
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return new ResponseEntity(pizzaManager.updatePizza(id, pizza), HttpStatus.OK);
+                return new ResponseEntity(pizzaManager.updatePizza(id, pizza, multipart), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
