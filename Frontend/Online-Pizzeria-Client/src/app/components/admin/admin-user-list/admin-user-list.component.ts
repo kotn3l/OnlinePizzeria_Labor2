@@ -75,7 +75,7 @@ export class AdminUserListComponent implements OnInit {
 
         this.roles.forEach(role => {
           if (role.id == Number(this.user.role)) {
-            this.user.role = role.text as UserRole
+            this.user.role = role.name as UserRole
           }
         });
 

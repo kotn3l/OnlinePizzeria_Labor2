@@ -76,7 +76,7 @@ export class UserCartFormComponent implements OnInit {
             responseMessage += err.error[key] + "<br />";
           }
 
-          this.flashMessage.show(responseMessage, { cssClass: 'alert-warning', timeout: 8000 })
+          this.flashMessage.show(err.error.error, { cssClass: 'alert-warning', timeout: 8000 })
         }
       );
     }

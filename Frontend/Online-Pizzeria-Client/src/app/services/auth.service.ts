@@ -49,12 +49,12 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).pipe(
-      map(res => {
+    this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(
+      res => {
         this.userData = res.body as UserData;
         sessionStorage.setItem('userData', JSON.stringify(this.userData));
         return true;
-      }),
+      },
       catchError(err => of(false))
     );
     // this.userData = {

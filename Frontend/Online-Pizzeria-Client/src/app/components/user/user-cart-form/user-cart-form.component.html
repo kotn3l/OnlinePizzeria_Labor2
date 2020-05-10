@@ -1,174 +1,90 @@
 <form #orderForm="ngForm" (ngSubmit)="onSubmit(orderForm)">
-  <div class="form-group">
-    <label for="name">Full Name</label>
-    <input
-      type="text"
-      [(ngModel)]="currentOrder.name"
-      [ngClass]="{ 'is-invalid': orderName.errors && orderName.touched }"
-      class="form-control"
-      name="name"
-      #orderName="ngModel"
-      required
-      minlength="2"
-      maxlength="100"
-    />
-    <div [hidden]="!orderName.errors?.required" class="invalid-feedback">
-      Name is required
+    <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" [(ngModel)]="currentOrder.name" [ngClass]="{ 'is-invalid': orderName.errors && orderName.touched }" class="form-control" name="name" #orderName="ngModel" required minlength="2" maxlength="100" />
+        <div [hidden]="!orderName.errors?.required" class="invalid-feedback">
+            Name is required
+        </div>
+        <div [hidden]="!orderName.errors?.minlength" class="invalid-feedback">
+            Name must be at least 2 characters
+        </div>
     </div>
-    <div [hidden]="!orderName.errors?.minlength" class="invalid-feedback">
-      Name must be at least 2 characters
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col">
-      <label for="emailAdress">Email address</label>
-      <input
-        type="email"
-        [(ngModel)]="currentOrder.email"
-        [ngClass]="{ 'is-invalid': orderEmail.errors && orderEmail.touched }"
-        class="form-control"
-        name="email"
-        #orderEmail="ngModel"
-        required
-        pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-      />
-      <div [hidden]="!orderEmail.errors?.required" class="invalid-feedback">
-        Email is required
-      </div>
-      <div [hidden]="!orderEmail.errors?.pattern" class="invalid-feedback">
-        Invalid email address
-      </div>
-    </div>
-    <div class="form-group col">
-      <label for="telephone">Telephone number</label>
-      <input
-        type="tel"
-        [(ngModel)]="currentOrder.telephone"
-        [ngClass]="{
+    <div class="form-row">
+        <div class="form-group col">
+            <label for="emailAdress">Email address</label>
+            <input type="email" [(ngModel)]="currentOrder.email" [ngClass]="{ 'is-invalid': orderEmail.errors && orderEmail.touched }" class="form-control" name="email" #orderEmail="ngModel" required pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+            />
+            <div [hidden]="!orderEmail.errors?.required" class="invalid-feedback">
+                Email is required
+            </div>
+            <div [hidden]="!orderEmail.errors?.pattern" class="invalid-feedback">
+                Invalid email address
+            </div>
+        </div>
+        <div class="form-group col">
+            <label for="telephone">Telephone number</label>
+            <input type="tel" [(ngModel)]="currentOrder.telephone" [ngClass]="{
           'is-invalid': orderTelephone.errors && orderTelephone.touched
-        }"
-        class="form-control"
-        name="telephone"
-        #orderTelephone="ngModel"
-        required
-        pattern="\+?[0-9]{2} ?[0-9]{2} ?[0-9]{3}[- ]?[0-9]{2}[- ]?[0-9]{2}"
-      />
-      <div [hidden]="!orderTelephone.errors?.required" class="invalid-feedback">
-        Telephone is required
-      </div>
-      <div [hidden]="!orderTelephone.errors?.pattern" class="invalid-feedback">
-        Invalid telephone number
-      </div>
+        }" class="form-control" name="telephone" #orderTelephone="ngModel" required pattern="\+?[0-9]{2} ?[0-9]{2} ?[0-9]{3}[- ]?[0-9]{2}[- ]?[0-9]{2}" />
+            <div [hidden]="!orderTelephone.errors?.required" class="invalid-feedback">
+                Telephone is required
+            </div>
+            <div [hidden]="!orderTelephone.errors?.pattern" class="invalid-feedback">
+                Invalid telephone number
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-md-4">
-      <label for="city">City</label>
-      <select
-        name="city"
-        [(ngModel)]="currentOrder.city"
-        class="form-control"
-        #orderCity="ngModel"
-      >
-        <option *ngFor="let city of cities" value="{{ city.id }}">{{ city.text }}</option>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="city">City</label>
+            <select name="city" [(ngModel)]="currentOrder.city" class="form-control" #orderCity="ngModel">
+        <option *ngFor="let city of cities" value="{{ city.id }}">{{ city.name }}</option>
       </select>
-    </div>
-    <div class="form-group col-md-5">
-      <label for="street">Street</label>
-      <input
-        type="text"
-        [(ngModel)]="currentOrder.street"
-        [ngClass]="{ 'is-invalid': orderStreet.errors && orderStreet.touched }"
-        class="form-control"
-        name="street"
-        #orderStreet="ngModel"
-        required
-        minlength="2"
-        maxlength="100"
-      />
-      <div [hidden]="!orderStreet.errors?.required" class="invalid-feedback">
-        Street is required
-      </div>
-      <div [hidden]="!orderStreet.errors?.minlength" class="invalid-feedback">
-        Street must be at least 2 characters
-      </div>
-    </div>
-    <div class="form-group col-md-3">
-      <label for="house_number">House number</label>
-      <input
-        type="text"
-        [(ngModel)]="currentOrder.house_number"
-        [ngClass]="{
+        </div>
+        <div class="form-group col-md-5">
+            <label for="street">Street</label>
+            <input type="text" [(ngModel)]="currentOrder.street" [ngClass]="{ 'is-invalid': orderStreet.errors && orderStreet.touched }" class="form-control" name="street" #orderStreet="ngModel" required minlength="2" maxlength="100" />
+            <div [hidden]="!orderStreet.errors?.required" class="invalid-feedback">
+                Street is required
+            </div>
+            <div [hidden]="!orderStreet.errors?.minlength" class="invalid-feedback">
+                Street must be at least 2 characters
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="house_number">House number</label>
+            <input type="text" [(ngModel)]="currentOrder.house_number" [ngClass]="{
           'is-invalid': orderHouseNumber.errors && orderHouseNumber.touched
-        }"
-        class="form-control"
-        name="house_number"
-        #orderHouseNumber="ngModel"
-        required
-        pattern="[0-9/]+\.?"
-        maxlength="100"
-      />
-      <div
-        [hidden]="!orderHouseNumber.errors?.required"
-        class="invalid-feedback"
-      >
-        House number is required
-      </div>
-      <div
-        [hidden]="!orderHouseNumber.errors?.pattern"
-        class="invalid-feedback"
-      >
-        Invalid house number
-      </div>
+        }" class="form-control" name="house_number" #orderHouseNumber="ngModel" required pattern="[0-9/]+\.?" maxlength="100" />
+            <div [hidden]="!orderHouseNumber.errors?.required" class="invalid-feedback">
+                House number is required
+            </div>
+            <div [hidden]="!orderHouseNumber.errors?.pattern" class="invalid-feedback">
+                Invalid house number
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label for="other">Other (floor, door, door bell)</label>
-    <input
-      type="text"
-      [(ngModel)]="currentOrder.other"
-      class="form-control"
-      name="other"
-      #orderOther="ngModel"
-      maxlength="100"
-    />
-  </div>
-  <div class="form-row pb-2">
-    <legend class="col-form-label p-0">Pay method:</legend>
-    <div class="form-check form-check-inline" *ngFor="let method of payMethods">
-      <input
-        type="radio"
-        name="pay_method"
-        class="form-check-input"
-        value="{{ method.id }}"
-        [(ngModel)]="currentOrder.pay_method"
-        #orderPayMethod="ngModel"
-        required
-      />
-      <label class="form-check-label" for="pay_method">{{ method.text }}</label>
+    <div class="form-group">
+        <label for="other">Other (floor, door, door bell)</label>
+        <input type="text" [(ngModel)]="currentOrder.other" class="form-control" name="other" #orderOther="ngModel" maxlength="100" />
     </div>
-  </div>
-  <div class="form-group">
-    <label for="other">Comment about the order:</label>
-    <textarea
-      type="text"
-      name="comment"
-      class="form-control"
-      [(ngModel)]="currentOrder.comment"
-      #orderComment="ngModel"
-      maxlength="200"
-    ></textarea>
-  </div>
-  <div class="flex">
-    <button
-      type="submit"
-      [disabled]="!orderForm.form.valid"
-      class="btn btn-new"
-    >
+    <div class="form-row pb-2">
+        <legend class="col-form-label p-0">Pay method:</legend>
+        <div class="form-check form-check-inline" *ngFor="let method of payMethods">
+            <input type="radio" name="pay_method" class="form-check-input" value="{{ method.id }}" [(ngModel)]="currentOrder.pay_method" #orderPayMethod="ngModel" required />
+            <label class="form-check-label" for="pay_method">{{ method.name }}</label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="other">Comment about the order:</label>
+        <textarea type="text" name="comment" class="form-control" [(ngModel)]="currentOrder.comment" #orderComment="ngModel" maxlength="200"></textarea>
+    </div>
+    <div class="flex">
+        <button type="submit" [disabled]="!orderForm.form.valid" class="btn btn-new">
       Submit order
     </button>
-  </div>
+    </div>
 </form>
 <div class="mt-4">
-  <flash-messages></flash-messages>
+    <flash-messages></flash-messages>
 </div>

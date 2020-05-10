@@ -21,11 +21,11 @@ export class PizzaService {
     ) { }
 
   getDiscountedPizzas(): Observable<Pizza[]> {
-    return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizzas/discount`);
+    return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizza/discount`);
   }
 
   getAllPizzas() {
-    return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizzas`);
+    return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizza`);
   }
 
   addPizza(pizza: Pizza, pictureFile: File) {
