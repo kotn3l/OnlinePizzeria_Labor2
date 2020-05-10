@@ -6,7 +6,13 @@ import hu.onlinepizzeria.server.core.service.PizzaManagerInterface;
 import hu.onlinepizzeria.server.dao.IngredientRepo;
 import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,17 +31,19 @@ public class PizzaManager implements PizzaManagerInterface {
         this.ingredientRepo = ingredientRepo;
     }
 
+    private static Path imagePath = Paths.get("G:\\EKE\\ProjektLabor\\AFP2\\OnlinePizzeria_Labor2\\Backend\\images\\pizza");
+
     @Override
-    public String addNewPizza (Map<String, Object> pizza) throws InvalidParameterException {
+    public String addNewPizza (Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
         if(pIngredients.size() <= 1) {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
-
+        Path filePath = write(multipart, imagePath);
         Pizza p = new Pizza();
         p.setName(pizza.get("name").toString());
-        p.setPicture_path(pizza.get("picture").toString());
+        p.setPicture_path(filePath.toString());
         p.setPrice(Integer.parseInt(pizza.get("price").toString()));
         p.setDiscount_percent(0);
         p.setUnavailable(false);
@@ -59,13 +67,13 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public Pizza updatePizza(Integer id, Map<String, Object> pizza) throws InvalidParameterException {
+    public Pizza updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
         if(pIngredients.size() <= 1) {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
-
+        Path filePath = write(multipart, imagePath);
         Pizza p = new Pizza();
         p.setId(id);
         p.setName(pizza.get("name").toString());
@@ -73,7 +81,7 @@ public class PizzaManager implements PizzaManagerInterface {
         p.setPrice(Integer.parseInt(pizza.get("price").toString()));
         p.setDiscount_percent(Integer.parseInt(pizza.get("discount_price").toString()));
         p.setUnavailable(false);
-        pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getPicture_path(), p.getDiscount_percent(), p.isUnavailable());
+        pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), p.isUnavailable());
 
         ingredientCheck(pIngredients);
         saveIngredients(pIngredients);
@@ -85,7 +93,7 @@ public class PizzaManager implements PizzaManagerInterface {
     public Pizza deletePizza(Integer id){
         Pizza p = pizzaRepo.findById(id).orElse(null);
         if (p != null) {
-            pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getPicture_path(), p.getDiscount_percent(), true);
+            pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), true);
         }
         return p;
     }
@@ -122,6 +130,15 @@ public class PizzaManager implements PizzaManagerInterface {
             if (pizzaIngredients.contains(ci.getName())) {
                 ingredientRepo.addIngredientAndPizza(pizzaId, ci.getId());
             }
+        }
+    }
+
+    public Path write(MultipartFile file, Path dir) throws IOException {
+        Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
+
+        try (OutputStream os = Files.newOutputStream(filepath)) {
+            os.write(file.getBytes());
+            return filepath;
         }
     }
 }
