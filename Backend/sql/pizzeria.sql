@@ -100,7 +100,7 @@ CREATE TABLE `orders` (
   `pay_method` int(11) NOT NULL,
   `deadline` datetime NOT NULL,
   `state` int(11) NOT NULL,
-  `delivered` datetime NOT NULL
+  `delivered` datetime
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
