@@ -13,7 +13,6 @@ public class PayMethod implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id")
-    @JsonIgnore
     private Integer id;
 
     @JsonIgnore

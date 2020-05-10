@@ -22,6 +22,7 @@ public class Order implements Serializable {
     @JoinColumn(name="customer_id")
     private Customer customer;
 
+    @JsonIgnore
     @JsonProperty("ordered_pizza")
     @OneToMany(mappedBy = "order")
     private Set<OrderedPizza> oPizza;

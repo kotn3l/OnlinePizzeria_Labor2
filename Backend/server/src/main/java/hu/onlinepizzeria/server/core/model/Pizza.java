@@ -24,6 +24,7 @@ public class Pizza implements Serializable {
 
     private Integer discount_percent;
 
+    @JsonIgnore
     private boolean unavailable;
 
     public String getName() {
