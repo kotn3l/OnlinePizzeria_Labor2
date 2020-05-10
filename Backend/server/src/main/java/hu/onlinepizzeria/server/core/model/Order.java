@@ -16,8 +16,10 @@ public class Order implements Serializable {
     @Column(name = "id")
     private Integer id;
 
-    //TODO join with user stuff
-    private Integer customer_id;
+    //private Integer customer_id;
+    @ManyToOne
+    @JoinColumn(name="customer_id")
+    private Customer customer;
 
     @JsonIgnore
     @OneToMany(mappedBy = "order")
@@ -55,12 +57,12 @@ public class Order implements Serializable {
         this.id = id;
     }
 
-    public Integer getCustomer_id() {
-        return customer_id;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomer_id(Integer customer_id) {
-        this.customer_id = customer_id;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public DeliveryCities getCity() {
@@ -145,9 +147,9 @@ public class Order implements Serializable {
         this.oPizza = oPizza;
     }
 
-    public Order(Integer customer_id, DeliveryCities city, String street, Integer house_number, String other, String comment, PayMethod pay_method, Timestamp deadline, Integer state, Timestamp delivered) {
+    public Order(Customer customer, DeliveryCities city, String street, Integer house_number, String other, String comment, PayMethod pay_method, Timestamp deadline, Integer state, Timestamp delivered) {
         this();
-        this.customer_id = customer_id;
+        this.customer = customer;
         this.city = city;
         this.street = street;
         this.house_number = house_number;
