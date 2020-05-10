@@ -20,9 +20,9 @@ export class AdminPizzaItemComponent implements OnInit {
 
   ngOnInit() {
     if (this.pizza.ingredients.length > 0) {
-      this.formatedIngredients = this.formatedIngredients.concat(this.pizza.ingredients[0]);
+      this.formatedIngredients = this.formatedIngredients.concat(this.pizza.ingredients[0].name);
       for (let index = 1; index < this.pizza.ingredients.length; index++) {
-        this.formatedIngredients = this.formatedIngredients.concat(', ' + this.pizza.ingredients[index]);
+        this.formatedIngredients = this.formatedIngredients.concat(', ' + this.pizza.ingredients[index].name);
       }
     }
     this.prevDiscountPrice = this.pizza.discount_price;

@@ -16,6 +16,7 @@ export class AdminPizzaFormComponent implements OnInit {
     ingredients: [],
     discount_price: 0
   }
+  ingredientList: string[] = [];
   ingredientCount: number = 1;
   picture: File = null;
   isNew: boolean = true;
@@ -87,10 +88,9 @@ export class AdminPizzaFormComponent implements OnInit {
   }
 
   cleanIngredient() {
-    this.pizza.ingredients.forEach((ingredient, index) => {
-      if (ingredient == null || ingredient == '' || ingredient == undefined) {
-        this.pizza.ingredients.splice(index, 1);
-        this.ingredientCount--;
+    this.ingredientList.forEach((ingredient, index) => {
+      if (ingredient != null && ingredient != '' && ingredient != undefined) {
+        this.pizza.ingredients.push({name: ingredient});
       }
     });
   }

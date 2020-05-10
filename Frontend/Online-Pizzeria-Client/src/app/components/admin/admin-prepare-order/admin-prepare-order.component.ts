@@ -22,10 +22,10 @@ export class AdminPrepareOrderComponent implements OnInit {
     });
   }
 
-  ingredients(ingredients: string[]) {
-    var string = ingredients[0];
+  ingredients(ingredients: {name: string}[]) {
+    var string = ingredients[0].name;
     for (let i = 1; i < ingredients.length; i++) {
-      string = string.concat(', ' + ingredients[i]);
+      string = string.concat(', ' + ingredients[i].name);
     }
     return string;
   }
