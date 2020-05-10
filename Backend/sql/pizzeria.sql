@@ -127,6 +127,11 @@ CREATE TABLE `pay_method` (
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `delivery_cities` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -376,6 +381,9 @@ ALTER TABLE `order_pizza`
 -- AUTO_INCREMENT for table `pay_method`
 --
 ALTER TABLE `pay_method`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  
+ALTER TABLE `delivery_cities`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
