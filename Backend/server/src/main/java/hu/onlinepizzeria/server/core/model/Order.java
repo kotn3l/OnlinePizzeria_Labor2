@@ -1,6 +1,7 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +22,7 @@ public class Order implements Serializable {
     @JoinColumn(name="customer_id")
     private Customer customer;
 
-    @JsonIgnore
+    @JsonProperty("ordered_pizza")
     @OneToMany(mappedBy = "order")
     private Set<OrderedPizza> oPizza;
 

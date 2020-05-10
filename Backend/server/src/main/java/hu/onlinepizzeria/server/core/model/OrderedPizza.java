@@ -11,9 +11,10 @@ public class OrderedPizza implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "id")
+    @JsonIgnore
     private Integer id;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "pizza_id")
     private Pizza pizza;
@@ -23,6 +24,7 @@ public class OrderedPizza implements Serializable {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @JsonIgnore
     private boolean done;
 
     public Integer getId() {
@@ -33,11 +35,12 @@ public class OrderedPizza implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     public Integer getOrder_id() {
         return this.order.getId();
     }
 
-
+    @JsonIgnore
     public Integer getPizza_id() {
         return this.pizza.getId();
     }
@@ -57,7 +60,6 @@ public class OrderedPizza implements Serializable {
     public Order getOrder() {
         return order;
     }
-
 
     public boolean isDone() {
         return done;
