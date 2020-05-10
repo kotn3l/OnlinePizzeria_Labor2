@@ -9,4 +9,7 @@ import java.util.ArrayList;
 public interface CityRepo extends CrudRepository<DeliveryCities, Integer> {
     @Query(value="SELECT * FROM delivery_cities", nativeQuery = true)
     ArrayList<DeliveryCities> getDeliveryCities();
+
+    @Query(value="SELECT id FROM delivery_cities", nativeQuery = true)
+    ArrayList<Integer> getDeliveryCitiesId();
 }

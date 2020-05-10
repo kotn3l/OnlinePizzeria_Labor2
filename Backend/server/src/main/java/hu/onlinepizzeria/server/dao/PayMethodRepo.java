@@ -9,4 +9,7 @@ import java.util.ArrayList;
 public interface PayMethodRepo extends CrudRepository<PayMethod, Integer> {
     @Query(value="SELECT * FROM pay_method", nativeQuery = true)
     ArrayList<PayMethod> getPayMethods();
+
+    @Query(value="SELECT id FROM pay_method", nativeQuery = true)
+    ArrayList<Integer> getPayMethodsId();
 }
