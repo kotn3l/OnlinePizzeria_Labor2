@@ -41,7 +41,7 @@ public class OrderController {
         try {
             return new ResponseEntity(orderManager.getPayMethods(), HttpStatus.OK);
         }
-        catch (Exception e){ //TODO check if pay method is ok
+        catch (Exception e){
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -51,7 +51,7 @@ public class OrderController {
         try {
             return new ResponseEntity(orderManager.getDeliveryCities(), HttpStatus.OK);
         }
-        catch (Exception e){ //TODO check if city is ok
+        catch (Exception e){
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
