@@ -33,11 +33,12 @@ export class PizzaService {
       name: pizza.name,
       price: pizza.price,
       ingredients: pizza.ingredients,
-      picture: pictureFile
     }
-    console.log(postPizza);
+    const formData = new FormData();
+    formData.append('file', pictureFile);
+    formData.append('pizza', JSON.stringify(postPizza));
 
-    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, postPizza, httpOptions);
+    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, formData, httpOptions);
   }
 
   updatePizza(pizza: Pizza, pictureFile: File) {

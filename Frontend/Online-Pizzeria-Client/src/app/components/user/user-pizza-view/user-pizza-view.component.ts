@@ -76,7 +76,6 @@ export class UserPizzaViewComponent implements OnInit {
 
   showIngredientSearch(ingredients: {name: string}[]) {
     var containsIngredient = false;
-    console.log(ingredients)
     ingredients.forEach(ingredient => {
       if (ingredient.name.toLowerCase().includes(this.ingredientSearch.toLowerCase())) {
         containsIngredient = true;
