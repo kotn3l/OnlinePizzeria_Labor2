@@ -3,9 +3,9 @@ package hu.onlinepizzeria.server.core.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.security.InvalidParameterException;
+import java.util.Base64;
 import java.util.Set;
 
 @Entity
@@ -46,7 +46,11 @@ public class Pizza implements Serializable {
         else throw new InvalidParameterException("Price must be greater than 0");
     }
 
-    public String getPicture_path() {
+    public String getPicture_path() throws IOException {
+        return encoder(picture_path);
+    }
+
+    public String getRealPicPath(){
         return picture_path;
     }
 
@@ -103,5 +107,17 @@ public class Pizza implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "pizza")
     private Set<OrderedPizza> oPizza;
+
+    public static String encoder(String imagePath) throws FileNotFoundException, IOException {
+        String base64Image = "";
+        File file = new File(imagePath);
+        try (FileInputStream imageInFile = new FileInputStream(file)) {
+            // Reading a Image file from file system
+            byte imageData[] = new byte[(int) file.length()];
+            imageInFile.read(imageData);
+            base64Image = Base64.getEncoder().encodeToString(imageData);
+        }
+        return base64Image;
+    }
 
 }
