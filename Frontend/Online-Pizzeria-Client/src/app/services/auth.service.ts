@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
+import { FlashMessagesService } from 'angular2-flash-messages';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-type': 'application/json' }),
@@ -22,7 +23,8 @@ export class AuthService {
   }
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private flashMessage: FlashMessagesService
   ) {
     if (sessionStorage.getItem('userData') != null) {
       var data = JSON.parse(sessionStorage.getItem('userData'));
@@ -41,30 +43,18 @@ export class AuthService {
         return of(false)
       })
     );
-    // if (this.userData.session_string != '') {
-    //   return of(true);
-    // } else {
-    //   return of(false);
-    // }
   }
 
   login(email: string, password: string) {
-    this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(
-      res => {
-        this.userData = res.body as UserData;
-        sessionStorage.setItem('userData', JSON.stringify(this.userData));
-        return true;
-      },
-      catchError(err => of(false))
-    );
-    // this.userData = {
-    //   session_string: 'abc123',
-    //   role: UserRole.administrator
-    // }
-    sessionStorage.setItem('userData', JSON.stringify(this.userData));
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-    this.router.onSameUrlNavigation = 'reload';
-    this.router.navigate(['/admin/login']);
+    return this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(res => {
+      this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
+      this.setSession(res.body as UserData);
+      
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.router.onSameUrlNavigation = 'reload';
+      this.router.navigate(['/admin/login']);
+    },
+      err => this.flashMessage.show(err.error.error, { cssClass: 'alert-danger', timeout: 4000 }));
   }
 
   logout() {
@@ -73,7 +63,10 @@ export class AuthService {
     this.router.navigate(['/admin/login']);
   }
 
-  clearSession() {
+  private setSession(userData: UserData) {
+    sessionStorage.setItem('userData', JSON.stringify(userData));
+  }
+  private clearSession() {
     sessionStorage.removeItem('userData');
     this.userData = {
       session_string: '',
