@@ -12,6 +12,7 @@ import java.security.InvalidParameterException;
 
 @RestController
 @RequestMapping(path="/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SchedulingController {
 
     private SchedulingManager schedulingManager;

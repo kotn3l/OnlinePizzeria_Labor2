@@ -32,6 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(path="/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthenticationController {
     // TODO Use this
     @Autowired

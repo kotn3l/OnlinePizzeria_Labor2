@@ -12,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path="/api")
+@CrossOrigin(origins = "http://localhost:4200")
 public class OrderController {
 
     private OrderManager orderManager;
@@ -31,7 +32,7 @@ public class OrderController {
         catch (InvalidParameterException ipe){
             return new ResponseEntity(ipe.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        catch (Exception e){ //TODO check if email is ok in user
+        catch (Exception e){
             return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
