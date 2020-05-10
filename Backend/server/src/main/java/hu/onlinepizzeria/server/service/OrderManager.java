@@ -46,6 +46,12 @@ public class OrderManager implements OrderManagerInterface {
         if(!checkPizza(orderedPizzas)){
             throw new InvalidParameterException("A pizza does not exist");
         }
+        if(!checkCity(Integer.parseInt(order.get("city").toString()))){
+            throw new InvalidParameterException("Invalid city");
+        }
+        if(!checkPayMethod(Integer.parseInt(order.get("pay_method").toString()))){
+            throw new InvalidParameterException("Invalid pay method");
+        }
         //customer_id comes from session that placed the order? from that we can get the name, telephone number, email, but why is it in the Map then TODO replace customer_id, TODO do something with delivered timestamp
         Order currentOrder = new Order(2, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
                 order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
@@ -120,5 +126,21 @@ public class OrderManager implements OrderManagerInterface {
             return false;
         }
         return true;
+    }
+
+    public boolean checkPayMethod(Integer payMethod){
+        ArrayList<Integer> payMethods = new ArrayList<Integer>(payMethodRepo.getPayMethodsId());
+        if (payMethods.contains(payMethod)){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean checkCity(Integer city){
+        ArrayList<Integer> cities = new ArrayList<Integer>(cityRepo.getDeliveryCitiesId());
+        if (cities.contains(city)){
+            return true;
+        }
+        return false;
     }
 }
