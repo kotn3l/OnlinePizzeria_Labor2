@@ -28,8 +28,7 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
 
     @Override
     public void createUser(UserDetails userDetails) {
-       // User user =  new User(userDetails.getUsername())
-        // users.save();
+        
     }
 
     @Override
@@ -41,6 +40,7 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
     public void deleteUser(String s) {
 
     }
+
     public void deleteUserById(int id) {
         users.deleteById(id);
     }
@@ -61,13 +61,12 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
                 .orElseThrow(() -> new UsernameNotFoundException("Not found: " + s));
 
     }
-    // TODO Add password exception @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+
     public UserDetails loadUserByLogin(String email, String password) throws UsernameNotFoundException {
         if (userExists(email)) {
             return users.findUserByEmailAndPassword(email, password)
                     .orElseThrow(() -> new UsernameNotFoundException("Not found: " + email));
-        }
-        else {
+        } else {
             throw new UsernameNotFoundException("Not found: " + email);
         }
 
@@ -78,21 +77,36 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
     }
 
     public List<Role> getAllRoles() {
-        List<String> roleList =  roles.getAllRoles();
+        List<String> roleList = roles.getAllRoles();
         System.out.println(roleList);
         List<Role> allRoles = new ArrayList<>();
         int i = 1;
         for (String role1 : roleList) {
             Role r = Role.builder().id(i).name(role1).build();
             allRoles.add(r);
-            System.out.println(allRoles);
             i++;
-        };
+        }
         return allRoles;
     }
 
-    public String getRoleById(int role_id) { return roles.getRoleById(role_id); }
+    public String getRoleById(int role_id) {
+        return roles.getRoleById(role_id);
+    }
 
-    public void updatePassword(int id, String password) { users.updatePassword(id, password);
-        System.out.println(id+ " "+ password);}
+    public void updatePassword(int id, String password) {
+        users.updatePassword(id, password);
+        System.out.println(id + " " + password);
+    }
+
+    public boolean verifyRole(String role) {
+        if (role == null)
+            return false;
+        List<Role> roles = getAllRoles();
+        for (Role r : roles
+        ) {
+            if (r.getName().equals(role))
+                return true;
+        }
+        return false;
+    }
 }
