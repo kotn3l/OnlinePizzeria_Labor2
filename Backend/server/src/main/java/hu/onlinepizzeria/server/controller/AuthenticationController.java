@@ -53,7 +53,6 @@ public class AuthenticationController {
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
             Optional<User> user2 = users.findUserByEmail(user.getEmail());
-            System.out.println(user2);
             Map<Object, Object> model = new HashMap<>();
             model.put("session_string", token);
             model.put("role", user2.get().getRoles());
