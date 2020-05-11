@@ -50,23 +50,6 @@ CREATE TABLE `delivery_man_order` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `hibernate_sequence`
---
-
-CREATE TABLE `hibernate_sequence` (
-  `next_val` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `hibernate_sequence`
---
-
-INSERT INTO `hibernate_sequence` (`next_val`) VALUES
-(5);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `ingredient`
 --
 
@@ -75,13 +58,6 @@ CREATE TABLE `ingredient` (
   `name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `ingredient`
---
-
-INSERT INTO `ingredient` (`id`, `name`) VALUES
-(1, 'ham'),
-(2, 'pineapple');
 
 -- --------------------------------------------------------
 
@@ -147,17 +123,6 @@ CREATE TABLE `pizza` (
   `unavailable` bit(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `pizza`
---
-
-INSERT INTO `pizza` (`id`, `name`, `price`, `picture_path`, `discount_percent`, `unavailable`) VALUES
-(1, 'ananászos', 2006, 'path2', 0, b'0'),
-(2, 'ananászos', 2006, 'path2', 0, b'0'),
-(3, 'ananászos', 2006, 'path2', 0, b'0'),
-(4, '[Hawaii]', 1250, '[path5]', 0, b'0'),
-(43, 'magyaros', 1000, 'path23', 10, b'0');
-
 -- --------------------------------------------------------
 
 --
@@ -169,13 +134,6 @@ CREATE TABLE `pizza_ingredients` (
   `ingredient_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `pizza_ingredients`
---
-
-INSERT INTO `pizza_ingredients` (`pizza_id`, `ingredient_id`) VALUES
-(4, 1),
-(4, 2);
 
 -- --------------------------------------------------------
 
@@ -258,7 +216,6 @@ CREATE TABLE `user_roles` (
 
 INSERT INTO `user_roles` (`user_id`, `roles`) VALUES
 (1, 'ROLE_USER'),
-(2, 'ROLE_USER'),
 (2, 'ROLE_ADMIN');
 
 --
@@ -304,6 +261,9 @@ ALTER TABLE `order_pizza`
 -- Indexes for table `pay_method`
 --
 ALTER TABLE `pay_method`
+  ADD PRIMARY KEY (`id`);
+  
+ALTER TABLE `delivery_cities`
   ADD PRIMARY KEY (`id`);
 
 --
