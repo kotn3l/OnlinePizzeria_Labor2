@@ -1,6 +1,7 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.*;
@@ -46,10 +47,12 @@ public class Pizza implements Serializable {
         else throw new InvalidParameterException("Price must be greater than 0");
     }
 
+    @JsonProperty("picture")
     public String getPicture_path() throws IOException {
         return encoder(picture_path);
     }
 
+    @JsonIgnore
     public String getRealPicPath(){
         return picture_path;
     }
