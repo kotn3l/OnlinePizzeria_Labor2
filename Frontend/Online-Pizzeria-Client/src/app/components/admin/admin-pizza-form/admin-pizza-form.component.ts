@@ -14,7 +14,7 @@ export class AdminPizzaFormComponent implements OnInit {
     name: '',
     price: null,
     ingredients: [],
-    discount_price: 0
+    discount_percent: 0
   }
   ingredientList: string[] = [];
   ingredientCount: number = 1;
@@ -101,7 +101,7 @@ export class AdminPizzaFormComponent implements OnInit {
       name: '',
       price: null,
       ingredients: [],
-      discount_price: 0
+      discount_percent: 0
     }
     this.ingredientCount = 1;
     this.picture = null;

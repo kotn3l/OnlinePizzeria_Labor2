@@ -62,7 +62,7 @@ export class UserPizzaViewComponent implements OnInit {
 
   showDescounted(pizza: Pizza) {
     if (this.discountedOnly) {
-      return pizza.discount_price > 0;
+      return pizza.discount_percent > 0;
     }
     return true;
   }

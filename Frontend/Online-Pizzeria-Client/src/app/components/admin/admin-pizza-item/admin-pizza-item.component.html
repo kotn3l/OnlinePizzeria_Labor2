@@ -15,27 +15,14 @@
             <li class="list-group-item">Ingredients: {{ formatedIngredients }}</li>
         </ul>
         <div class="text-center mt-3">
-            <button
-                  (click)="changeDiscountPrice(-1)"
-                  class="btn btn-dark mr-1"
-                  [disabled]="pizza.discount_price == 0"
-                >
+            <button (click)="changeDiscountPrice(-1)" class="btn btn-dark mr-1" [disabled]="pizza.discount_percent == 0">
                   <i class="fa fa-angle-left"></i>
-                </button>
-                {{ pizza.discount_price }}
-                <button
-                  (click)="changeDiscountPrice(1)"
-                  class="btn btn-dark ml-1"
-                  [disabled]="pizza.discount_price >= 100"
-                >
+                </button> {{ pizza.discount_percent }}
+            <button (click)="changeDiscountPrice(1)" class="btn btn-dark ml-1" [disabled]="pizza.discount_percent >= 100">
                   <i class="fa fa-angle-right"></i>
             </button>
             <br>
-            <button
-                  (click)="updatePizza()"
-                  class="btn btn-secondary mt-2"
-                  [disabled]="discountChanged()"
-                >
+            <button (click)="updatePizza()" class="btn btn-secondary mt-2" [disabled]="discountChanged()">
                   Update Discount
             </button>
         </div>

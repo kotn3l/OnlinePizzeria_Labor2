@@ -4,5 +4,5 @@ export interface Pizza {
     price: number;
     ingredients: {name: string}[];
     picture?: string;
-    discount_price?: number;
+    discount_percent?: number;
 }

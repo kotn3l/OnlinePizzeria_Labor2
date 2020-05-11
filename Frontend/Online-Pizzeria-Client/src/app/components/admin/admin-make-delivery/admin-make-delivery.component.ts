@@ -30,12 +30,10 @@ export class AdminMakeDeliveryComponent implements OnInit {
   ngOnInit() {
     this.deliveryService.getDeliveryGuys().subscribe(res => this.deliveryGuys = res, err => {
       this.flashMessage.show(err, { cssClass: 'alert-danger', timeout: 4000 });
-      this.authService.clearSession();
     });
 
     this.orderService.getReadyOrders().subscribe(orders => this.orders = orders, err => {
       this.flashMessage.show(err, { cssClass: 'alert-danger', timeout: 4000 });
-      this.authService.clearSession();
     });
     this.selectedGuy = null;
   }

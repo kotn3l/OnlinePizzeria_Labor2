@@ -10,6 +10,10 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-type': 'application/json' })
 }
 
+const httpOptions2 = {
+  headers: new HttpHeaders({ 'Content-type': undefined })
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -33,12 +37,15 @@ export class PizzaService {
       name: pizza.name,
       price: pizza.price,
       ingredients: pizza.ingredients,
+      picture: JSON.stringify(pictureFile)
     }
     const formData = new FormData();
     formData.append('file', pictureFile);
     formData.append('pizza', JSON.stringify(postPizza));
 
-    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, formData, httpOptions);
+
+
+    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, postPizza, httpOptions);
   }
 
   updatePizza(pizza: Pizza, pictureFile: File) {
@@ -46,20 +53,20 @@ export class PizzaService {
       name: pizza.name,
       price: pizza.price,
       ingredients: pizza.ingredients,
-      discount_price: pizza.discount_price
+      discount_percent: pizza.discount_percent
     }
     const formData = new FormData();
     formData.append('file', pictureFile == null ? pizza.picture : pictureFile);
     formData.append('pizza', JSON.stringify(postPizza));
 
-    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, formData, httpOptions);
+    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, formData, httpOptions2);
   }
 
   deletePizza(id: number) {
     return this.http.delete(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${id}`);
   }
 
-  private pizzaSource = new BehaviorSubject<Pizza>({ id: null, name: null, price: null, ingredients: null, picture: null, discount_price: null });
+  private pizzaSource = new BehaviorSubject<Pizza>({ id: null, name: null, price: null, ingredients: null, picture: null, discount_percent: null });
   selectedPizza = this.pizzaSource.asObservable();
 
   private stateSource = new BehaviorSubject<boolean>(true);
@@ -70,6 +77,6 @@ export class PizzaService {
   }
 
   clearFormPizza() {
-    this.pizzaSource.next({ id: null, name: null, price: null, ingredients: null, picture: null, discount_price: null });
+    this.pizzaSource.next({ id: null, name: null, price: null, ingredients: null, picture: null, discount_percent: null });
   }
 }

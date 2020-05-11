@@ -25,21 +25,21 @@ export class AdminPizzaItemComponent implements OnInit {
         this.formatedIngredients = this.formatedIngredients.concat(', ' + this.pizza.ingredients[index].name);
       }
     }
-    this.prevDiscountPrice = this.pizza.discount_price;
+    this.prevDiscountPrice = this.pizza.discount_percent;
   }
 
   changeDiscountPrice(number: number) {
-    this.pizza.discount_price += (5 * number);
+    this.pizza.discount_percent += (5 * number);
   }
 
   discountChanged() {
-    return this.prevDiscountPrice != this.pizza.discount_price ? false : true;
+    return this.prevDiscountPrice != this.pizza.discount_percent ? false : true;
   }
 
   updatePizza() {
     this.pizzaService.updatePizza(this.pizza, null).subscribe(() => {
       this.flashMessage.show('Pizza discount changed', { cssClass: 'alert-success', timeout: 4000 });
-      this.prevDiscountPrice = this.pizza.discount_price;
+      this.prevDiscountPrice = this.pizza.discount_percent;
     },
       err => {
         var text: string = '';
