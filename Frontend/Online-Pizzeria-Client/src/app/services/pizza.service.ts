@@ -46,11 +46,13 @@ export class PizzaService {
       name: pizza.name,
       price: pizza.price,
       ingredients: pizza.ingredients,
-      picture: pictureFile == null ? pizza.picture : pictureFile,
       discount_price: pizza.discount_price
     }
+    const formData = new FormData();
+    formData.append('file', pictureFile == null ? pizza.picture : pictureFile);
+    formData.append('pizza', JSON.stringify(postPizza));
 
-    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, postPizza, httpOptions);
+    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, formData, httpOptions);
   }
 
   deletePizza(id: number) {

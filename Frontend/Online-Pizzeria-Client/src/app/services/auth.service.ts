@@ -34,22 +34,27 @@ export class AuthService {
   }
 
   verifyAuth(): Observable<boolean> {
-    return this.http.post(`${environment.apiBaseUrl}/api/auth`, this.userData, httpOptions).pipe(
-      map(res => {
-        return true;
-      }),
-      catchError(err => {
-        this.clearSession();
-        return of(false)
-      })
-    );
+    if (this.userData.session_string != '') {
+      return this.http.post(`${environment.apiBaseUrl}/api/auth`, this.userData, httpOptions).pipe(
+        map(res => {
+          return true;
+        }),
+        catchError(err => {
+          this.clearSession();
+          return of(false)
+        })
+      );
+    }
+    else {
+      return of(false);
+    }
   }
 
   login(email: string, password: string) {
     return this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(res => {
       this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
       this.setSession(res.body as UserData);
-      
+
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
       this.router.onSameUrlNavigation = 'reload';
       this.router.navigate(['/admin/login']);
