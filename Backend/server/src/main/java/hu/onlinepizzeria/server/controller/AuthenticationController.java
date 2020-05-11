@@ -14,9 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -98,9 +94,13 @@ public class AuthenticationController {
                     return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
                 }
                 newUser.setEmail(user.getEmail());
-                newUser.setName("Jacob Gypsum");
-                newUser.setRoles(user.getRoles());
-                newUser.setPassword(bCryptPasswordEncoder.encode("default"));
+                newUser.setName(user.getName());
+                if (authenticationService.verifyRole(user.getRoles().get(0))){
+                    newUser.setRoles(user.getRoles());
+                }
+                else return new ResponseEntity("Invalid role.", HttpStatus.BAD_REQUEST);
+
+                newUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
                 users.save(newUser);
                 return new ResponseEntity(newUser, HttpStatus.CREATED);
             }
