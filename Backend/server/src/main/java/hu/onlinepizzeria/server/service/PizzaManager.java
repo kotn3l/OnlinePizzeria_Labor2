@@ -135,7 +135,9 @@ public class PizzaManager implements PizzaManagerInterface {
 
     public Path write(MultipartFile file, Path dir) throws IOException {
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
-
+        if (Files.exists(filepath)){
+            Files.delete(filepath);
+        }
         try (OutputStream os = Files.newOutputStream(filepath)) {
             os.write(file.getBytes());
             return filepath;
