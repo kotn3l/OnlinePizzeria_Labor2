@@ -60,6 +60,7 @@ public class OrderManager implements OrderManagerInterface {
         } else {
             customer = customerRepo.getCustomerById(customerIdCheck);
         }
+        time = date.getTime();
         Order currentOrder = new Order(customer, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
                 order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
         orderRepo.save(currentOrder);
