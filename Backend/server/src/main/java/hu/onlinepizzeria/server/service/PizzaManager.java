@@ -32,7 +32,8 @@ public class PizzaManager implements PizzaManagerInterface {
         this.ingredientRepo = ingredientRepo;
     }
 
-    private static Path imagePath = Paths.get("G:\\EKE\\ProjektLabor\\AFP2\\OnlinePizzeria_Labor2\\Backend\\images\\pizza");
+    private static Path serverPath = Paths.get(System.getProperty("user.dir"));
+    private static Path imagePath = Paths.get("images\\pizza");
 
     @Override
     public String addNewPizza (Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
@@ -41,7 +42,7 @@ public class PizzaManager implements PizzaManagerInterface {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
-        Path filePath = write(multipart, imagePath);
+        Path filePath = write(multipart, serverPath, imagePath);
         Pizza p = new Pizza();
         p.setName(pizza.get("name").toString());
         p.setPicture_path(filePath.toString());
@@ -74,7 +75,7 @@ public class PizzaManager implements PizzaManagerInterface {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
-        Path filePath = write(multipart, imagePath);
+        Path filePath = write(multipart, serverPath, imagePath);
         Pizza p = new Pizza();
         p.setId(id);
         p.setName(pizza.get("name").toString());
@@ -134,18 +135,20 @@ public class PizzaManager implements PizzaManagerInterface {
         }
     }
 
-    public Path write(MultipartFile file, Path dir) throws IOException {
-        if (!Files.exists(dir)){
-            File temp = new File(dir.toUri());
+    public Path write(MultipartFile file, Path sysDir, Path imgDir) throws IOException {
+        Path tempPath = serverPath.getParent().resolve(imagePath);
+        if (!Files.exists(tempPath)){
+            File temp = new File(tempPath.toUri());
             temp.mkdirs();
         }
-        Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
+        Path filepath = Paths.get(tempPath.toString(), file.getOriginalFilename());
+        Path toSave = Paths.get(imgDir.toString(), file.getOriginalFilename());
         if (Files.exists(filepath)){
             Files.delete(filepath);
         }
         try (OutputStream os = Files.newOutputStream(filepath)) {
             os.write(file.getBytes());
-            return filepath;
+            return toSave;
         }
     }
 }

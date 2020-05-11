@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.*;
+import java.nio.file.Paths;
 import java.security.InvalidParameterException;
 import java.util.Base64;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class Pizza implements Serializable {
 
     @JsonProperty("picture")
     public String getPicture_path() throws IOException {
-        return encoder(picture_path);
+        return encoder(Paths.get(System.getProperty("user.dir")).getParent().resolve(picture_path).toString());
     }
 
     @JsonIgnore
@@ -58,7 +59,7 @@ public class Pizza implements Serializable {
     }
 
     public void setPicture_path(String picture_path) throws InvalidParameterException {
-        File pic = new File(picture_path);
+        File pic = new File(Paths.get(System.getProperty("user.dir")).getParent().resolve(picture_path).toString());
         if(pic.isFile()) {
             this.picture_path = picture_path;
         }
