@@ -21,9 +21,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping(path="/api")
 public class DeliveryController {
 
-    @Autowired
-    private DeliveryManager deliveryManager;
+    private final DeliveryManager deliveryManager;
     //constructor that sets the deliveryManager prop
+
+    public DeliveryController(DeliveryManager deliveryManager) {
+        this.deliveryManager = deliveryManager;
+    }
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
