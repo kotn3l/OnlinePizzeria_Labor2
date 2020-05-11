@@ -1,6 +1,7 @@
 package hu.onlinepizzeria.server.web;
 
 import hu.onlinepizzeria.server.dao.*;
+import hu.onlinepizzeria.server.service.DeliveryManager;
 import hu.onlinepizzeria.server.service.OrderManager;
 import hu.onlinepizzeria.server.service.PizzaManager;
 import hu.onlinepizzeria.server.service.SchedulingManager;
@@ -24,4 +25,6 @@ public class WebConfig {
     public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo){
         return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo, customerRepo);
     }
+    @Bean
+    public DeliveryManager deliveryManager(DeliveryRepo repository) { return new DeliveryManager(repository); }
 }
