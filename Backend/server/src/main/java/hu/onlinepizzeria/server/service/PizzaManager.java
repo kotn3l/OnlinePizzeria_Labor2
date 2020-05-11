@@ -8,6 +8,7 @@ import hu.onlinepizzeria.server.dao.PizzaRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -45,7 +46,7 @@ public class PizzaManager implements PizzaManagerInterface {
         p.setName(pizza.get("name").toString());
         p.setPicture_path(filePath.toString());
         p.setPrice(Integer.parseInt(pizza.get("price").toString()));
-        p.setDiscount_percent(0);
+        p.setDiscount_percent(Integer.parseInt(pizza.getOrDefault("discount_percent",0).toString()));
         p.setUnavailable(false);
         pizzaRepo.save(p);
 
@@ -67,7 +68,7 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public Pizza updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
+    public String updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
         if(pIngredients.size() <= 1) {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
@@ -77,25 +78,25 @@ public class PizzaManager implements PizzaManagerInterface {
         Pizza p = new Pizza();
         p.setId(id);
         p.setName(pizza.get("name").toString());
-        p.setPicture_path(pizza.get("picture").toString());
+        p.setPicture_path(filePath.toString());
         p.setPrice(Integer.parseInt(pizza.get("price").toString()));
-        p.setDiscount_percent(Integer.parseInt(pizza.get("discount_price").toString()));
+        p.setDiscount_percent(Integer.parseInt(pizza.get("discount_percent").toString()));
         p.setUnavailable(false);
         pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), p.isUnavailable());
 
         ingredientCheck(pIngredients);
         saveIngredients(pIngredients);
         savePizzaIngredients(p.getId(), pizzaIngredients, true);
-        return p;
+        return "Pizza updated";
     }
 
     @Override
-    public Pizza deletePizza(Integer id){
+    public String deletePizza(Integer id){
         Pizza p = pizzaRepo.findById(id).orElse(null);
         if (p != null) {
             pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), true);
         }
-        return p;
+        return "Pizza deleted";
     }
 
     public ArrayList<String> ingredientCheck(ArrayList<String> pizzaIngredients){
@@ -134,6 +135,10 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     public Path write(MultipartFile file, Path dir) throws IOException {
+        if (!Files.exists(dir)){
+            File temp = new File(dir.toUri());
+            temp.mkdirs();
+        }
         Path filepath = Paths.get(dir.toString(), file.getOriginalFilename());
         if (Files.exists(filepath)){
             Files.delete(filepath);

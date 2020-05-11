@@ -10,6 +10,6 @@ public interface PizzaManagerInterface {
     public String addNewPizza(Map<String, Object> pizza, MultipartFile multipart) throws IOException;
     public Iterable<Pizza> getAllPizzas();
     public Iterable<Pizza> getDiscountedPizzas();
-    public Pizza updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws IOException;
-    public Pizza deletePizza(Integer id);
+    public String updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws IOException;
+    public String deletePizza(Integer id);
 }
