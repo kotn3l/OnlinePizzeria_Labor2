@@ -132,22 +132,6 @@ public class AuthenticationController {
         }
         else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
     }
-    @GetMapping("/me")
-    public ResponseEntity currentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        Map<Object, Object> model = new HashMap<>();
-        try {
-            model.put("username", userDetails.getUsername());
-            model.put("roles", userDetails.getAuthorities()
-                    .stream()
-                    .map(a -> ((GrantedAuthority) a).getAuthority())
-                    .collect(toList())
-            );
-
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        return ok(model);
-    }
     @GetMapping("/user")
     public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) {
         if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
