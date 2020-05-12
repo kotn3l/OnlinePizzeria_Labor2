@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.security.InvalidParameterException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -26,9 +27,6 @@ public class OrderManager implements OrderManagerInterface {
 
     @Autowired
     private CustomerRepo customerRepo;
-
-    Date date= new Date();
-    long time = date.getTime();
 
     public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo) {
         this.orderRepo = orderRepo;
@@ -60,9 +58,12 @@ public class OrderManager implements OrderManagerInterface {
         } else {
             customer = customerRepo.getCustomerById(customerIdCheck);
         }
-        time = date.getTime();
+        Date date= new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 30);
         Order currentOrder = new Order(customer, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
-                order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(time), 0, null);
+                order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(calendar.getTime().getTime()), 0, null);
         orderRepo.save(currentOrder);
         for (int i = 0; i < orderedPizzas.size(); i++) {
             orderRepo.addOrderedPizza(orderedPizzas.get(i), currentOrder.getId());
@@ -125,7 +126,7 @@ public class OrderManager implements OrderManagerInterface {
         for (Pizza p: pizzas
              ) {
             if (temp.contains(p.getId())) {
-                temp.remove(p.getId());
+                while (temp.remove(p.getId()));
             }
         }
         if (temp.size() > 0){
