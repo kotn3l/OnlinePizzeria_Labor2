@@ -35,7 +35,7 @@ export class AuthService {
 
   verifyAuth(): Observable<boolean> {
     if (this.userData.session_string != '') {
-      return this.http.post(`${environment.apiBaseUrl}/api/auth`, this.userData, httpOptions).pipe(
+      return this.http.post(`${environment.apiBaseUrl}/api/auth/?session_string=${this.userData.session_string}`, this.userData, httpOptions).pipe(
         map(res => {
           return true;
         }),
@@ -53,7 +53,30 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(res => {
       this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
-      this.setSession(res.body as UserData);
+      var response = res.body as { session_string: string, roles: string[] };
+      var userData: UserData;
+
+      userData.session_string = response.session_string;
+      for (let i = 0; i < response.roles.length; i++) {
+        if(response.roles[i] == "ROLE_ADMIN") {
+          userData.role = UserRole.administrator;
+          break;
+        }
+        else if(response.roles[i] == "ROLE_MANAGER") {
+          userData.role = UserRole.manager;
+          break;
+        }
+        else if(response.roles[i] == "ROLE_KITCHEN") {
+          userData.role = UserRole.kitchenStaff;
+          break;
+        }
+        else if(response.roles[i] == "ROLE_DELIVERY") {
+          userData.role = UserRole.deliveryGuy;
+          break;
+        }
+      }
+
+      this.setSession(userData as UserData);
 
       this.router.routeReuseStrategy.shouldReuseRoute = () => false;
       this.router.onSameUrlNavigation = 'reload';
