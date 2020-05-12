@@ -39,6 +39,7 @@ public class DeliveryManager implements DeliveryManagerInterface {
             turn = deliveryRepo.getMaxTurn() + 1;
         } catch (Exception e) {
             e.printStackTrace();
+            turn = 1;
         }
         User del = userRepo.findById(deliveryGuyId).get();
         for (Integer order_id : orderId) {
