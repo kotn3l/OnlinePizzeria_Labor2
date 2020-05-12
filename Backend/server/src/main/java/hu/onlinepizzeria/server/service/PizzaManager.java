@@ -71,10 +71,6 @@ public class PizzaManager implements PizzaManagerInterface {
     @Override
     public String updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
-        if(pIngredients.size() <= 1) {
-            throw new InvalidParameterException("A pizza must have more than one ingredient");
-        }
-        ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
         Path filePath = null;
         if (multipart != null){
             filePath = write(multipart, serverPath, imagePath);
@@ -91,9 +87,15 @@ public class PizzaManager implements PizzaManagerInterface {
         p.setUnavailable(false);
         pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), p.isUnavailable());
 
-        ingredientCheck(pIngredients);
-        saveIngredients(pIngredients);
-        savePizzaIngredients(p.getId(), pizzaIngredients, true);
+        if (pIngredients != null){
+            if(pIngredients.size() <= 1) {
+                throw new InvalidParameterException("A pizza must have more than one ingredient");
+            }
+            ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
+            ingredientCheck(pIngredients);
+            saveIngredients(pIngredients);
+            savePizzaIngredients(p.getId(), pizzaIngredients, true);
+        }
         return "Pizza updated";
     }
 
