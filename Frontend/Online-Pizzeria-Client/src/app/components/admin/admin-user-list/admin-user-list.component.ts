@@ -45,6 +45,19 @@ export class AdminUserListComponent implements OnInit {
     user.hide = !user.hide;
   }
 
+  roleOut(userRole: UserRole) {
+    switch (userRole as UserRole) {
+      case UserRole.administrator:
+        return 'administrator';
+      case UserRole.manager:
+        return 'manager';
+      case UserRole.kitchenStaff:
+        return 'kitchen staff';
+      case UserRole.deliveryGuy:
+        return 'delivery guy';
+    }
+  }
+
   deleteUser(id: number) {
     if (confirm('Are you sure you want to remove this staff member?')) {
       this.userService.deleteUser(id).subscribe(() => {

@@ -50,7 +50,7 @@
             #userRole="ngModel"
             required
           >
-            <option *ngFor="let role of roles" value="{{ role.id }}">{{ role.text }}</option>
+            <option *ngFor="let role of roles" value="{{ role.id }}">{{ roleOut(role.text) }}</option>
           </select>
         </div>
     </div>
@@ -69,7 +69,7 @@
     </h3>
     <ul class="list-group" *ngIf="!user.hide">
       <li class="list-group-item">Email: {{ user.email }}</li>
-      <li class="list-group-item">Role: {{ user.role }}</li>
+      <li class="list-group-item">Role: {{ roleOut(user.role) }}</li>
     </ul>
   </li>
 </ul>
