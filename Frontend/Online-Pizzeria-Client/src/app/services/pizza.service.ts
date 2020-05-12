@@ -36,7 +36,7 @@ export class PizzaService {
     var postPizza = {
       name: pizza.name,
       price: pizza.price,
-      ingredients: pizza.ingredients,
+      ingredients: pizza.ingredientList,
       picture: JSON.stringify(pictureFile)
     }
     const formData = new FormData();
@@ -52,7 +52,7 @@ export class PizzaService {
     var postPizza = {
       name: pizza.name,
       price: pizza.price,
-      ingredients: pizza.ingredients,
+      ingredients: pizza.ingredientList,
       discount_percent: pizza.discount_percent
     }
     const formData = new FormData();

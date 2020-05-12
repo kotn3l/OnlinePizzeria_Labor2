@@ -30,6 +30,9 @@ export class AdminPizzaFormComponent implements OnInit {
     this.pizzaService.selectedPizza.subscribe(pizza => {
       if (pizza.id != null) {
         this.pizza = pizza;
+        this.pizza.ingredients.forEach(ingredient => {
+          this.ingredientList.push(ingredient.name);
+        })
         this.isNew = false;
         this.ingredientCount = this.pizza.ingredients.length;
       }
@@ -92,9 +95,10 @@ export class AdminPizzaFormComponent implements OnInit {
   }
 
   cleanIngredient() {
+    this.pizza.ingredientList = [];
     this.ingredientList.forEach((ingredient, index) => {
       if (ingredient != null && ingredient != '' && ingredient != undefined) {
-        this.pizza.ingredients.push(ingredient);
+        this.pizza.ingredientList.push(ingredient);
       }
     });
   }
@@ -105,6 +109,7 @@ export class AdminPizzaFormComponent implements OnInit {
       name: '',
       price: null,
       ingredients: [],
+      ingredientList: [],
       discount_percent: 0
     }
     this.ingredientCount = 1;
