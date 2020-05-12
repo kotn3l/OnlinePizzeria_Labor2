@@ -36,6 +36,10 @@ export class AdminPizzaFormComponent implements OnInit {
     });
   }
 
+  onFileChanged(event) {
+    this.picture = event.target.files[0];
+  }
+
   onSubmit() {
     this.cleanIngredient();
     if (this.isNew) {
@@ -90,7 +94,7 @@ export class AdminPizzaFormComponent implements OnInit {
   cleanIngredient() {
     this.ingredientList.forEach((ingredient, index) => {
       if (ingredient != null && ingredient != '' && ingredient != undefined) {
-        this.pizza.ingredients.push({name: ingredient});
+        this.pizza.ingredients.push({ name: ingredient });
       }
     });
   }

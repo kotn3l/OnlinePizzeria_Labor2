@@ -59,7 +59,7 @@
               <span class="input-group-text" id="inputGroupFileAddon">Upload</span>
             </div>
             <div class="custom-file">
-              <input type="file" class="custom-file-input" id="inputGroupFile" name="picture" [(ngModel)]="picture"
+              <input type="file" class="custom-file-input" id="inputGroupFile" name="picture" (change)="onFileChanged($event)"
                 aria-describedby="inputGroupFileAddon">
               <label class="custom-file-label" for="inputGroupFile">Choose file</label>
             </div>
