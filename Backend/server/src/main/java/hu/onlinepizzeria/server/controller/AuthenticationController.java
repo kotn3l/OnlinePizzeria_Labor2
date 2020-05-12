@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,19 +42,20 @@ public class AuthenticationController {
     @PostMapping("/login")
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
 
+        Map<Object, Object> model = new HashMap<>();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
             String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
                     .getRoles());
             Optional<User> user2 = users.findUserByEmail(user.getEmail());
-            Map<Object, Object> model = new HashMap<>();
             model.put("session_string", token);
             model.put("role", user2.get().getRoles());
             return ok(model);
 
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username/password");
+            model.put("error", "Invalid password or email.");
+            return new ResponseEntity<>(model, HttpStatus.UNAUTHORIZED);
         }
     }
     @GetMapping("/logout")
