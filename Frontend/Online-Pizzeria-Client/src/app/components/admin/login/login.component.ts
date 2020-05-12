@@ -32,12 +32,11 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.email, this.password).subscribe(res => {
       if (res) {
         this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
-        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-        this.router.onSameUrlNavigation = 'reload';
-        this.router.navigate(['/admin/login']);
+        
+        window.location.reload();
       }
     },
-      err => this.flashMessage.show(err.error.error, { cssClass: 'alert-danger', timeout: 4000 })
+      err => this.flashMessage.show(err.error, { cssClass: 'alert-danger', timeout: 4000 })
     );
   }
 
