@@ -14,7 +14,9 @@ export class LoginComponent implements OnInit {
 
   isLoggedIn: boolean = false;
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private flashMessage: FlashMessagesService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -27,7 +29,16 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.authService.login(this.email, this.password);
+    this.authService.login(this.email, this.password).subscribe(res => {
+      if (res) {
+        this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+        this.router.onSameUrlNavigation = 'reload';
+        this.router.navigate(['/admin/login']);
+      }
+    },
+      err => this.flashMessage.show(err.error.error, { cssClass: 'alert-danger', timeout: 4000 })
+    );
   }
 
 }
