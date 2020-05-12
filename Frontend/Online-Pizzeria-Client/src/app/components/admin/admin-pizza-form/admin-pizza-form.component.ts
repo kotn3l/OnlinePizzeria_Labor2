@@ -94,7 +94,7 @@ export class AdminPizzaFormComponent implements OnInit {
   cleanIngredient() {
     this.ingredientList.forEach((ingredient, index) => {
       if (ingredient != null && ingredient != '' && ingredient != undefined) {
-        this.pizza.ingredients.push({ name: ingredient });
+        this.pizza.ingredients.push(ingredient);
       }
     });
   }
