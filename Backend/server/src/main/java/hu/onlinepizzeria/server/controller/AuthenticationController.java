@@ -81,9 +81,9 @@ public class AuthenticationController {
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
                                        @RequestBody User user) {
 
+        Map<Object, Object> model = new HashMap<>();
         try {
             if (!jwtTokenProvider.validateToken(session_string)){
-                Map<Object, Object> model = new HashMap<>();
                 model.put("error","Invalid session string.");
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
@@ -91,7 +91,8 @@ public class AuthenticationController {
                 User newUser = new User();
 
                 if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
-                    return new ResponseEntity("Invalid email address", HttpStatus.BAD_REQUEST);
+                    model.put("error", "Invalid email address");
+                    return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
                 }
                 newUser.setEmail(user.getEmail());
                 newUser.setName(user.getName());
@@ -105,7 +106,6 @@ public class AuthenticationController {
                 return new ResponseEntity(newUser, HttpStatus.CREATED);
             }
             else {
-                Map<Object, Object> model = new HashMap<>();
                 model.put("error","Invalid session string.");
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
