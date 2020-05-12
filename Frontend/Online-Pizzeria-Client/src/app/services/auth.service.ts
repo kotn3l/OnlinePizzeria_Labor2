@@ -23,8 +23,7 @@ export class AuthService {
   }
   constructor(
     private http: HttpClient,
-    private router: Router,
-    private flashMessage: FlashMessagesService
+    private router: Router
   ) {
     if (sessionStorage.getItem('userData') != null) {
       var data = JSON.parse(sessionStorage.getItem('userData'));
@@ -50,39 +49,40 @@ export class AuthService {
     }
   }
 
-  login(email: string, password: string) {
-    return this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).subscribe(res => {
-      this.flashMessage.show('Succesfull login!', { cssClass: 'alert-success', timeout: 4000 });
-      var response = res.body as { session_string: string, roles: string[] };
-      var userData: UserData;
+  login(email: string, password: string): Observable<boolean> {
+    return this.http.post(`${environment.apiBaseUrl}/api/login`, { email: email, password: password }, httpOptions).pipe(
+      map(res => {
+        var response = res.body as { session_string: string, roles: string[] };
+        var userData: UserData = {
+          session_string: '',
+          role: null
+        };
 
-      userData.session_string = response.session_string;
-      for (let i = 0; i < response.roles.length; i++) {
-        if(response.roles[i] == "ROLE_ADMIN") {
-          userData.role = UserRole.administrator;
-          break;
+        userData.session_string = response.session_string;
+        for (let i = 0; i < response.roles.length; i++) {
+          if (response.roles[i] == "ROLE_ADMIN") {
+            userData.role = UserRole.administrator;
+            break;
+          }
+          else if (response.roles[i] == "ROLE_MANAGER") {
+            userData.role = UserRole.manager;
+            break;
+          }
+          else if (response.roles[i] == "ROLE_KITCHEN") {
+            userData.role = UserRole.kitchenStaff;
+            break;
+          }
+          else if (response.roles[i] == "ROLE_DELIVERY") {
+            userData.role = UserRole.deliveryGuy;
+            break;
+          }
         }
-        else if(response.roles[i] == "ROLE_MANAGER") {
-          userData.role = UserRole.manager;
-          break;
+        if (userData.session_string != '') {
+          this.setSession(userData);
+          return true;
         }
-        else if(response.roles[i] == "ROLE_KITCHEN") {
-          userData.role = UserRole.kitchenStaff;
-          break;
-        }
-        else if(response.roles[i] == "ROLE_DELIVERY") {
-          userData.role = UserRole.deliveryGuy;
-          break;
-        }
-      }
-
-      this.setSession(userData as UserData);
-
-      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-      this.router.onSameUrlNavigation = 'reload';
-      this.router.navigate(['/admin/login']);
-    },
-      err => this.flashMessage.show(err.error.error, { cssClass: 'alert-danger', timeout: 4000 }));
+        return false;
+      }));
   }
 
   logout() {
