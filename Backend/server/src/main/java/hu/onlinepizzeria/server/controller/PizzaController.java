@@ -56,7 +56,7 @@ public class PizzaController {
 
     @PutMapping(path = "/pizza/", consumes = {"multipart/form-data"})
     public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestPart("pizza") Map<String, Object> pizza,
-                                                    @RequestPart("file") MultipartFile multipart) {
+                                                    @RequestPart(value = "file", required = false) MultipartFile multipart) {
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
                 return new ResponseEntity(pizzaManager.updatePizza(id, pizza, multipart), HttpStatus.OK);

@@ -75,11 +75,17 @@ public class PizzaManager implements PizzaManagerInterface {
             throw new InvalidParameterException("A pizza must have more than one ingredient");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
-        Path filePath = write(multipart, serverPath, imagePath);
+        Path filePath = null;
+        if (multipart != null){
+            filePath = write(multipart, serverPath, imagePath);
+        }
         Pizza p = new Pizza();
         p.setId(id);
         p.setName(pizza.get("name").toString());
-        p.setPicture_path(filePath.toString());
+        if (filePath == null){
+            Pizza oldPizza = pizzaRepo.getPizzaById(id);
+            p.setPicture_path(oldPizza.getRealPicPath());
+        } else p.setPicture_path(filePath.toString());
         p.setPrice(Integer.parseInt(pizza.get("price").toString()));
         p.setDiscount_percent(Integer.parseInt(pizza.get("discount_percent").toString()));
         p.setUnavailable(false);
