@@ -54,7 +54,7 @@ public class PizzaController {
         return pizzaManager.getDiscountedPizzas();
     }
 
-    @PutMapping(path = "/pizza/", consumes = {"multipart/form-data"})
+    @PutMapping(path = "/pizza/")
     public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestPart("pizza") Map<String, Object> pizza,
                                                     @RequestPart(value = "file", required = false) MultipartFile multipart) {
         try {
