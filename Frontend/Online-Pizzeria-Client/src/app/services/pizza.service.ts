@@ -10,10 +10,6 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-type': 'application/json' })
 }
 
-const httpOptions2 = {
-  headers: new HttpHeaders({ 'Content-type': undefined })
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +18,7 @@ export class PizzaService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-    ) { }
+  ) { }
 
   getDiscountedPizzas(): Observable<Pizza[]> {
     return this.http.get<Pizza[]>(`${environment.apiBaseUrl}/api/pizza/discount`);
@@ -37,15 +33,13 @@ export class PizzaService {
       name: pizza.name,
       price: pizza.price,
       ingredients: pizza.ingredientList,
-      picture: JSON.stringify(pictureFile)
     }
+
     const formData = new FormData();
     formData.append('file', pictureFile);
-    formData.append('pizza', JSON.stringify(postPizza));
+    formData.append('pizza', new Blob([JSON.stringify(postPizza)], { type: 'application/json' }));
 
-
-
-    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, postPizza, httpOptions);
+    return this.http.post(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}`, formData);
   }
 
   updatePizza(pizza: Pizza, pictureFile: File) {
@@ -55,11 +49,12 @@ export class PizzaService {
       ingredients: pizza.ingredientList,
       discount_percent: pizza.discount_percent
     }
-    const formData = new FormData();
-    formData.append('file', pictureFile == null ? pizza.picture : pictureFile);
-    formData.append('pizza', JSON.stringify(postPizza));
 
-    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, formData, httpOptions2);
+    const formData = new FormData();
+    formData.append('file', pictureFile);
+    formData.append('pizza', new Blob([JSON.stringify(postPizza)], { type: 'application/json' }));
+
+    return this.http.put(`${environment.apiBaseUrl}/api/pizza/?session_string=${this.authService.userData.session_string}&pizza_id=${pizza.id}`, formData);
   }
 
   deletePizza(id: number) {
