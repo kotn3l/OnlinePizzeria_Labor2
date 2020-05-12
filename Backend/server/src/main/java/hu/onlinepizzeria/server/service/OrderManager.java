@@ -61,7 +61,7 @@ public class OrderManager implements OrderManagerInterface {
         Date date= new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, 30);
+        calendar.add(Calendar.MINUTE, calculateDeadline(orderedPizzas.size()));
         Order currentOrder = new Order(customer, new DeliveryCities(Integer.parseInt(order.get("city").toString())), order.get("street").toString(), Integer.parseInt(order.get("house_number").toString()),
                 order.get("other").toString(), order.get("comment").toString(), new PayMethod(Integer.parseInt(order.get("pay_method").toString())), new Timestamp(calendar.getTime().getTime()), 0, null);
         orderRepo.save(currentOrder);
@@ -159,5 +159,18 @@ public class OrderManager implements OrderManagerInterface {
             }
         }
         return -1;
+    }
+
+    public Integer calculateDeadline(int orderedPizzaCount){
+        int toReturn = 0;
+        int minutes = 30;
+        for (int i = 0; i < orderedPizzaCount; i++){
+            toReturn += minutes;
+            minutes = minutes / 2;
+            if (minutes >= 15){
+                minutes = 5;
+            }
+        }
+        return toReturn;
     }
 }
