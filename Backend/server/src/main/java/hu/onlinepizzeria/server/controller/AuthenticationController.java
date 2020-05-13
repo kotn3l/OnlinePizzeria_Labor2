@@ -65,13 +65,21 @@ public class AuthenticationController {
 
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
+            Map<Object, Object> model = new HashMap<>();
             if (!jwtTokenProvider.validateToken(session_string)){
-                Map<Object, Object> model = new HashMap<>();
                 model.put("error","Invalid session string.");
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return ok(authenticationService.getAllRoles());
+                List<Map<Object, Object>> result = new ArrayList<>();
+                for (Role r: authenticationService.getAllRoles()
+                     ) {
+                    model = new HashMap<>();
+                    model.put("id", r.getId());
+                    model.put("text", r.getName());
+                    result.add(model);
+                }
+                return new ResponseEntity(result, HttpStatus.OK);
             }
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
 
