@@ -18,10 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -87,7 +84,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
-                                       @RequestBody User user) {
+                                       @RequestBody Map<String, Object> payload) {
 
         Map<Object, Object> model = new HashMap<>();
         try {
@@ -97,19 +94,27 @@ public class AuthenticationController {
             }
             if (jwtTokenProvider.isAdmin(session_string)) {
                 User newUser = new User();
-
-                if(!EmailValidator.getInstance().isValid(user.getEmail()) || users.findUserByEmail(user.getEmail()).isPresent()){
+                String email = payload.get("email").toString();
+                if(!EmailValidator.getInstance().isValid(email)
+                        || users.findUserByEmail(email).isPresent()){
                     model.put("error", "Invalid email address");
                     return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
                 }
-                newUser.setEmail(user.getEmail());
-                newUser.setName(user.getName());
-                if (authenticationService.verifyRole(user.getRoles().get(0))){
-                    newUser.setRoles(user.getRoles());
+                System.out.println(payload);
+                System.out.println(email);
+                newUser.setEmail(email);
+                newUser.setName(payload.get("name").toString());
+                if (authenticationService.verifyRole(authenticationService.getAllRoles()
+                        .get((int)payload.get("role_id")).getName())){
+
+                    List<String> roles = new ArrayList<>();
+                    roles.add(authenticationService.getAllRoles()
+                            .get((int)payload.get("role_id")).getName());
+                    newUser.setRoles(roles);
                 }
                 else return new ResponseEntity("Invalid role.", HttpStatus.BAD_REQUEST);
-
-                newUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                newUser.setPassword(bCryptPasswordEncoder.encode("default"));
+                //newUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
                 users.save(newUser);
                 return new ResponseEntity(newUser, HttpStatus.CREATED);
             }
@@ -117,9 +122,10 @@ public class AuthenticationController {
                 model.put("error","Invalid session string.");
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e) {
-            return new ResponseEntity("Invalid session string",HttpStatus.BAD_REQUEST);
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
     }
     @PostMapping("/user")
     public ResponseEntity changePassword(@RequestParam(name="session_string", required = true) String session_string,
