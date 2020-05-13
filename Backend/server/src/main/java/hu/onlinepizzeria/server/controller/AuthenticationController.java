@@ -100,8 +100,6 @@ public class AuthenticationController {
                     model.put("error", "Invalid email address");
                     return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
                 }
-                System.out.println(payload);
-                System.out.println(email);
                 newUser.setEmail(email);
                 newUser.setName(payload.get("name").toString());
                 if (authenticationService.verifyRole(authenticationService.getAllRoles()

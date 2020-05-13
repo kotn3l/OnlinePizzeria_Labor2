@@ -78,7 +78,6 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
 
     public List<Role> getAllRoles() {
         List<String> roleList = roles.getAllRoles();
-        System.out.println(roleList);
         List<Role> allRoles = new ArrayList<>();
         int i = 1;
         for (String role1 : roleList) {
@@ -95,7 +94,6 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
 
     public void updatePassword(int id, String password) {
         users.updatePassword(id, password);
-        System.out.println(id + " " + password);
     }
 
     public boolean verifyRole(String role) {
