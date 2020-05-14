@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
     @NotEmpty
