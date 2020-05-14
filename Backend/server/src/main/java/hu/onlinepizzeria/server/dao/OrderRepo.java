@@ -23,6 +23,9 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
     @Query(value="SELECT id FROM orders ORDER BY deadline DESC", nativeQuery = true)
     ArrayList<Integer> getOrderInOrder();
 
+    @Query(value="SELECT id FROM orders ORDER BY deadline ASC", nativeQuery = true)
+    ArrayList<Integer> getOrderInOrderAsc();
+
     @Modifying
     @Transactional
     @Query(value="UPDATE order_pizza SET done=1 WHERE pizza_id=:ordered_pizza_id AND done=0 LIMIT 1", nativeQuery = true)
@@ -39,6 +42,31 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
 
     @Query(value="SELECT pizza_id FROM order_pizza WHERE order_id=:order_id", nativeQuery = true)
     ArrayList<Integer> prepOrderPizzaById(Integer order_id);
+
+    @Query(value="SELECT pizza_id FROM order_pizza WHERE order_id=:order_id AND done = 0", nativeQuery = true)
+    ArrayList<Integer> orderPizzaById(Integer order_id);
+
+    @Query(value="SELECT DISTINCT order_id FROM order_pizza WHERE done = 0", nativeQuery = true)
+    ArrayList<Integer> notDoneOrders();
+
+    @Query(value="SELECT DISTINCT order_id FROM order_pizza WHERE id=:order_pizza AND done = 0", nativeQuery = true)
+    ArrayList<Integer> getOrderIdsByOrderPizza(Integer order_pizza);
+
+    @Query(value="SELECT id FROM order_pizza WHERE order_id=:order_id", nativeQuery = true)
+    ArrayList<Integer> getOrderPizzaByOId(Integer order_id);
+
+    @Query(value="SELECT id FROM order_pizza WHERE done = 1", nativeQuery = true)
+    ArrayList<Integer> getOrderPizzaDone();
+
+    @Modifying
+    @Transactional
+    @Query(value="TRUNCATE scheduled_pizzas", nativeQuery = true)
+    void truncateScheduledPizzas();
+
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO scheduled_pizzas (order_pizza, prep_number) VALUES (:orderPizza, :prepNum)", nativeQuery = true)
+    void addOrderPizza(Integer orderPizza, Integer prepNum);
 
     @Modifying
     @Transactional
