@@ -33,6 +33,6 @@ export class OrderService {
   }
 
   postPizzaPrepared(id: number) {
-    return this.http.post(`${environment.apiBaseUrl}/api/order-prep/?session_string=${this.authService.userData.session_string}&orderd_pizza_id=${id}`, null);
+    return this.http.post(`${environment.apiBaseUrl}/api/order-prep/?session_string=${this.authService.userData.session_string}&ordered_pizza_id=${id}`, null);
   }
 }

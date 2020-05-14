@@ -16,7 +16,7 @@ export class SchedulingService {
   ) { }
 
   getSchedulingAlgorithms(): Observable<Scheduler[]> {
-    return this.http.get<Scheduler[]>(`${environment.apiBaseUrl}/api/scheduling/?sessin_string=${this.authService.userData.session_string}`);
+    return this.http.get<Scheduler[]>(`${environment.apiBaseUrl}/api/scheduling/?session_string=${this.authService.userData.session_string}`);
   }
 
   postActiveAlgorithm(id: number) {
