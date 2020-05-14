@@ -88,15 +88,15 @@ public class OrderManager implements OrderManagerInterface {
 
     @Override
     public Iterable<Pizza> getPreparedPizzas() {
+        ArrayList<Integer> orderPizzaByPrep = orderRepo.getOrderPizzaByPrep();
         ArrayList<Integer> pizzaIds = new ArrayList<>();
-        ArrayList<Integer> orderIds = orderRepo.getOrderInOrder(); //in order
+        for (Integer op: orderPizzaByPrep
+             ) {
+            pizzaIds.addAll(orderRepo.orderPizzaById(op));
+        }
         ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (int i = 0; i < orderIds.size(); i++){
-            pizzaIds.addAll(orderRepo.prepOrderPizzaById(orderIds.get(i)));
-            for (int j = 0; j < pizzaIds.size(); j++){
-                pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
-            }
-            pizzaIds.clear();
+        for (int j = 0; j < pizzaIds.size(); j++){
+            pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
         }
         return pizzas;
     }
