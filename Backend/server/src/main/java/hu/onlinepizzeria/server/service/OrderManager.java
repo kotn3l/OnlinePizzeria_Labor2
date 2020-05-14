@@ -28,6 +28,9 @@ public class OrderManager implements OrderManagerInterface {
     @Autowired
     private CustomerRepo customerRepo;
 
+    @Autowired
+    private SchedulingRepo schedulingRepo;
+
     public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo) {
         this.orderRepo = orderRepo;
         this.payMethodRepo = payMethodRepo;
@@ -68,6 +71,8 @@ public class OrderManager implements OrderManagerInterface {
         for (int i = 0; i < orderedPizzas.size(); i++) {
             orderRepo.addOrderedPizza(orderedPizzas.get(i), currentOrder.getId());
         }
+        schedule();
+
         return "Saved";
     }
 
@@ -172,5 +177,37 @@ public class OrderManager implements OrderManagerInterface {
             }
         }
         return toReturn;
+    }
+
+    public void schedule(){
+        Integer active = schedulingRepo.getActiveAlgorithm();
+        if (active == 1){
+            scheduleOrderedPizzasDeadline();
+        }
+        else if (active == 2){
+            //the other one
+        } else {
+            throw new InvalidParameterException("No scheduling is set to active! Please set scheduling either to 1 (order deadline oriented) or 2 (ingredient-oriented)");
+        }
+    }
+
+    public void scheduleOrderedPizzasDeadline(){
+        orderRepo.truncateScheduledPizzas();
+        ArrayList<Integer> orderIdsDone = orderRepo.donePizzas();
+        ArrayList<Integer> orderIdsInOrder = orderRepo.getOrderInOrderAsc();
+        orderIdsInOrder.removeAll(orderIdsDone);
+        ArrayList<Integer> orderPizzaIds = new ArrayList<>();
+        for (Integer oi: orderIdsInOrder
+        ) {
+            orderPizzaIds.addAll(orderRepo.getOrderPizzaByOId(oi));
+        }
+        ArrayList<Integer> orderPizzaIdsDone = orderRepo.getOrderPizzaDone();
+        orderPizzaIds.removeAll(orderPizzaIdsDone);
+        Integer prepNum = 1;
+        for (Integer opi: orderPizzaIds
+             ) {
+            orderRepo.addOrderPizza(opi, prepNum);
+            prepNum++;
+        }
     }
 }
