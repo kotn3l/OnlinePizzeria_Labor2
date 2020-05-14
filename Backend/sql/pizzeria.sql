@@ -289,7 +289,7 @@ ALTER TABLE `role`
 -- Indexes for table `scheduled_pizzas`
 --
 ALTER TABLE `scheduled_pizzas`
-  ADD PRIMARY KEY (`order_pizza`);
+  ADD KEY `order_pizza` (`order_pizza`);
 
 --
 -- Indexes for table `scheduling`
@@ -362,7 +362,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `scheduled_pizzas`
 --
 ALTER TABLE `scheduled_pizzas`
-  MODIFY `order_pizza` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_pizza` int(11) NOT NULL;
 
 --
 -- AUTO_INCREMENT for table `scheduling`
@@ -413,7 +413,8 @@ ALTER TABLE `pizza_ingredients`
 -- Constraints for table `scheduled_pizzas`
 --
 ALTER TABLE `scheduled_pizzas`
-  ADD CONSTRAINT `fk_scheduled_pizzas_order_pizza` FOREIGN KEY (`order_pizza`) REFERENCES `order_pizza` (`id`);
+	ADD CONSTRAINT `fk_schedulepizza_order_pizza` FOREIGN KEY (`order_pizza`) REFERENCES `order_pizza`(`id`);
+
 
 --
 -- Constraints for table `user_roles`
