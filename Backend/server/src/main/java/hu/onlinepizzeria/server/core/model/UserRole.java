@@ -17,7 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class UserRole implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
