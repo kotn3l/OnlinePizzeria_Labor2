@@ -28,8 +28,8 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
 
     @Modifying
     @Transactional
-    @Query(value="UPDATE order_pizza SET done=1 WHERE pizza_id=:ordered_pizza_id AND done=0 LIMIT 1", nativeQuery = true)
-    void pizzaPrepared(Integer ordered_pizza_id);
+    @Query(value="UPDATE order_pizza SET done=1 WHERE pizza_id=:orderedPizzaId AND id=:orderPizza", nativeQuery = true)
+    void pizzaPrepared(Integer orderedPizzaId, Integer orderPizza);
 
     @Query(value="SELECT DISTINCT order_id FROM order_pizza WHERE done = 1", nativeQuery = true)
     ArrayList<Integer> donePizzas();
@@ -71,8 +71,11 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
     @Query(value="SELECT order_pizza FROM scheduled_pizzas ORDER BY prep_number ASC", nativeQuery = true)
     ArrayList<Integer> getOrderPizzaByPrep();
 
+    @Query(value="SELECT prep_number FROM scheduled_pizzas ORDER BY prep_number ASC", nativeQuery = true)
+    ArrayList<Integer> getPrepNum();
+
     @Query(value="SELECT pizza_id FROM order_pizza WHERE id=:orderPizza AND done = 0", nativeQuery = true)
-    ArrayList<Integer> orderPizzaById(Integer orderPizza);
+    Integer orderPizzaById(Integer orderPizza);
 
     @Modifying
     @Transactional

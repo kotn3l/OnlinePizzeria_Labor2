@@ -4,13 +4,12 @@ import hu.onlinepizzeria.server.core.model.*;
 import hu.onlinepizzeria.server.core.service.OrderManagerInterface;
 import hu.onlinepizzeria.server.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.security.InvalidParameterException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 public class OrderManager implements OrderManagerInterface {
     @Autowired
@@ -31,12 +30,14 @@ public class OrderManager implements OrderManagerInterface {
     @Autowired
     private SchedulingRepo schedulingRepo;
 
-    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo) {
+    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo) {
         this.orderRepo = orderRepo;
         this.payMethodRepo = payMethodRepo;
         this.cityRepo = cityRepo;
         this.pizzaRepo = pizzaRepo;
         this.customerRepo = customerRepo;
+        this.schedulingRepo = schedulingRepo;
+        schedule();
     }
 
     @Override
@@ -87,24 +88,21 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     @Override
-    public Iterable<Pizza> getPreparedPizzas() {
+    public ArrayList<ScheduledPizza> getPreparedPizzas() {
         ArrayList<Integer> orderPizzaByPrep = orderRepo.getOrderPizzaByPrep();
-        ArrayList<Integer> pizzaIds = new ArrayList<>();
-        for (Integer op: orderPizzaByPrep
-             ) {
-            pizzaIds.addAll(orderRepo.orderPizzaById(op));
+        ArrayList<ScheduledPizza> scheduledPizzas = new ArrayList<>();
+        for (int i = 0; i < orderPizzaByPrep.size(); i++){
+            scheduledPizzas.add(new ScheduledPizza(orderPizzaByPrep.get(i), i+1, pizzaRepo.getPizzaById(orderRepo.orderPizzaById(orderPizzaByPrep.get(i)))));
         }
-        ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (int j = 0; j < pizzaIds.size(); j++){
-            pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
-        }
-        return pizzas;
+        return scheduledPizzas;
     }
 
     @Override
     public String pizzaPrepared(Integer ordered_pizza_id) {
-        orderRepo.pizzaPrepared(ordered_pizza_id);
+        ArrayList<Integer> orderPizzaByPrep = orderRepo.getOrderPizzaByPrep();
+        //orderRepo.pizzaPrepared(ordered_pizza_id);
         return "Saved";
+
     }
 
     @Override
@@ -192,6 +190,7 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     public void scheduleOrderedPizzasDeadline(){
+        //TODO fix, something is wrongly scheduling
         orderRepo.truncateScheduledPizzas();
         ArrayList<Integer> orderIdsDone = orderRepo.donePizzas();
         ArrayList<Integer> orderIdsInOrder = orderRepo.getOrderInOrderAsc();
