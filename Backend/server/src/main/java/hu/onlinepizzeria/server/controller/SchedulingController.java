@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.core.model.SchedulingAlgorithms;
 import hu.onlinepizzeria.server.service.SchedulingManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -24,6 +26,7 @@ public class SchedulingController {
         this.schedulingManager = schedulingManager;
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/scheduling/")
     public @ResponseBody ResponseEntity getSchedulingAlgorithms(@RequestParam(name="session_string", required = true) String session_string){
         try {
@@ -38,6 +41,7 @@ public class SchedulingController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(path="/scheduling/")
     public @ResponseBody ResponseEntity setActiveSchedulingAlgorithm(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="scheduling_id", required = true) Integer scheduling_id){
         try {

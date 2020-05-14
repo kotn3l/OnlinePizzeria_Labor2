@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
@@ -36,6 +38,8 @@ public class AuthenticationController {
     @Autowired
     UserRepo users;
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+    @JsonView(Views.Public.class)
     @PostMapping("/login")
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
 
@@ -55,11 +59,14 @@ public class AuthenticationController {
             return new ResponseEntity<>(model, HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @JsonView(Views.Public.class)
     @GetMapping("/logout")
     public ResponseEntity logout(@RequestParam(name="session_string", required = true) String session_string){
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping("/roles")
     public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
             Map<Object, Object> model = new HashMap<>();
@@ -82,6 +89,7 @@ public class AuthenticationController {
 
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
                                        @RequestBody Map<String, Object> payload) {
@@ -125,6 +133,8 @@ public class AuthenticationController {
                 return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
             }
     }
+
+    @JsonView(Views.Public.class)
     @PostMapping("/user")
     public ResponseEntity changePassword(@RequestParam(name="session_string", required = true) String session_string,
                                          @RequestParam(name = "password_old", required = true) String password_old,
@@ -144,6 +154,8 @@ public class AuthenticationController {
         }
         else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
     }
+
+    @JsonView(Views.Public.class)
     @GetMapping("/user")
     public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) {
         if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
@@ -151,6 +163,8 @@ public class AuthenticationController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
+
+    @JsonView(Views.Public.class)
     @DeleteMapping("/user")
     public ResponseEntity removeUser(@RequestParam(name = "session_string", required = true) String session_string,
                                      @RequestParam(name = "user_id", required = true) int user_id) {
@@ -166,6 +180,8 @@ public class AuthenticationController {
         }
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
+
+    @JsonView(Views.Public.class)
     @PostMapping("/auth")
     public ResponseEntity authSessionString(@RequestParam(name = "session_string") String session_string) {
         try {

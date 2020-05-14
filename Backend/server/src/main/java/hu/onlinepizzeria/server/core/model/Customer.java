@@ -1,6 +1,8 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,13 +15,17 @@ public class Customer implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonView(Views.Public.class)
     @Column(name = "id")
     private Integer id;
 
+    @JsonView(Views.Public.class)
     private String name;
 
+    @JsonView(Views.Public.class)
     private String email;
 
+    @JsonView(Views.Public.class)
     private String telephone;
 
     @JsonIgnore

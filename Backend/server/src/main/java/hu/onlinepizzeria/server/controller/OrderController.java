@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.service.OrderManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ public class OrderController {
         this.orderManager = orderManager;
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(path="/order")
     public @ResponseBody ResponseEntity newOrder (@RequestBody Map<String, Object> order){
         try {
@@ -37,6 +40,7 @@ public class OrderController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/pay-method")
     public @ResponseBody ResponseEntity getPayMethod(){
         try {
@@ -47,6 +51,7 @@ public class OrderController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/delivery-city")
     public @ResponseBody ResponseEntity getDeliveryCities(){
         try {
@@ -57,6 +62,7 @@ public class OrderController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/order-prep/")
     public @ResponseBody ResponseEntity getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
         try {
@@ -71,6 +77,7 @@ public class OrderController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(path="/order-prep/")
     public @ResponseBody ResponseEntity setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
         try {
@@ -85,6 +92,7 @@ public class OrderController {
         }
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/order-delivery/")
     public @ResponseBody ResponseEntity getReadyOrders(@RequestParam(name="session_string", required = true) String session_string){
         try {

@@ -1,6 +1,8 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +21,9 @@ public class Delivery implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonView(Views.Public.class)
     private Integer id;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "order_id")
@@ -30,6 +34,7 @@ public class Delivery implements Serializable {
     @JoinColumn(name = "delivery_man")
     private User delivery_man;
 
+    @JsonView(Views.Public.class)
     @Column(name = "turn")
     private Integer turn;
 

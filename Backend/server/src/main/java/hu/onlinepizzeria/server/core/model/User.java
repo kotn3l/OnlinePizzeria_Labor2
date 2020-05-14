@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,23 +26,28 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
+    @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
 
     @Column(name = "email")
     @NotEmpty
+    @JsonView(Views.Public.class)
     private String email;
 
     @NotEmpty
+    @JsonView(Views.Public.class)
     private String password;
 
     @Column(name = "name")
+    @JsonView(Views.Public.class)
     private String name;
 
     public String getName() {
         return name;
     }
 
+    @JsonView(Views.Public.class)
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     //@JoinColumn(name = "role", nullable = false)

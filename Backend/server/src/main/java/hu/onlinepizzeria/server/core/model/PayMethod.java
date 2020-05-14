@@ -2,6 +2,8 @@ package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +14,7 @@ import java.util.Set;
 public class PayMethod implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonView(Views.Public.class)
     @Column(name = "id")
     private Integer id;
 
@@ -28,6 +31,7 @@ public class PayMethod implements Serializable {
         this.order = order;
     }
 
+    @JsonView(Views.Public.class)
     private String name;
 
     public Integer getId() {

@@ -1,7 +1,9 @@
 package hu.onlinepizzeria.server.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.core.model.Order;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.DeliveryManager;
@@ -38,6 +40,7 @@ public class DeliveryController {
     @Autowired
     UserRepo userRepo;
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/delivery-guy/")
     public @ResponseBody
     ResponseEntity getDeliveryGuys(@RequestParam(name="session_string", required = true) String session_string){
@@ -52,6 +55,7 @@ public class DeliveryController {
         return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(path="/delivery/", consumes = "application/json")
     public ResponseEntity assignOrdersToDeliveryGuy(@RequestParam(name="session_string", required = true) String session_string,
                                                           @RequestParam(name="delivery_guy", required = true) Integer delivery_guy,
@@ -81,6 +85,7 @@ public class DeliveryController {
         return new ResponseEntity(objectNode, HttpStatus.UNAUTHORIZED);
     }
 
+    @JsonView(Views.Public.class)
     @GetMapping(path="/delivery/")
     public ResponseEntity
     getDeliveriesOfAGuy(@RequestParam(name="session_string", required = true) String session_string,
@@ -111,6 +116,7 @@ public class DeliveryController {
         return new ResponseEntity(objectNode, HttpStatus.UNAUTHORIZED);
     }
 
+    @JsonView(Views.Public.class)
     @PostMapping(path="/delivery-done/")
     public ResponseEntity setOrderDelivered(@RequestParam(name="session_string", required = true) String session_string,
                                             @RequestParam(name="delivery_id", required = true) Integer delivery_id){

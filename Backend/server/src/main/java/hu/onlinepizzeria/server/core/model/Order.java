@@ -2,6 +2,8 @@ package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,12 +16,14 @@ import java.util.Set;
 public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonView(Views.Public.class)
     @Column(name = "id")
     private Integer id;
 
     //private Integer customer_id;
     @ManyToOne
     @JoinColumn(name="customer_id")
+    @JsonView(Views.Public.class)
     private Customer customer;
 
     @JsonIgnore
@@ -28,27 +32,36 @@ public class Order implements Serializable {
     private Set<OrderedPizza> oPizza;
 
     //@JsonBackReference
+    @JsonView(Views.Public.class)
     @ManyToOne
     @JoinColumn(name="city", nullable=false)
     private DeliveryCities city;
 
+    @JsonView(Views.Public.class)
     private String street;
 
+    @JsonView(Views.Public.class)
     private Integer house_number;
 
+    @JsonView(Views.Public.class)
     private String other;
 
+    @JsonView(Views.Public.class)
     private String comment;
 
     //@JsonBackReference
+    @JsonView(Views.Public.class)
     @ManyToOne
     @JoinColumn(name="pay_method", nullable=false)
     private PayMethod pay_method;
 
+    @JsonView(Views.Public.class)
     private Timestamp deadline;
 
+    @JsonView(Views.Public.class)
     private Integer state;
 
+    @JsonView(Views.Public.class)
     private Timestamp delivered;
 
     public Integer getId() {

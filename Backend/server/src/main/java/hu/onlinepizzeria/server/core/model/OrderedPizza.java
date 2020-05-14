@@ -1,6 +1,8 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ public class OrderedPizza implements Serializable {
     private Integer id;
 
     //@JsonIgnore
+    @JsonView(Views.Public.class)
     @ManyToOne
     @JoinColumn(name = "pizza_id")
     private Pizza pizza;

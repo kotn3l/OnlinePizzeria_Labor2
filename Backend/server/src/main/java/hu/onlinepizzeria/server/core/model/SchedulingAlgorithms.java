@@ -1,5 +1,8 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,11 +11,14 @@ import java.io.Serializable;
 public class SchedulingAlgorithms implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @JsonView(Views.Public.class)
     @Column(name = "id")
     private Integer id;
 
+    @JsonView(Views.Public.class)
     private String type;
 
+    @JsonView(Views.Public.class)
     private boolean is_active;
 
     public Integer getId() {
