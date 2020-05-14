@@ -190,11 +190,8 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     public void scheduleOrderedPizzasDeadline(){
-        //TODO fix, something is wrongly scheduling
         orderRepo.truncateScheduledPizzas();
-        ArrayList<Integer> orderIdsDone = orderRepo.donePizzas();
         ArrayList<Integer> orderIdsInOrder = orderRepo.getOrderInOrderAsc();
-        orderIdsInOrder.removeAll(orderIdsDone);
         ArrayList<Integer> orderPizzaIds = new ArrayList<>();
         for (Integer oi: orderIdsInOrder
         ) {
