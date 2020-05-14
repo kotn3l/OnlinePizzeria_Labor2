@@ -28,6 +28,9 @@ public class OrderManager implements OrderManagerInterface {
     @Autowired
     private CustomerRepo customerRepo;
 
+    @Autowired
+    private SchedulingRepo schedulingRepo;
+
     public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo) {
         this.orderRepo = orderRepo;
         this.payMethodRepo = payMethodRepo;
@@ -68,6 +71,8 @@ public class OrderManager implements OrderManagerInterface {
         for (int i = 0; i < orderedPizzas.size(); i++) {
             orderRepo.addOrderedPizza(orderedPizzas.get(i), currentOrder.getId());
         }
+        schedule();
+
         return "Saved";
     }
 
@@ -83,15 +88,15 @@ public class OrderManager implements OrderManagerInterface {
 
     @Override
     public Iterable<Pizza> getPreparedPizzas() {
+        ArrayList<Integer> orderPizzaByPrep = orderRepo.getOrderPizzaByPrep();
         ArrayList<Integer> pizzaIds = new ArrayList<>();
-        ArrayList<Integer> orderIds = orderRepo.getOrderInOrder(); //in order
+        for (Integer op: orderPizzaByPrep
+             ) {
+            pizzaIds.addAll(orderRepo.orderPizzaById(op));
+        }
         ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (int i = 0; i < orderIds.size(); i++){
-            pizzaIds.addAll(orderRepo.prepOrderPizzaById(orderIds.get(i)));
-            for (int j = 0; j < pizzaIds.size(); j++){
-                pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
-            }
-            pizzaIds.clear();
+        for (int j = 0; j < pizzaIds.size(); j++){
+            pizzas.add(pizzaRepo.getPizzaById(pizzaIds.get(j)));
         }
         return pizzas;
     }
@@ -172,5 +177,37 @@ public class OrderManager implements OrderManagerInterface {
             }
         }
         return toReturn;
+    }
+
+    public void schedule(){
+        Integer active = schedulingRepo.getActiveAlgorithm();
+        if (active == 1){
+            scheduleOrderedPizzasDeadline();
+        }
+        else if (active == 2){
+            //the other one
+        } else {
+            throw new InvalidParameterException("No scheduling is set to active! Please set scheduling either to 1 (order deadline oriented) or 2 (ingredient-oriented)");
+        }
+    }
+
+    public void scheduleOrderedPizzasDeadline(){
+        orderRepo.truncateScheduledPizzas();
+        ArrayList<Integer> orderIdsDone = orderRepo.donePizzas();
+        ArrayList<Integer> orderIdsInOrder = orderRepo.getOrderInOrderAsc();
+        orderIdsInOrder.removeAll(orderIdsDone);
+        ArrayList<Integer> orderPizzaIds = new ArrayList<>();
+        for (Integer oi: orderIdsInOrder
+        ) {
+            orderPizzaIds.addAll(orderRepo.getOrderPizzaByOId(oi));
+        }
+        ArrayList<Integer> orderPizzaIdsDone = orderRepo.getOrderPizzaDone();
+        orderPizzaIds.removeAll(orderPizzaIdsDone);
+        Integer prepNum = 1;
+        for (Integer opi: orderPizzaIds
+             ) {
+            orderRepo.addOrderPizza(opi, prepNum);
+            prepNum++;
+        }
     }
 }

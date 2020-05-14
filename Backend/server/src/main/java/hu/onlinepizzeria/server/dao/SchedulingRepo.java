@@ -26,4 +26,7 @@ public interface SchedulingRepo extends CrudRepository<SchedulingAlgorithms, Int
     @Transactional
     @Query(value = "UPDATE scheduling SET is_active=0", nativeQuery = true)
     void setAllAlgorithmsNonActive();
+
+    @Query(value="SELECT id FROM scheduling WHERE is_active=1", nativeQuery = true)
+    Integer getActiveAlgorithm();
 }
