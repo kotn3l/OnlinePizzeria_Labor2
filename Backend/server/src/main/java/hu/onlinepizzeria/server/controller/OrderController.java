@@ -60,7 +60,7 @@ public class OrderController {
     @GetMapping(path="/order-prep/")
     public @ResponseBody ResponseEntity getPrepOrder(@RequestParam(name="session_string", required = true) String session_string){
         try {
-            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: kitchen staff role
+            if (jwtTokenProvider.isKitchen(session_string)) {
                 return new ResponseEntity(orderManager.getPreparedPizzas(), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -74,7 +74,7 @@ public class OrderController {
     @PostMapping(path="/order-prep/")
     public @ResponseBody ResponseEntity setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
         try {
-            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: kitchen staff role
+            if (jwtTokenProvider.isKitchen(session_string)) {
                 return new ResponseEntity(orderManager.pizzaPrepared(ordered_pizza_id), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -88,7 +88,7 @@ public class OrderController {
     @GetMapping(path="/order-delivery/")
     public @ResponseBody ResponseEntity getReadyOrders(@RequestParam(name="session_string", required = true) String session_string){
         try {
-            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: moderator role
+            if (jwtTokenProvider.isAdmin(session_string)) {
                 return new ResponseEntity(orderManager.getReadyOrders(), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
