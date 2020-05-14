@@ -27,7 +27,7 @@ public class SchedulingController {
     @GetMapping(path="/scheduling/")
     public @ResponseBody ResponseEntity getSchedulingAlgorithms(@RequestParam(name="session_string", required = true) String session_string){
         try {
-            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: manager role
+            if (jwtTokenProvider.isManager(session_string)) {
                 return new ResponseEntity(schedulingManager.getAlgorithms(), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -41,7 +41,7 @@ public class SchedulingController {
     @PostMapping(path="/scheduling/")
     public @ResponseBody ResponseEntity setActiveSchedulingAlgorithm(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="scheduling_id", required = true) Integer scheduling_id){
         try {
-            if (jwtTokenProvider.isAdmin(session_string)) { //TODO: manager role
+            if (jwtTokenProvider.isManager(session_string)) {
                 return new ResponseEntity(schedulingManager.setActiveAlgorithm(scheduling_id), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
