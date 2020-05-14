@@ -1,7 +1,10 @@
 package hu.onlinepizzeria.server.core.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.*;
@@ -16,17 +19,22 @@ public class Pizza implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
+    @JsonView(Views.Public.class)
     private Integer id;
 
+    @JsonView(Views.Public.class)
     private String name;
 
+    @JsonView(Views.Public.class)
     private Integer price;
 
+    @JsonView(Views.Internal.class)
     private String picture_path;
 
+    @JsonView(Views.Public.class)
     private Integer discount_percent;
 
-    @JsonIgnore
+    @JsonView(Views.Public.class)
     private boolean unavailable;
 
     public String getName() {
@@ -48,6 +56,7 @@ public class Pizza implements Serializable {
         else throw new InvalidParameterException("Price must be greater than 0");
     }
 
+    @JsonView(Views.Internal.class)
     @JsonProperty("picture")
     public String getPicture_path() throws IOException {
         return encoder(Paths.get(System.getProperty("user.dir")).getParent().resolve(picture_path).toString());
@@ -101,6 +110,7 @@ public class Pizza implements Serializable {
         this.ingredients = ingredients;
     }
 
+    @JsonView(Views.Public.class)
     @ManyToMany
     @JoinTable(
             name = "pizza_ingredients",

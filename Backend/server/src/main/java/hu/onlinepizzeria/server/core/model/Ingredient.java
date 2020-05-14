@@ -1,6 +1,8 @@
 package hu.onlinepizzeria.server.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ public class Ingredient implements Serializable {
     @JsonIgnore
     private Integer id;
 
+    @JsonView(Views.Public.class)
     private String name;
 
     public Integer getId() {

@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.service.PizzaManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -25,6 +27,7 @@ public class PizzaController {
         this.pizzaManager = pizzaManager;
     }
 
+    @JsonView(Views.Internal.class)
     @PostMapping(path="/pizza/")
     public @ResponseBody
     ResponseEntity addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestPart("pizza") Map<String, Object> pizza, @RequestPart("file")
@@ -44,16 +47,19 @@ public class PizzaController {
         }
     }
 
+    @JsonView(Views.Internal.class)
     @GetMapping(path="/pizza")
     public @ResponseBody Iterable<Pizza> getAllPizzas() {
         return pizzaManager.getAllPizzas();
     }
 
+    @JsonView(Views.Internal.class)
     @GetMapping(path="/pizza/discount")
     public @ResponseBody Iterable<Pizza> getDiscountedPizzas() {
         return pizzaManager.getDiscountedPizzas();
     }
 
+    @JsonView(Views.Internal.class)
     @PutMapping(path = "/pizza/")
     public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestPart("pizza") Map<String, Object> pizza,
                                                     @RequestPart(value = "file", required = false) MultipartFile multipart) {
@@ -69,6 +75,7 @@ public class PizzaController {
         }
     }
 
+    @JsonView(Views.Internal.class)
     @DeleteMapping(path = "/pizza/")
     public @ResponseBody ResponseEntity deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
         try {
