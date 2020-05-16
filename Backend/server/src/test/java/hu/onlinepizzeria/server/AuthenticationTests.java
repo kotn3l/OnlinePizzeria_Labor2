@@ -61,21 +61,21 @@ public class AuthenticationTests {
     void setUp() {
         List<String> roles = new ArrayList<String>();
         roles.add("ROLE_ADMIN");
-        User u = User.builder().email("gipsum@citromail.hu")
-                .id(1)
-                .name("Józsi")
-                .password(bCryptPasswordEncoder.encode("jelszó"))
-                .roles(roles)
+        User u = new User.UserBuilder("gipsum@citromail.hu")
+                .setId(1)
+                .setName("Józsi")
+                .setPassword(bCryptPasswordEncoder.encode("jelszó"))
+                .setRoles(roles)
                 .build();
         userRepo.save(u);
 
         roles = new ArrayList<String>();
         roles.add("ROLE_DELIVERY");
-        User u2 = User.builder().email("fszallito@citromail.hu")
-                .id(2)
-                .name("Józsi")
-                .password(bCryptPasswordEncoder.encode("jelszó2"))
-                .roles(roles)
+        User u2 = new User.UserBuilder("fszallito@citromail.hu")
+                .setId(2)
+                .setName("Józsi")
+                .setPassword(bCryptPasswordEncoder.encode("jelszó2"))
+                .setRoles(roles)
                 .build();
         userRepo.save(u2);
     }
@@ -88,6 +88,7 @@ public class AuthenticationTests {
         String result = mvc.perform(post("/api/login")
                 .contentType("application/json")
                 .content(jsonString)).andReturn().getResponse().getContentAsString();
+        System.out.println(result);
         JSONObject resultJSON = new JSONObject(result);
         session_string = resultJSON.getString("session_string");
     }
@@ -99,9 +100,7 @@ public class AuthenticationTests {
                 .toString();
         String result = mvc.perform(post("/api/login")
         .contentType("application/json")
-                //.param("session_string", session_string)
                 .content(jsonString)).andReturn().getResponse().getContentAsString();
-                //.andExpect(status().isOk());
         JSONObject resultJSON = new JSONObject(result);
         JSONArray resultRole = resultJSON.getJSONArray("role");
         String role = resultRole.get(0).toString();
