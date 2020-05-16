@@ -1,6 +1,7 @@
 package hu.onlinepizzeria.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.service.OrderManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -22,6 +23,9 @@ public class OrderController {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    ObjectMapper mapper;
+
     public OrderController(OrderManager orderManager) {
         this.orderManager = orderManager;
     }
@@ -30,7 +34,8 @@ public class OrderController {
     @PostMapping(path="/order")
     public @ResponseBody ResponseEntity newOrder (@RequestBody Map<String, Object> order){
         try {
-            return new ResponseEntity(orderManager.addNewOrder(order), HttpStatus.OK);
+            orderManager.addNewOrder(order);
+            return new ResponseEntity(HttpStatus.OK);
         }
         catch (InvalidParameterException ipe){
             return new ResponseEntity(ipe.getMessage(), HttpStatus.BAD_REQUEST);
