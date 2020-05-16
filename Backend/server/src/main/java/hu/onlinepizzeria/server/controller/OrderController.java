@@ -1,7 +1,6 @@
 package hu.onlinepizzeria.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.onlinepizzeria.server.core.Views;
 import hu.onlinepizzeria.server.service.OrderManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -22,9 +21,6 @@ public class OrderController {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    ObjectMapper mapper;
 
     public OrderController(OrderManager orderManager) {
         this.orderManager = orderManager;
