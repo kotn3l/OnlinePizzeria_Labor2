@@ -178,4 +178,90 @@ public class Order implements Serializable {
 
     public Order() {
     }
+
+    public static class OrderBuilder{
+        private Integer id;
+        private Integer customer;
+        private Integer city;
+        private String street;
+        private Integer house_number;
+        private String other;
+        private String comment;
+        private Integer pay_method;
+        private Timestamp deadline;
+        private Integer state;
+        private Timestamp delivered;
+
+        public OrderBuilder setId(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public OrderBuilder setCustomer(Integer customer) {
+            this.customer = customer;
+            return this;
+        }
+
+        public OrderBuilder setCity(Integer city) {
+            this.city = city;
+            return this;
+        }
+
+        public OrderBuilder setStreet(String street) {
+            this.street = street;
+            return this;
+        }
+
+        public OrderBuilder setHouse_number(Integer house_number) {
+            this.house_number = house_number;
+            return this;
+        }
+
+        public OrderBuilder setOther(String other) {
+            this.other = other;
+            return this;
+        }
+
+        public OrderBuilder setComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public OrderBuilder setPay_method(Integer pay_method) {
+            this.pay_method = pay_method;
+            return this;
+        }
+
+        public OrderBuilder setDeadline(Timestamp deadline) {
+            this.deadline = deadline;
+            return this;
+        }
+
+        public OrderBuilder setState(Integer state) {
+            this.state = state;
+            return this;
+        }
+
+        public OrderBuilder setDelivered(Timestamp delivered) {
+            this.delivered = delivered;
+            return this;
+        }
+
+        public OrderBuilder(Integer customer, Integer city, String street, Integer house_number, String other, String comment, Integer pay_method, Timestamp deadline, Integer state, Timestamp delivered) {
+            this.customer = customer;
+            this.city = city;
+            this.street = street;
+            this.house_number = house_number;
+            this.other = other;
+            this.comment = comment;
+            this.pay_method = pay_method;
+            this.deadline = deadline;
+            this.state = state;
+            this.delivered = delivered;
+        }
+
+        public Order build() {
+            return new Order(new Customer(this.customer), new DeliveryCities(this.city), this.street, this.house_number, this.other, this.comment, new PayMethod(this.pay_method), this.deadline, this.state, this.delivered);
+        }
+    }
 }

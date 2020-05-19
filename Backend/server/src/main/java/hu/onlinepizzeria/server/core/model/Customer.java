@@ -81,6 +81,10 @@ public class Customer implements Serializable {
         setTelephone(telephone);
     }
 
+    public Customer(Integer id){
+        this();
+    }
+
     static boolean isValidEmail(String email) {
         String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
         return email.matches(regex);
