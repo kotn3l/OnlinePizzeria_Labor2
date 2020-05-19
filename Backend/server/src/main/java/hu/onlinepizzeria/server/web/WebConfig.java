@@ -22,8 +22,8 @@ public class WebConfig {
     }
 
     @Bean
-    public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo){
-        return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo, customerRepo, schedulingRepo);
+    public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo, IngredientRepo ingredientRepo){
+        return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo, customerRepo, schedulingRepo, ingredientRepo);
     }
     @Bean
     public DeliveryManager deliveryManager(DeliveryRepo repository) { return new DeliveryManager(repository); }

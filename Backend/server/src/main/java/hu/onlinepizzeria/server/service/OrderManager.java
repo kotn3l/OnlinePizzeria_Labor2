@@ -30,13 +30,17 @@ public class OrderManager implements OrderManagerInterface {
     @Autowired
     private SchedulingRepo schedulingRepo;
 
-    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo) {
+    @Autowired
+    private IngredientRepo ingredientRepo;
+
+    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo, IngredientRepo ingredientRepo) {
         this.orderRepo = orderRepo;
         this.payMethodRepo = payMethodRepo;
         this.cityRepo = cityRepo;
         this.pizzaRepo = pizzaRepo;
         this.customerRepo = customerRepo;
         this.schedulingRepo = schedulingRepo;
+        this.ingredientRepo = ingredientRepo;
         schedule();
     }
 
@@ -183,7 +187,7 @@ public class OrderManager implements OrderManagerInterface {
             scheduleOrderedPizzasDeadline();
         }
         else if (active == 2){
-            //the other one
+            scheduleOrderedPizzasIngredient();
         } else {
             throw new InvalidParameterException("No scheduling is set to active! Please set scheduling either to 1 (order deadline oriented) or 2 (ingredient-oriented)");
         }
@@ -205,5 +209,28 @@ public class OrderManager implements OrderManagerInterface {
             orderRepo.addOrderPizza(opi, prepNum);
             prepNum++;
         }
+    }
+
+    public void scheduleOrderedPizzasIngredient(){
+        orderRepo.truncateScheduledPizzas();
+        //get not done pizza ids AND orderpizzaids from orderpizza.
+        ArrayList<Integer> notDonePizzaIds = orderRepo.notDonePizzas();
+        ArrayList<Integer> ingredientCount = new ArrayList<>();
+        ArrayList<Integer> ingredients = new ArrayList<>();
+        for (Integer ndpi: notDonePizzaIds
+             ) {
+            ingredients.addAll(ingredientRepo.getIngredientIdByPizza(ndpi));
+            ingredients.add(null);
+        }
+        int i=0;
+        while(i < ingredients.size()){
+            int j = i;
+            while(ingredients.get(j) != null){
+                j++;
+                
+            }
+            i = j+1;
+        }
+
     }
 }

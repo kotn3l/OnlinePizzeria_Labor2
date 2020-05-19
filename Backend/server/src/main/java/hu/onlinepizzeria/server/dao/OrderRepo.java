@@ -77,6 +77,12 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
     @Query(value="SELECT pizza_id FROM order_pizza WHERE id=:orderPizza AND done = 0", nativeQuery = true)
     Integer orderPizzaById(Integer orderPizza);
 
+    @Query(value="SELECT pizza_id FROM order_pizza WHERE done = 0", nativeQuery = true)
+    ArrayList<Integer> notDonePizzas();
+
+    @Query(value="SELECT id FROM order_pizza WHERE done = 0", nativeQuery = true)
+    ArrayList<Integer> notDoneOrderPizzas();
+
     @Modifying
     @Transactional
     @Query(value="INSERT INTO order_pizza(order_id, pizza_id, done) VALUES (:order_id, :ordered_pizza_id, 0)", nativeQuery = true)

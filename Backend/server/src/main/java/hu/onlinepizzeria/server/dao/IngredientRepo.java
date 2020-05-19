@@ -12,6 +12,9 @@ public interface IngredientRepo extends CrudRepository<Ingredient, Integer> {
     @Query(value="SELECT * FROM ingredient", nativeQuery = true)
     ArrayList<Ingredient> getIngredients();
 
+    @Query(value="SELECT ingredient_id FROM pizza_ingredients WHERE pizza_id=:pizzaId", nativeQuery = true)
+    ArrayList<Integer> getIngredientIdByPizza(Integer pizzaId);
+
     @Modifying
     @Transactional
     @Query(value="INSERT INTO ingredient (name) VALUES (:name)", nativeQuery = true)
