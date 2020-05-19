@@ -18,7 +18,7 @@ export class AdminPrepareOrderComponent implements OnInit {
   ngOnInit() {
     this.orderService.getPrepareOrder().subscribe(pizzas => {
       this.orderedPizzas = pizzas;
-      this.orderedPizzas.sort((a, b) => { return a.number - b.number })
+      this.orderedPizzas.sort((a, b) => { return a.prepNum - b.prepNum })
     });
   }
 
@@ -34,7 +34,7 @@ export class AdminPrepareOrderComponent implements OnInit {
     this.orderService.postPizzaPrepared(id).subscribe(() => {
       this.orderService.getPrepareOrder().subscribe(pizzas => {
         this.orderedPizzas = pizzas;
-        this.orderedPizzas.sort((a, b) => { return a.number - b.number })
+        this.orderedPizzas.sort((a, b) => { return a.prepNum - b.prepNum })
       });
     },
       err => this.flashMessage.show(err.error.error, { cssClass: 'alert-danger', timeout: 4000 }));

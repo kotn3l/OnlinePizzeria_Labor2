@@ -1,6 +1,7 @@
+import { Pizza } from './Pizza';
+
 export interface OrderedPizza {
-    id: number;
-    number: number;
-    name: string;
-    ingredients: {name: string}[];
+    orderPizza: number;
+    prepNum: number;
+    pizza: Pizza;
 }
