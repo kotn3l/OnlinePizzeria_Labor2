@@ -80,10 +80,11 @@ public class OrderController {
 
     @JsonView(Views.Public.class)
     @PostMapping(path="/order-prep/")
-    public @ResponseBody ResponseEntity setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="ordered_pizza_id", required = true) Integer ordered_pizza_id){
+    public @ResponseBody ResponseEntity setPizzaPrepared(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="orderPizza", required = true) Integer orderPizza){
         try {
             if (jwtTokenProvider.isKitchen(session_string)) {
-                return new ResponseEntity(orderManager.pizzaPrepared(ordered_pizza_id), HttpStatus.OK);
+                orderManager.pizzaPrepared(orderPizza);
+                return new ResponseEntity(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }

@@ -102,11 +102,10 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     @Override
-    public String pizzaPrepared(Integer ordered_pizza_id) {
-        ArrayList<Integer> orderPizzaByPrep = orderRepo.getOrderPizzaByPrep();
-        //orderRepo.pizzaPrepared(ordered_pizza_id);
+    public String pizzaPrepared(Integer orderPizza) {
+        orderRepo.pizzaPrepared(orderPizza);
+        schedule();
         return "Saved";
-
     }
 
     @Override

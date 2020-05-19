@@ -11,6 +11,6 @@ public interface OrderManagerInterface {
     public Iterable<PayMethod> getPayMethods();
     public Iterable<DeliveryCities> getDeliveryCities();
     public ArrayList<ScheduledPizza> getPreparedPizzas();
-    public String pizzaPrepared(Integer ordered_pizza_id);
+    public String pizzaPrepared(Integer orderPizza);
     public Iterable<Order> getReadyOrders();
 }
