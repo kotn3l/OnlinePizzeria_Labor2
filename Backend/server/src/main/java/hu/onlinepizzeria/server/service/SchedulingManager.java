@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.controller.OrderController;
 import hu.onlinepizzeria.server.core.model.SchedulingAlgorithms;
 import hu.onlinepizzeria.server.core.service.SchedulingManagerInterface;
 import hu.onlinepizzeria.server.dao.SchedulingRepo;
@@ -12,6 +13,9 @@ public class SchedulingManager implements SchedulingManagerInterface {
 
     @Autowired
     private SchedulingRepo schedulingRepo;
+
+    @Autowired
+    private OrderManager orderManager;
 
     public SchedulingManager(SchedulingRepo repository) {
         this.schedulingRepo = repository;
@@ -29,7 +33,7 @@ public class SchedulingManager implements SchedulingManagerInterface {
         }
         schedulingRepo.setAllAlgorithmsNonActive();
         schedulingRepo.setActiveAlgorithm(id);
-        //schedulingRepo.setOtherAlgorithmsNonActive(id);
+        orderManager.schedule();
         return "Set scheduling to active";
     }
 

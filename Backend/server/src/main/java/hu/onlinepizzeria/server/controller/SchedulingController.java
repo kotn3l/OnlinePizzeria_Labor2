@@ -46,7 +46,8 @@ public class SchedulingController {
     public @ResponseBody ResponseEntity setActiveSchedulingAlgorithm(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="scheduling_id", required = true) Integer scheduling_id){
         try {
             if (jwtTokenProvider.isManager(session_string)) {
-                return new ResponseEntity(schedulingManager.setActiveAlgorithm(scheduling_id), HttpStatus.OK);
+                schedulingManager.setActiveAlgorithm(scheduling_id);
+                return new ResponseEntity(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
