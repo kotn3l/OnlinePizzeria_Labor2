@@ -4,8 +4,6 @@ import hu.onlinepizzeria.server.core.model.*;
 import hu.onlinepizzeria.server.core.service.OrderManagerInterface;
 import hu.onlinepizzeria.server.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.security.InvalidParameterException;
 import java.sql.Timestamp;
@@ -28,20 +26,16 @@ public class OrderManager implements OrderManagerInterface {
     private CustomerRepo customerRepo;
 
     @Autowired
-    private SchedulingRepo schedulingRepo;
+    private SchedulingManager schedulingManager;
 
-    @Autowired
-    private IngredientRepo ingredientRepo;
-
-    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo, IngredientRepo ingredientRepo) {
+    public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingManager schedulingManager) {
         this.orderRepo = orderRepo;
         this.payMethodRepo = payMethodRepo;
         this.cityRepo = cityRepo;
         this.pizzaRepo = pizzaRepo;
         this.customerRepo = customerRepo;
-        this.schedulingRepo = schedulingRepo;
-        this.ingredientRepo = ingredientRepo;
-        schedule();
+        this.schedulingManager = schedulingManager;
+        schedulingManager.schedule();
     }
 
     @Override
@@ -76,7 +70,7 @@ public class OrderManager implements OrderManagerInterface {
         for (int i = 0; i < orderedPizzas.size(); i++) {
             orderRepo.addOrderedPizza(orderedPizzas.get(i), currentOrder.getId());
         }
-        schedule();
+        schedulingManager.schedule();
 
         return "Saved";
     }
@@ -104,7 +98,7 @@ public class OrderManager implements OrderManagerInterface {
     @Override
     public String pizzaPrepared(Integer orderPizza) {
         orderRepo.pizzaPrepared(orderPizza);
-        schedule();
+        schedulingManager.schedule();
         return "Saved";
     }
 
@@ -180,74 +174,4 @@ public class OrderManager implements OrderManagerInterface {
         return toReturn;
     }
 
-    public void schedule(){
-        Integer active = schedulingRepo.getActiveAlgorithm();
-        if (active == 1){
-            scheduleOrderedPizzasDeadline();
-        }
-        else if (active == 2){
-            scheduleOrderedPizzasDeadline(); //schedule with other because this one is f*cked
-        } else {
-            throw new InvalidParameterException("No scheduling is set to active! Please set scheduling either to 1 (order deadline oriented) or 2 (ingredient-oriented)");
-        }
-    }
-
-    public void scheduleOrderedPizzasDeadline(){
-        orderRepo.truncateScheduledPizzas();
-        ArrayList<Integer> orderIdsInOrder = orderRepo.getOrderInOrderAsc();
-        ArrayList<Integer> orderPizzaIds = new ArrayList<>();
-        for (Integer oi: orderIdsInOrder
-        ) {
-            orderPizzaIds.addAll(orderRepo.getOrderPizzaByOId(oi));
-        }
-        ArrayList<Integer> orderPizzaIdsDone = orderRepo.getOrderPizzaDone();
-        orderPizzaIds.removeAll(orderPizzaIdsDone);
-        Integer prepNum = 1;
-        for (Integer opi: orderPizzaIds
-             ) {
-            orderRepo.addOrderPizza(opi, prepNum);
-            prepNum++;
-        }
-    }
-
-    public void scheduleOrderedPizzasIngredient(){ //buggy af doesn't work
-        orderRepo.truncateScheduledPizzas();
-        ArrayList<Integer> notDonePizzaIds = orderRepo.notDonePizzas();
-        ArrayList<Pizza> pizzas = new ArrayList<>();
-        for (Integer ndpi: notDonePizzaIds
-             ) {
-            pizzas.add(pizzaRepo.getPizzaById(ndpi));
-        }
-        HashMap<Integer, Integer> ingredientDifference = new HashMap<>();
-        ArrayList<Integer> difference = ingredientRepo.getIngredientIdByPizza(pizzas.get(1).getId());
-        for (int j = 1; j < pizzas.size(); j++){
-            difference.removeAll(ingredientRepo.getIngredientIdByPizza(pizzas.get(j).getId()));
-            ingredientDifference.put(pizzas.get(j).getId(), difference.size());
-        }
-        ArrayList<Integer> values = new ArrayList<>(ingredientDifference.values());
-        Collections.sort(values);
-        ArrayList<Integer> sortedPizzas = new ArrayList<>();
-        for (int i = 0; i < values.size(); i++){
-            sortedPizzas.add(getKey(ingredientDifference, values.get(i)));
-        }
-        ArrayList<Integer> orderPizzas = new ArrayList<>();
-        for (int i = 0; i < sortedPizzas.size(); i++){
-            orderPizzas.addAll(orderRepo.getOrderPizzasByPizza(sortedPizzas.get(i)));
-        }
-        Integer prepNum = 1;
-        for (Integer opi: orderPizzas
-        ) {
-            orderRepo.addOrderPizza(opi, prepNum);
-            prepNum++;
-        }
-    }
-
-    public static <K, V> K getKey(Map<K, V> map, V value) {
-        for (K key : map.keySet()) {
-            if (value.equals(map.get(key))) {
-                return key;
-            }
-        }
-        return null;
-    }
 }

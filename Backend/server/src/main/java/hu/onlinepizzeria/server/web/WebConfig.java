@@ -17,13 +17,13 @@ public class WebConfig {
     }
 
     @Bean
-    public SchedulingManager schedulingManager(SchedulingRepo repository){
-        return new SchedulingManager(repository);
+    public SchedulingManager schedulingManager(SchedulingRepo repository, OrderRepo orderRepo, IngredientRepo ingredientRepo, PizzaRepo pizzaRepo){
+        return new SchedulingManager(repository, orderRepo, ingredientRepo, pizzaRepo);
     }
 
     @Bean
-    public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingRepo schedulingRepo, IngredientRepo ingredientRepo){
-        return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo, customerRepo, schedulingRepo, ingredientRepo);
+    public OrderManager orderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingManager manager){
+        return new OrderManager(orderRepo, payMethodRepo, cityRepo, pizzaRepo, customerRepo, manager);
     }
     @Bean
     public DeliveryManager deliveryManager(DeliveryRepo repository) { return new DeliveryManager(repository); }
