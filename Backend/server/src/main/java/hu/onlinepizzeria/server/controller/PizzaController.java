@@ -34,7 +34,8 @@ public class PizzaController {
             MultipartFile multipart){
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return new ResponseEntity(pizzaManager.addNewPizza(pizza, multipart), HttpStatus.CREATED);
+                pizzaManager.addNewPizza(pizza, multipart);
+                return new ResponseEntity(HttpStatus.CREATED);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
@@ -65,7 +66,8 @@ public class PizzaController {
                                                     @RequestPart(value = "file", required = false) MultipartFile multipart) {
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return new ResponseEntity(pizzaManager.updatePizza(id, pizza, multipart), HttpStatus.OK);
+                pizzaManager.updatePizza(id, pizza, multipart);
+                return new ResponseEntity(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
@@ -80,7 +82,8 @@ public class PizzaController {
     public @ResponseBody ResponseEntity deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
         try {
             if (jwtTokenProvider.isAdmin(session_string)) {
-                return new ResponseEntity(pizzaManager.deletePizza(id), HttpStatus.OK);
+                pizzaManager.deletePizza(id);
+                return new ResponseEntity(HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
