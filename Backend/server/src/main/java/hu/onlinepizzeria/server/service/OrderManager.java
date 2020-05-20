@@ -186,7 +186,7 @@ public class OrderManager implements OrderManagerInterface {
             scheduleOrderedPizzasDeadline();
         }
         else if (active == 2){
-            scheduleOrderedPizzasIngredient();
+            scheduleOrderedPizzasDeadline(); //schedule with other because this one is f*cked
         } else {
             throw new InvalidParameterException("No scheduling is set to active! Please set scheduling either to 1 (order deadline oriented) or 2 (ingredient-oriented)");
         }
@@ -210,26 +210,44 @@ public class OrderManager implements OrderManagerInterface {
         }
     }
 
-    public void scheduleOrderedPizzasIngredient(){
+    public void scheduleOrderedPizzasIngredient(){ //buggy af doesn't work
         orderRepo.truncateScheduledPizzas();
-        //get not done pizza ids AND orderpizzaids from orderpizza.
         ArrayList<Integer> notDonePizzaIds = orderRepo.notDonePizzas();
-        ArrayList<Integer> ingredientCount = new ArrayList<>();
-        ArrayList<Integer> ingredients = new ArrayList<>();
+        ArrayList<Pizza> pizzas = new ArrayList<>();
         for (Integer ndpi: notDonePizzaIds
              ) {
-            ingredients.addAll(ingredientRepo.getIngredientIdByPizza(ndpi));
-            ingredients.add(null);
+            pizzas.add(pizzaRepo.getPizzaById(ndpi));
         }
-        int i=0;
-        while(i < ingredients.size()){
-            int j = i;
-            while(ingredients.get(j) != null){
-                j++;
-                
-            }
-            i = j+1;
+        HashMap<Integer, Integer> ingredientDifference = new HashMap<>();
+        ArrayList<Integer> difference = ingredientRepo.getIngredientIdByPizza(pizzas.get(1).getId());
+        for (int j = 1; j < pizzas.size(); j++){
+            difference.removeAll(ingredientRepo.getIngredientIdByPizza(pizzas.get(j).getId()));
+            ingredientDifference.put(pizzas.get(j).getId(), difference.size());
         }
+        ArrayList<Integer> values = new ArrayList<>(ingredientDifference.values());
+        Collections.sort(values);
+        ArrayList<Integer> sortedPizzas = new ArrayList<>();
+        for (int i = 0; i < values.size(); i++){
+            sortedPizzas.add(getKey(ingredientDifference, values.get(i)));
+        }
+        ArrayList<Integer> orderPizzas = new ArrayList<>();
+        for (int i = 0; i < sortedPizzas.size(); i++){
+            orderPizzas.addAll(orderRepo.getOrderPizzasByPizza(sortedPizzas.get(i)));
+        }
+        Integer prepNum = 1;
+        for (Integer opi: orderPizzas
+        ) {
+            orderRepo.addOrderPizza(opi, prepNum);
+            prepNum++;
+        }
+    }
 
+    public static <K, V> K getKey(Map<K, V> map, V value) {
+        for (K key : map.keySet()) {
+            if (value.equals(map.get(key))) {
+                return key;
+            }
+        }
+        return null;
     }
 }
