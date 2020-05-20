@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.RoleRepo;
@@ -21,6 +23,9 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
 
     @Autowired
     RoleRepo roles;
+
+    @Autowired
+    ObjectMapper mapper;
 
     public AuthenticationService(UserRepo users) {
         this.users = users;
@@ -72,8 +77,19 @@ public class AuthenticationService implements UserDetailsManager, UserDetailsSer
 
     }
 
-    public List<User> getAllUsers() {
-        return users.findAll();
+    public List<ObjectNode> getAllUsers() {
+        List<User> list = users.findAll();
+        ObjectNode response = mapper.createObjectNode();
+        List<ObjectNode> userNodes = new ArrayList<>();
+        for ( User user : list ) {
+            ObjectNode userNode = mapper.createObjectNode();
+            userNode.put("id", user.getId());
+            userNode.put("email", user.getEmail());
+            userNode.put("name", user.getName());
+            userNode.put("role", user.getRoles().get(0));
+            userNodes.add(userNode);
+        }
+        return userNodes;
     }
 
     public List<Role> getAllRoles() {
