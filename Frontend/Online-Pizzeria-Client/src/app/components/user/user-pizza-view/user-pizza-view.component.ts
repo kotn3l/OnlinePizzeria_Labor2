@@ -62,7 +62,7 @@ export class UserPizzaViewComponent implements OnInit {
 
   showDescounted(pizza: Pizza) {
     if (this.discountedOnly) {
-      return pizza.discount_price > 0;
+      return pizza.discount_percent > 0;
     }
     return true;
   }
@@ -74,10 +74,10 @@ export class UserPizzaViewComponent implements OnInit {
     return false;
   }
 
-  showIngredientSearch(ingredients: string[]) {
+  showIngredientSearch(ingredients: {name: string}[]) {
     var containsIngredient = false;
     ingredients.forEach(ingredient => {
-      if (ingredient.toLowerCase().includes(this.ingredientSearch.toLowerCase())) {
+      if (ingredient.name.toLowerCase().includes(this.ingredientSearch.toLowerCase())) {
         containsIngredient = true;
       }
     });

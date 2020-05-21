@@ -1,0 +1,11 @@
+.form-control-w-7 {
+    max-width: 120px;
+    display: inline;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    text-align: right;
+}
+
+.btn {
+    margin-top: 0 !important;
+}

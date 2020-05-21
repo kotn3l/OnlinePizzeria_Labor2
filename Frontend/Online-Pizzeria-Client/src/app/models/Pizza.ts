@@ -2,7 +2,8 @@ export interface Pizza {
     id: number;
     name: string;
     price: number;
-    ingredients: string[];
+    ingredients: {name: string}[];
     picture?: string;
-    discount_price?: number;
+    discount_percent?: number;
+    ingredientList?: string[];
 }

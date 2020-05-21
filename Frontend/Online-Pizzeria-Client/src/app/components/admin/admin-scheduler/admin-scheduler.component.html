@@ -1,0 +1,9 @@
+<div class="card">
+    <h2 class="card-header">Select scheduling algorithm</h2>
+    <div class="card-body">
+        <div *ngFor="let scheduler of schedulers" class="radio">
+            <label><input type="radio" name="schedulerSelect" [checked]="scheduler.is_active" (change)="onSelect(scheduler.id)"> {{ scheduler.type }}</label>
+        </div>
+        <button (click)="onSubmit()" [disabled]="selected == current" class="btn btn-block btn-primary">Submit</button>
+    </div>
+</div>

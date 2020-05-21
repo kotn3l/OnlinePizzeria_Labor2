@@ -1,0 +1,8 @@
+<h1>Preparation order</h1>
+<div *ngFor="let orderedPizza of orderedPizzas" class="card mb-1">
+    <div class="card-body row">
+        <p class="col-md-3">{{ orderedPizza.prepNum }}. {{ orderedPizza.pizza.name }}</p>
+        <p class="col-md-8">{{ ingredients(orderedPizza.pizza.ingredients) }}</p>
+        <button (click)="onDone(orderedPizza.orderPizza)" class="col-md-1 btn btn-success"><i class="fa fa-check"></i></button>
+    </div>
+</div>

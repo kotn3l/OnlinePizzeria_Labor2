@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-primary mb-4">
+    <a routerLink="/admin/login" class="navbar-brand">Pizzeria Staff</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav mr-auto">
+            <li *ngIf="isLoggedIn && avaibleRoute('make-delivery')" class="nav-item">
+                <a routerLink="/admin/make-delivery" class="nav-link">Make Delivery</a>
+            </li>
+            <li *ngIf="isLoggedIn && avaibleRoute('pizzas')" class="nav-item">
+                <a routerLink="/admin/pizzas" class="nav-link">Pizzas</a>
+            </li>
+            <li *ngIf="isLoggedIn && avaibleRoute('users')" class="nav-item">
+                <a routerLink="/admin/users" class="nav-link">Users</a>
+            </li>
+            <li *ngIf="isLoggedIn && avaibleRoute('scheduler')" class="nav-item">
+                <a routerLink="/admin/scheduler" class="nav-link">Scheduler</a>
+            </li>
+            <li *ngIf="isLoggedIn && avaibleRoute('prepare-order')" class="nav-item">
+                <a routerLink="/admin/prepare-order" class="nav-link">Prepare Order</a>
+            </li>
+            <li *ngIf="isLoggedIn && avaibleRoute('delivery-list')" class="nav-item">
+                <a routerLink="/admin/delivery-list" class="nav-link">Delivery List</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li *ngIf="isLoggedIn" class="nav-item">
+                <a routerLink="/admin/login" (click)="onLogoutClick()" class="nav-link">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>

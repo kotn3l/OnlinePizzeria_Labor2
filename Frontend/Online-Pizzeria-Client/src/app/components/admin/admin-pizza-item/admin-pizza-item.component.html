@@ -1,0 +1,31 @@
+<h3 class="d-flex justify-content-between">
+    <div class="row">
+        <span class="mr-2">{{ pizza.name }}</span>
+        <button (click)="hide=!hide" class="btn-dark btn-sm"><i [ngClass]="hide ? 'fa fa-plus' : 'fa fa-minus'"></i></button>
+    </div>
+    <div>
+        <button (click)="editPizza(pizza)" class="btn btn-light mr-1"><i class="fa fa-pencil-alt"></i></button>
+        <button (click)="deletePizza(pizza.id)" class="btn btn-danger"><i class="fa fa-times"></i></button>
+    </div>
+</h3>
+<div class="row" *ngIf="!hide">
+    <div class="col-lg-8 col-12">
+        <ul class="list-group">
+            <li class="list-group-item">Price: {{ pizza.price }}</li>
+            <li class="list-group-item">Ingredients: {{ formatedIngredients }}</li>
+        </ul>
+        <div class="text-center mt-3">
+            <button (click)="changeDiscountPrice(-1)" class="btn btn-dark mr-1" [disabled]="pizza.discount_percent == 0">
+                  <i class="fa fa-angle-left"></i>
+                </button> {{ pizza.discount_percent }}
+            <button (click)="changeDiscountPrice(1)" class="btn btn-dark ml-1" [disabled]="pizza.discount_percent >= 100">
+                  <i class="fa fa-angle-right"></i>
+            </button>
+            <br>
+            <button (click)="updatePizza()" class="btn btn-secondary mt-2" [disabled]="discountChanged()">
+                  Update Discount
+            </button>
+        </div>
+    </div>
+    <img class="col-lg-4 col-12 text-center" [src]="'data:image/jpg;base64,' + pizza.picture" alt="" />
+</div>

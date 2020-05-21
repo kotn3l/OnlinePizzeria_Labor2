@@ -1,0 +1,11 @@
+<app-admin-pizza-form></app-admin-pizza-form>
+<h2>Pizzas</h2>
+<ul class="list-unstyled" *ngIf="loaded && pizzas?.length > 0">
+    <li class="card card-body mb-2" *ngFor="let pizza of pizzas">
+      <app-admin-pizza-item [pizza]="pizza"></app-admin-pizza-item>
+    </li>
+</ul>
+
+<h4 *ngIf="pizzas?.length == 0 && loaded">No Pizza Found</h4>
+
+<h4 *ngIf="!loaded">Loading Pizzas...</h4>
