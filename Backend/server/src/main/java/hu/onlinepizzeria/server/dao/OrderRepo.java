@@ -83,6 +83,9 @@ public interface OrderRepo extends CrudRepository<Order, Integer> {
     @Query(value="SELECT DISTINCT pizza_id FROM order_pizza WHERE done = 0", nativeQuery = true)
     ArrayList<Integer> notDonePizzas();
 
+    @Query(value="SELECT COUNT(pizza_id) FROM order_pizza WHERE order_id=:orderId", nativeQuery = true)
+    Integer pizzasPerOrder(Integer orderId);
+
     @Query(value="SELECT id FROM order_pizza WHERE done = 0", nativeQuery = true)
     ArrayList<Integer> notDoneOrderPizzas();
 

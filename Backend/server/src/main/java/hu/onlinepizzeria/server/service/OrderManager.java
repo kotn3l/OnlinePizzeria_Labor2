@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import hu.onlinepizzeria.server.core.model.*;
 import hu.onlinepizzeria.server.core.service.OrderManagerInterface;
 import hu.onlinepizzeria.server.dao.*;
@@ -27,6 +29,9 @@ public class OrderManager implements OrderManagerInterface {
 
     @Autowired
     private SchedulingManager schedulingManager;
+
+    @Autowired
+    ObjectMapper mapper;
 
     public OrderManager(OrderRepo orderRepo, PayMethodRepo payMethodRepo, CityRepo cityRepo, PizzaRepo pizzaRepo, CustomerRepo customerRepo, SchedulingManager schedulingManager) {
         this.orderRepo = orderRepo;
@@ -103,7 +108,7 @@ public class OrderManager implements OrderManagerInterface {
     }
 
     @Override
-    public Iterable<Order> getReadyOrders() {
+    public ArrayList<ObjectNode> getReadyOrders() {
         ArrayList<Integer> orderIdsThatHasDonePizzas = orderRepo.donePizzas();
         ArrayList<Integer> orderIdsThatHasUndonePizzas = new ArrayList<>();
         ArrayList<Order> doneOrders = new ArrayList<>();
@@ -117,7 +122,19 @@ public class OrderManager implements OrderManagerInterface {
             doneOrders.addAll(orderRepo.getOrderById(orderIdsThatHasDonePizzas.get(i)));
         }
 
-        return doneOrders;
+        ObjectNode response = mapper.createObjectNode();
+        ArrayList<ObjectNode> doneOrdersMap = new ArrayList<>();
+        for (Order order: doneOrders){
+            ObjectNode doneOrderMap = mapper.createObjectNode();
+            doneOrderMap.put("order_id", order.getId());
+            doneOrderMap.put("city", order.getCity().getName());
+            doneOrderMap.put("street", order.getStreet());
+            doneOrderMap.put("house_number", order.getHouse_number());
+            doneOrderMap.put("other", order.getOther());
+            doneOrderMap.put("pizza_count", orderRepo.pizzasPerOrder(order.getId()));
+            doneOrdersMap.add(doneOrderMap);
+        }
+        return doneOrdersMap;
     }
 
     public boolean checkPizza(ArrayList<Integer> orderedPizzas){

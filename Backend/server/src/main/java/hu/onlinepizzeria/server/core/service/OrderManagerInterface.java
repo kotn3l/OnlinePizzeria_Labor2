@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.core.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import hu.onlinepizzeria.server.core.model.*;
 import org.springframework.util.MultiValueMap;
 
@@ -12,5 +13,5 @@ public interface OrderManagerInterface {
     public Iterable<DeliveryCities> getDeliveryCities();
     public ArrayList<ScheduledPizza> getPreparedPizzas();
     public String pizzaPrepared(Integer orderPizza);
-    public Iterable<Order> getReadyOrders();
+    public ArrayList<ObjectNode> getReadyOrders();
 }
