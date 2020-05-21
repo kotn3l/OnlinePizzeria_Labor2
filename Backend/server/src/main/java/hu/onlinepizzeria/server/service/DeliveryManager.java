@@ -1,7 +1,11 @@
 package hu.onlinepizzeria.server.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import hu.onlinepizzeria.server.core.model.Delivery;
 import hu.onlinepizzeria.server.core.model.Order;
+import hu.onlinepizzeria.server.core.model.OrderedPizza;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.core.service.DeliveryManagerInterface;
 import hu.onlinepizzeria.server.dao.DeliveryRepo;
@@ -22,6 +26,9 @@ public class DeliveryManager implements DeliveryManagerInterface {
     @Autowired
     OrderRepo orderRepo;
 
+    @Autowired
+    ObjectMapper mapper;
+
     public DeliveryManager(DeliveryRepo repo) {
         this.deliveryRepo = repo;
     }
@@ -38,7 +45,7 @@ public class DeliveryManager implements DeliveryManagerInterface {
         try {
             turn = deliveryRepo.getMaxTurn() + 1;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             turn = 1;
         }
         User del = userRepo.findById(deliveryGuyId).get();
@@ -50,20 +57,42 @@ public class DeliveryManager implements DeliveryManagerInterface {
     }
 
     @Override
-    public Map<Integer, Iterable<Order>> getDeliveriesByDeliveryGuy(Integer deliveryGuyId) {
+    public List<ObjectNode> getDeliveriesByDeliveryGuy(Integer deliveryGuyId) {
         Map<Integer, Iterable<Order>> result = new HashMap<>();
         List<Integer> turns = deliveryRepo.getDeliveriesByDelivery_man(deliveryGuyId);
-        for (Integer turn: turns
-             ) {
+        List<ObjectNode> response = new ArrayList<>();
+        for (Integer turn: turns) {
+            ObjectNode deliveryNode = mapper.createObjectNode();
+            deliveryNode.put("delivery_id", turn);
             List<Integer> orders = deliveryRepo.getOrdersByTurn(turn);
-            List<Order> orderObjs = new ArrayList<>();
-            for (Integer order : orders
-                 ) {
-                orderObjs.add(orderRepo.getOrderById(order).get(0));
+            List<ObjectNode> orderObjs = new ArrayList<>();
+            for (Integer order : orders) {
+                Order o = orderRepo.getOrderById(order).get(0);
+                if(o.getState() == 3) // it's delivered so skip
+                    continue;
+                ObjectNode addressNode = mapper.createObjectNode();
+                addressNode.put("order_id", o.getId());
+                List<String> pNames = new ArrayList<>();
+                for (OrderedPizza p: o.getoPizza()) {
+                        pNames.add(p.getPizza().getName());
+                }
+                ArrayNode array = mapper.valueToTree(pNames);
+                addressNode.putArray("pizzas").addAll(array);
+                addressNode.put("city", o.getCity().getName());
+                addressNode.put("street", o.getStreet());
+                addressNode.put("house_number", o.getHouse_number());
+                addressNode.put("other", o.getOther());
+                addressNode.put("comment", o.getComment());
+                deliveryNode.set("orders", addressNode);
+                //deliveryNode.set("orders", )
+                orderObjs.add(addressNode);
             }
-            result.put(turn, orderObjs);
+            if (!orderObjs.isEmpty()) {
+                deliveryNode.putArray("orders").addAll(orderObjs);
+                response.add(deliveryNode);
+            }
         }
-        return result;
+        return response;
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import hu.onlinepizzeria.server.core.Views;
-import hu.onlinepizzeria.server.core.model.Order;
 import hu.onlinepizzeria.server.dao.UserRepo;
 import hu.onlinepizzeria.server.service.DeliveryManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -89,17 +88,18 @@ public class DeliveryController {
     @GetMapping(path="/delivery/")
     public ResponseEntity
     getDeliveriesOfAGuy(@RequestParam(name="session_string", required = true) String session_string,
-                        @RequestParam(name="delivery_guy", required = true) Integer delivery_guy){
+                        @RequestParam(name="delivery_guy", required = false) Integer delivery_guy){
         //getUsername()
         ObjectNode objectNode = mapper.createObjectNode();
         if (jwtTokenProvider.validateToken(session_string)) {
             if (jwtTokenProvider.isDelivery(session_string)) {
                 try {
-                    Map<Integer, Iterable<Order>> result =deliveryManager
+                    List<ObjectNode> result = deliveryManager
                             .getDeliveriesByDeliveryGuy(userRepo
                                     .findUserByEmail(jwtTokenProvider
                                             .getUsername(session_string))
                                     .get().getId());
+
                     return new ResponseEntity(result, HttpStatus.OK);
                 }
                 catch (Exception e) { // TODO placeholder exception
