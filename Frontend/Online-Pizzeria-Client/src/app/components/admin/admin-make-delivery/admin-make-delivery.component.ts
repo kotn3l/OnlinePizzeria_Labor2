@@ -54,10 +54,10 @@ export class AdminMakeDeliveryComponent implements OnInit {
   }
 
   sumColor() {
-    if (this.sum < 13) {
+    if (this.sum < 8) {
       return 'text-warning';
     }
-    else if (this.sum > 15) {
+    else if (this.sum > 10) {
       return 'text-danger';
     }
     else {

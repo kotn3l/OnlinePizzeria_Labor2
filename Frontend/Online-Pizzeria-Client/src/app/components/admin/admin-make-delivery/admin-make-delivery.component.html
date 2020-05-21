@@ -21,7 +21,7 @@
         <div [ngClass]="[sumColor()]">
             Sum: {{ sum }}
         </div>
-        <div *ngIf="sum > 15" class="text-danger">Can't assign more than 15 pizza for a delivery</div>
+        <div *ngIf="sum > 10" class="text-danger">Can't assign more than 10 pizza for a delivery</div>
     </div>
-    <button class="btn btn-primary btn-block mt-3" (click)="submitOrder()" [disabled]="sum > 15">Post delivery</button>
+    <button class="btn btn-primary btn-block mt-3" (click)="submitOrder()" [disabled]="sum > 10">Post delivery</button>
 </div>

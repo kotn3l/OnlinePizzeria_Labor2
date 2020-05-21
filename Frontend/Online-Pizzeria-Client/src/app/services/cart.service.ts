@@ -14,7 +14,7 @@ export class CartService {
   private cartCountSource = new BehaviorSubject<number>(this.getCartCount());
   cartCount = this.cartCountSource.asObservable();
 
-  maxOrder: number = 15;
+  maxOrder: number = 10;
 
   constructor() { }
 
@@ -51,7 +51,7 @@ export class CartService {
   }
 
   addCartItem(cartItem: CartItem) {
-    if(this.cartCountSource.value + 1 > 15) {
+    if(this.cartCountSource.value + 1 > this.maxOrder) {
       return;
     }
 
@@ -72,7 +72,7 @@ export class CartService {
   }
 
   changeCartItemCount(pizzaId: number, count: number) {
-    if(this.cartCountSource.value + count > 15) {
+    if(this.cartCountSource.value + count > this.maxOrder) {
       return;
     }
 
