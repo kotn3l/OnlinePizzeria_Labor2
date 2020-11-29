@@ -94,11 +94,7 @@ public class DeliveryController {
         if (jwtTokenProvider.validateToken(session_string)) {
             if (jwtTokenProvider.isDelivery(session_string)) {
                 try {
-                    List<ObjectNode> result = deliveryManager
-                            .getDeliveriesByDeliveryGuy(userRepo
-                                    .findUserByEmail(jwtTokenProvider
-                                            .getUsername(session_string))
-                                    .get().getId());
+                    List<ObjectNode> result = deliveryManager.getDeliveriesByDeliveryGuy(userRepo.findUserByEmail(jwtTokenProvider.getUsername(session_string)).get().getId());
 
                     return new ResponseEntity(result, HttpStatus.OK);
                 }

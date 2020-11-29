@@ -13,10 +13,22 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Builder
 public class Role {
+    public int getId() {
+        return id;
+    }
+
     @Id
     @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @NotEmpty
     @JsonView(Views.Public.class)

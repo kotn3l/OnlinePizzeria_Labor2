@@ -105,6 +105,9 @@ public class PizzaManager implements PizzaManagerInterface {
         if (p != null) {
             pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), true);
         }
+        else{
+            //throw
+        }
         return "Pizza deleted";
     }
 

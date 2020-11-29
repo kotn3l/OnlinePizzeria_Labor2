@@ -32,10 +32,38 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public User(){
+
+    }
+
     @Id
     @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
 
     @Column(name = "email")
     @NotEmpty
@@ -63,6 +91,8 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
     }
+
+    public Integer getId() { return this.id; }
 
     @Override
     public String getPassword() {
@@ -130,6 +160,6 @@ public class User implements UserDetails {
             return this;
         }
 
-        public User build() { return new User(this.id, this.email, this.password, this.name, this.roles); }
+        public User build() { return new User(this.email, this.password, this.name, this.roles); }
     }
 }
