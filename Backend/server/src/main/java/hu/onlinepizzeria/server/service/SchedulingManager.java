@@ -1,5 +1,6 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.core.exceptions.InvalidId;
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.core.model.SchedulingAlgorithms;
 import hu.onlinepizzeria.server.core.service.SchedulingManagerInterface;
@@ -42,9 +43,9 @@ public class SchedulingManager implements SchedulingManagerInterface {
     }
 
     @Override
-    public String setActiveAlgorithm(Integer id) throws InvalidParameterException {
+    public String setActiveAlgorithm(Integer id) throws InvalidId {
         if (!checkScheduling(id)){
-            throw new InvalidParameterException("Invalid scheduling algorithm");
+            throw new InvalidId("scheduling", id.toString());
         }
         schedulingRepo.setAllAlgorithmsNonActive();
         schedulingRepo.setActiveAlgorithm(id);
