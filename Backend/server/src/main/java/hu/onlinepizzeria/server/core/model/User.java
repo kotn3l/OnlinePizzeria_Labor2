@@ -32,10 +32,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public User(){
-
-    }
-
     @Id
     @JsonView(Views.Public.class)
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,5 +1,7 @@
 package hu.onlinepizzeria.server.service;
 
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
+import hu.onlinepizzeria.server.core.exceptions.InvalidId;
 import hu.onlinepizzeria.server.core.model.Ingredient;
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.core.service.PizzaManagerInterface;
@@ -36,10 +38,10 @@ public class PizzaManager implements PizzaManagerInterface {
     private static Path imagePath = Paths.get("images\\pizza");
 
     @Override
-    public String addNewPizza (Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
+    public String addNewPizza (Map<String, Object> pizza, MultipartFile multipart) throws IOException, InvalidData {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
         if(pIngredients.size() <= 1) {
-            throw new InvalidParameterException("A pizza must have more than one ingredient");
+            throw new InvalidData("Egy pizzának több, mint egy hozzávalónak kell lennie!");
         }
         ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
         Path filePath = write(multipart, serverPath, imagePath);
@@ -69,11 +71,14 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public String updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws InvalidParameterException, IOException {
+    public String updatePizza(Integer id, Map<String, Object> pizza, MultipartFile multipart) throws IOException, InvalidData, InvalidId {
         ArrayList<String> pIngredients = (ArrayList<String>)pizza.get("ingredients");
         Path filePath = null;
         if (multipart != null){
             filePath = write(multipart, serverPath, imagePath);
+        }
+        if (!pizzaRepo.existsById(id)){
+            throw new InvalidId("pizza", id.toString());
         }
         Pizza p = new Pizza();
         p.setId(id);
@@ -89,7 +94,7 @@ public class PizzaManager implements PizzaManagerInterface {
 
         if (pIngredients != null){
             if(pIngredients.size() <= 1) {
-                throw new InvalidParameterException("A pizza must have more than one ingredient");
+                throw new InvalidData("Egy pizzának több, mint egy hozzávalónak kell lennie!");
             }
             ArrayList<String> pizzaIngredients = new ArrayList<>(pIngredients);
             ingredientCheck(pIngredients);
@@ -100,13 +105,13 @@ public class PizzaManager implements PizzaManagerInterface {
     }
 
     @Override
-    public String deletePizza(Integer id){
+    public String deletePizza(Integer id) throws InvalidId {
         Pizza p = pizzaRepo.findById(id).orElse(null);
         if (p != null) {
             pizzaRepo.updatePizza(id, p.getName(), p.getPrice(), p.getRealPicPath(), p.getDiscount_percent(), true);
         }
         else{
-            //throw
+            throw new InvalidId("pizza",id.toString());
         }
         return "Pizza deleted";
     }

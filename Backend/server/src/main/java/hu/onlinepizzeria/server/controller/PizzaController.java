@@ -2,6 +2,9 @@ package hu.onlinepizzeria.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import hu.onlinepizzeria.server.core.Views;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
+import hu.onlinepizzeria.server.core.exceptions.InvalidId;
+import hu.onlinepizzeria.server.core.exceptions.UnauthorizedEx;
 import hu.onlinepizzeria.server.core.model.Pizza;
 import hu.onlinepizzeria.server.service.PizzaManager;
 import hu.onlinepizzeria.server.service.jwt.JwtTokenProvider;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Map;
 
@@ -31,20 +35,12 @@ public class PizzaController {
     @PostMapping(path="/pizza/")
     public @ResponseBody
     ResponseEntity addNewPizza (@RequestParam(name="session_string", required = true) String session_string, @RequestPart("pizza") Map<String, Object> pizza, @RequestPart("file")
-            MultipartFile multipart){
-        try {
-            if (jwtTokenProvider.isAdmin(session_string)) {
-                pizzaManager.addNewPizza(pizza, multipart);
-                return new ResponseEntity(HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-        }
-        catch (InvalidParameterException ipe){
-            return new ResponseEntity(ipe.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            MultipartFile multipart) throws IOException, InvalidData, UnauthorizedEx {
+        if (jwtTokenProvider.isAdmin(session_string)) {
+            pizzaManager.addNewPizza(pizza, multipart);
+            return new ResponseEntity(HttpStatus.CREATED);
+        } else {
+            throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
         }
     }
 
@@ -63,33 +59,23 @@ public class PizzaController {
     @JsonView(Views.Internal.class)
     @PutMapping(path = "/pizza/")
     public @ResponseBody ResponseEntity updatePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id, @RequestPart("pizza") Map<String, Object> pizza,
-                                                    @RequestPart(value = "file", required = false) MultipartFile multipart) {
-        try {
-            if (jwtTokenProvider.isAdmin(session_string)) {
-                pizzaManager.updatePizza(id, pizza, multipart);
-                return new ResponseEntity(HttpStatus.OK);
-            } else {
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-        }
-        catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+                                                    @RequestPart(value = "file", required = false) MultipartFile multipart) throws InvalidData, IOException, InvalidId, UnauthorizedEx {
+        if (jwtTokenProvider.isAdmin(session_string)) {
+            pizzaManager.updatePizza(id, pizza, multipart);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
         }
     }
 
     @JsonView(Views.Internal.class)
     @DeleteMapping(path = "/pizza/")
-    public @ResponseBody ResponseEntity deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id){
-        try {
-            if (jwtTokenProvider.isAdmin(session_string)) {
-                pizzaManager.deletePizza(id);
-                return new ResponseEntity(HttpStatus.OK);
-            } else {
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-        }
-        catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public @ResponseBody ResponseEntity deletePizza(@RequestParam(name="session_string", required = true) String session_string, @RequestParam(name="pizza_id", required = true) Integer id) throws InvalidId, UnauthorizedEx {
+        if (jwtTokenProvider.isAdmin(session_string)) {
+            pizzaManager.deletePizza(id);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
         }
     }
 

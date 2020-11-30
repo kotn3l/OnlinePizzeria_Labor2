@@ -3,6 +3,8 @@ package hu.onlinepizzeria.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
+import hu.onlinepizzeria.server.core.exceptions.InvalidId;
 import hu.onlinepizzeria.server.core.model.Delivery;
 import hu.onlinepizzeria.server.core.model.Order;
 import hu.onlinepizzeria.server.core.model.OrderedPizza;
@@ -40,8 +42,11 @@ public class DeliveryManager implements DeliveryManagerInterface {
     }
 
     @Override
-    public String addNewDelivery(Integer deliveryGuyId, Iterable<Integer> orderId) {
+    public String addNewDelivery(Integer deliveryGuyId, Iterable<Integer> orderId) throws InvalidId, InvalidData {
         Integer turn = null;
+        if (!deliveryRepo.existsById(deliveryGuyId)){
+            throw new InvalidId("delivery",deliveryGuyId.toString());
+        }
         try {
             turn = deliveryRepo.getMaxTurn() + 1;
         } catch (Exception e) {
@@ -49,9 +54,17 @@ public class DeliveryManager implements DeliveryManagerInterface {
             turn = 1;
         }
         User del = userRepo.findById(deliveryGuyId).get();
+        int orderCount = 1;
         for (Integer order_id : orderId) {
+            if (!orderRepo.existsById(order_id)){
+                throw new InvalidId("order", order_id.toString());
+            }
+            if (orderCount > 10){
+                throw new InvalidData("Egy deliveryhez nem tartozhat 10nél több rendelés!");
+            }
             Order ord = orderRepo.getOrderById(order_id).get(0);
             deliveryRepo.save(new Delivery(ord, del, turn));
+            orderCount++;
         }
         return "saved";
     }
@@ -96,12 +109,14 @@ public class DeliveryManager implements DeliveryManagerInterface {
     }
 
     @Override
-    public boolean updateDelivery(Integer deliveryId) {
+    public boolean updateDelivery(Integer deliveryId) throws InvalidId {
         // if it's not a valid delivery id then return false
         // or if it's already delivered also return false
+        if (!deliveryRepo.existsById(deliveryId)){
+            throw new InvalidId("delivery", deliveryId.toString());
+        }
         List<Integer> orders = deliveryRepo.getOrdersByTurn(deliveryId);
         Date date = new Date();
-
         for ( Integer ord : orders) {
             Order o = orderRepo.getOrderById(ord).get(0);
             o.setState(3);

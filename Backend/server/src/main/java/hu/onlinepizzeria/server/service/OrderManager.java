@@ -2,6 +2,7 @@ package hu.onlinepizzeria.server.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
 import hu.onlinepizzeria.server.core.model.*;
 import hu.onlinepizzeria.server.core.service.OrderManagerInterface;
 import hu.onlinepizzeria.server.dao.*;
@@ -40,20 +41,20 @@ public class OrderManager implements OrderManagerInterface {
         this.pizzaRepo = pizzaRepo;
         this.customerRepo = customerRepo;
         this.schedulingManager = schedulingManager;
-        schedulingManager.schedule();
+        //schedulingManager.schedule();
     }
 
     @Override
-    public String addNewOrder(Map<String, Object> order) throws InvalidParameterException {
+    public String addNewOrder(Map<String, Object> order) throws InvalidData {
         ArrayList<Integer> orderedPizzas = (ArrayList<Integer>)order.get("order");
         if(!checkPizza(orderedPizzas)){
-            throw new InvalidParameterException("A pizza does not exist");
+            throw new InvalidData("Nem megfelelő pizza: " + orderedPizzas.toString());
         }
         if(!checkCity(Integer.parseInt(order.get("city").toString()))){
-            throw new InvalidParameterException("Invalid city");
+            throw new InvalidData("Nem megfelelő város: " + order.get("city"));
         }
         if(!checkPayMethod(Integer.parseInt(order.get("pay_method").toString()))){
-            throw new InvalidParameterException("Invalid pay method");
+            throw new InvalidData("Nem megfelelő fizetési mód: " + order.get("pay_method").toString());
         }
         Integer customerIdCheck = checkUser(order.get("email").toString(), order.get("telephone").toString());
         Customer customer = new Customer();
