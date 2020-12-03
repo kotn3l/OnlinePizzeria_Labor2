@@ -2,6 +2,8 @@ package hu.onlinepizzeria.server.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import hu.onlinepizzeria.server.core.Views;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
+import hu.onlinepizzeria.server.core.exceptions.UnauthorizedEx;
 import hu.onlinepizzeria.server.core.model.Role;
 import hu.onlinepizzeria.server.core.model.User;
 import hu.onlinepizzeria.server.dao.UserRepo;
@@ -44,20 +46,14 @@ public class AuthenticationController {
     public @ResponseBody ResponseEntity<Map<Object, Object>> loginUser(@RequestBody User user) throws IOException {
 
         Map<Object, Object> model = new HashMap<>();
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
-            String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
-                    .getRoles());
-            Optional<User> user2 = users.findUserByEmail(user.getEmail());
-            model.put("session_string", token);
-            model.put("role", user2.get().getRoles());
-            return ok(model);
-
-        } catch (AuthenticationException e) {
-            model.put("error", "Invalid password or email.");
-            return new ResponseEntity<>(model, HttpStatus.UNAUTHORIZED);
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+        String token = jwtTokenProvider.createToken(user.getEmail(), this.users.findUserByEmail(user.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Username " + user.getEmail() + "not found"))
+                .getRoles());
+        Optional<User> user2 = users.findUserByEmail(user.getEmail());
+        model.put("session_string", token);
+        model.put("role", user2.get().getRoles());
+        return ok(model);
     }
 
     @JsonView(Views.Public.class)
@@ -68,7 +64,7 @@ public class AuthenticationController {
 
     @JsonView(Views.Public.class)
     @GetMapping("/roles")
-    public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string){
+    public ResponseEntity<List<Role>> getUserRoles(@RequestParam(name="session_string", required = true) String session_string) throws UnauthorizedEx {
             Map<Object, Object> model = new HashMap<>();
             if (!jwtTokenProvider.validateToken(session_string)){
                 model.put("error","Invalid session string.");
@@ -85,17 +81,17 @@ public class AuthenticationController {
                 }
                 return new ResponseEntity(result, HttpStatus.OK);
             }
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-
+            else{
+                throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
+            }
     }
 
     @JsonView(Views.Public.class)
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestParam(name="session_string", required = true) String session_string,
-                                       @RequestBody Map<String, Object> payload) {
+                                       @RequestBody Map<String, Object> payload) throws InvalidData {
 
         Map<Object, Object> model = new HashMap<>();
-        try {
             if (!jwtTokenProvider.validateToken(session_string)){
                 model.put("error","Invalid session string.");
                 return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
@@ -105,8 +101,7 @@ public class AuthenticationController {
                 String email = payload.get("email").toString();
                 if(!EmailValidator.getInstance().isValid(email)
                         || users.findUserByEmail(email).isPresent()){
-                    model.put("error", "Invalid email address");
-                    return new ResponseEntity(model, HttpStatus.BAD_REQUEST);
+                    throw new InvalidData("Invalid email!");
                 }
                 newUser.setEmail(email);
                 newUser.setName(payload.get("name").toString());
@@ -118,19 +113,14 @@ public class AuthenticationController {
                             .get((int)payload.get("role_id")).getName());
                     newUser.setRoles(roles);
                 }
-                else return new ResponseEntity("Invalid role.", HttpStatus.BAD_REQUEST);
+                else throw new InvalidData("Invalid user role!");
                 newUser.setPassword(bCryptPasswordEncoder.encode("default"));
                 //newUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
                 users.save(newUser);
                 return new ResponseEntity(newUser, HttpStatus.CREATED);
             }
             else {
-                model.put("error","Invalid session string.");
-                return new ResponseEntity(model, HttpStatus.UNAUTHORIZED);
-            }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new InvalidData("Invalid session string!");
             }
     }
 
@@ -138,7 +128,7 @@ public class AuthenticationController {
     @PostMapping("/user")
     public ResponseEntity changePassword(@RequestParam(name="session_string", required = true) String session_string,
                                          @RequestParam(name = "password_old", required = true) String password_old,
-                                         @RequestParam(name = "password_new", required = true) String password_new){
+                                         @RequestParam(name = "password_new", required = true) String password_new) throws InvalidData {
 
         String name = jwtTokenProvider.getUsername(session_string);
         String newPass = bCryptPasswordEncoder.encode(password_new);
@@ -150,48 +140,44 @@ public class AuthenticationController {
                 authenticationService.updatePassword(u.getId(), u.getPassword());
                 return new ResponseEntity(HttpStatus.OK);
             }
-            else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
+            else throw new InvalidData("Nem jó email/jelszó");
         }
-        else return new ResponseEntity("Incorrect username or password", HttpStatus.BAD_REQUEST);
+        else throw new InvalidData("Nem jó email/jelszó");
     }
 
     @JsonView(Views.Public.class)
     @GetMapping("/user")
-    public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) {
+    public ResponseEntity getAllUsers(@RequestParam(name = "session_string", required = true) String session_string) throws UnauthorizedEx {
         if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
             return new ResponseEntity(authenticationService.getAllUsers(), HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        else{
+            throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
+        }
     }
 
     @JsonView(Views.Public.class)
     @DeleteMapping("/user")
     public ResponseEntity removeUser(@RequestParam(name = "session_string", required = true) String session_string,
-                                     @RequestParam(name = "user_id", required = true) int user_id) {
+                                     @RequestParam(name = "user_id", required = true) int user_id) throws UnauthorizedEx {
         if (jwtTokenProvider.validateToken(session_string) && jwtTokenProvider.isAdmin(session_string)) {
-            try {
                 authenticationService.deleteUserById(user_id);
                 return new ResponseEntity(HttpStatus.CREATED);
-            }
-            catch (Exception e) {
-                return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
-            }
-
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        else{
+            throw new UnauthorizedEx("Ehhez admin jogok szükségesek!");
+        }
     }
 
     @JsonView(Views.Public.class)
     @PostMapping("/auth")
-    public ResponseEntity authSessionString(@RequestParam(name = "session_string") String session_string) {
-        try {
+    public ResponseEntity authSessionString(@RequestParam(name = "session_string") String session_string) throws InvalidData {
             if (jwtTokenProvider.validateToken(session_string)) {
                 return new ResponseEntity(HttpStatus.OK);
             }
-            else return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } catch (InvalidJwtAuthenticationException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+            else {
+                throw new InvalidData("Invalid session string!");
+            }
     }
 
 }

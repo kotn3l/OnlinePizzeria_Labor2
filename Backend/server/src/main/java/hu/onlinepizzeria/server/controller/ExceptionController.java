@@ -7,6 +7,8 @@ import hu.onlinepizzeria.server.core.exceptions.UnauthorizedEx;
 import hu.onlinepizzeria.server.service.jwt.InvalidJwtAuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -73,7 +75,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String invalidToken(Exception e){
+    public String exception(Exception e){
         return e.getMessage();
     }
 
@@ -88,6 +90,20 @@ public class ExceptionController {
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String unauthorized(UnauthorizedEx e){
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String authFail(AuthenticationException e){
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String authFailUsername(UsernameNotFoundException e){
         return e.getMessage();
     }
 }
