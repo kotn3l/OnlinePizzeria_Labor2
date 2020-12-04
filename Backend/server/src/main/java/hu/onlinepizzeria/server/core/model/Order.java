@@ -120,7 +120,7 @@ public class Order implements Serializable {
     public void setComment(String comment) throws InvalidData {
         if(comment.length() <= 100) {
             this.comment = comment;
-        } else throw new InvalidData("Comment is too long, 100 chars max");
+        } else throw new InvalidData("Comment is too long, 100 chars max, yours is: " + comment.length() + "long.");
     }
 
     public PayMethod getPay_method() {

@@ -101,7 +101,7 @@ public class AuthenticationController {
                 String email = payload.get("email").toString();
                 if(!EmailValidator.getInstance().isValid(email)
                         || users.findUserByEmail(email).isPresent()){
-                    throw new InvalidData("Invalid email!");
+                    throw new InvalidData("Invalid email: " + email);
                 }
                 newUser.setEmail(email);
                 newUser.setName(payload.get("name").toString());

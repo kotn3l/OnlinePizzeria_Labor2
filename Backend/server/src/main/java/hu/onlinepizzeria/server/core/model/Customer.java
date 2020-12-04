@@ -57,7 +57,7 @@ public class Customer implements Serializable {
         if (isValidEmail(email)) {
             this.email = email;
         }
-        else throw new InvalidData("E-mail is invalid");
+        else throw new InvalidData("E-mail is invalid: " + email);
     }
 
     public String getTelephone() {
@@ -68,7 +68,7 @@ public class Customer implements Serializable {
         if (isValidTelephone(telephone)) {
             this.telephone = telephone;
         }
-        else throw new InvalidData("Telephone is invalid");
+        else throw new InvalidData("Telephone is invalid: " + telephone);
     }
 
     public Customer() {
