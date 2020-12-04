@@ -3,6 +3,7 @@ package hu.onlinepizzeria.server.core.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import hu.onlinepizzeria.server.core.Views;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -52,22 +53,22 @@ public class Customer implements Serializable {
         return email;
     }
 
-    public void setEmail(String email) throws InvalidParameterException {
+    public void setEmail(String email) throws InvalidData {
         if (isValidEmail(email)) {
             this.email = email;
         }
-        else throw new InvalidParameterException("E-mail is invalid");
+        else throw new InvalidData("E-mail is invalid");
     }
 
     public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone) throws InvalidParameterException {
+    public void setTelephone(String telephone) throws InvalidData {
         if (isValidTelephone(telephone)) {
             this.telephone = telephone;
         }
-        else throw new InvalidParameterException("Telephone is invalid");
+        else throw new InvalidData("Telephone is invalid");
     }
 
     public Customer() {

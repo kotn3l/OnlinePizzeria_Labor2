@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import hu.onlinepizzeria.server.core.Views;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -116,10 +117,10 @@ public class Order implements Serializable {
         return comment;
     }
 
-    public void setComment(String comment) throws InvalidParameterException {
+    public void setComment(String comment) throws InvalidData {
         if(comment.length() <= 100) {
             this.comment = comment;
-        } else throw new InvalidParameterException("Comment is too long, 100 chars max");
+        } else throw new InvalidData("Comment is too long, 100 chars max");
     }
 
     public PayMethod getPay_method() {

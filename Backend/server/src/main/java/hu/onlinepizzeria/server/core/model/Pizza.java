@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import hu.onlinepizzeria.server.core.Views;
+import hu.onlinepizzeria.server.core.exceptions.InvalidData;
 
 import javax.persistence.*;
 import java.io.*;
@@ -49,11 +50,11 @@ public class Pizza implements Serializable {
         return price;
     }
 
-    public void setPrice(Integer price) throws InvalidParameterException {
+    public void setPrice(Integer price) throws InvalidData {
         if(price > 0){
             this.price = price;
         }
-        else throw new InvalidParameterException("Price must be greater than 0");
+        else throw new InvalidData("Price must be greater than 0");
     }
 
     @JsonView(Views.Internal.class)
@@ -67,23 +68,23 @@ public class Pizza implements Serializable {
         return picture_path;
     }
 
-    public void setPicture_path(String picture_path) throws InvalidParameterException {
+    public void setPicture_path(String picture_path) throws InvalidData {
         File pic = new File(Paths.get(System.getProperty("user.dir")).getParent().resolve(picture_path).toString());
         if(pic.isFile()) {
             this.picture_path = picture_path;
         }
-        else throw new InvalidParameterException("Picture does not exist");
+        else throw new InvalidData("Picture does not exist");
     }
 
     public Integer getDiscount_percent() {
         return discount_percent;
     }
 
-    public void setDiscount_percent(Integer discount_percent) throws InvalidParameterException {
+    public void setDiscount_percent(Integer discount_percent) throws InvalidData {
         if(discount_percent >= 0) {
             this.discount_percent = discount_percent;
         }
-        else throw new InvalidParameterException("Discount percent can't be negative");
+        else throw new InvalidData("Discount percent can't be negative");
     }
 
     public boolean isUnavailable() {
